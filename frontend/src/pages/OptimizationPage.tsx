@@ -106,18 +106,11 @@ export const OptimizationPage: React.FC = () => {
     <div className="space-y-6">
       {/* High-Tech Mission Control Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-emerald-950/60 border border-slate-800 shadow-2xl backdrop-blur-xl relative overflow-hidden">
-        {/* Subtle Watermark Logo on Dark Background */}
-        <img
-          src="/daos_emblem_white.png"
-          alt=""
-          className="absolute -right-8 -bottom-8 w-56 h-56 opacity-[0.06] pointer-events-none select-none"
-        />
         <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-emerald-950/90 border border-emerald-500/40 text-emerald-300 font-bold shadow-xs">
-              <img src="/daos_emblem_white.png" alt="" className="w-3.5 h-3.5 object-contain" />
               <span className={`w-1.5 h-1.5 rounded-full ${isRunning ? 'bg-amber-400 animate-ping' : 'bg-emerald-400 animate-pulse'}`} />
               {isRunning ? 'DAOS SOLVER: В ПРОЦЕССЕ РАСЧЕТА' : 'DAOS MILP ENGINE (GLPK 5.0) • ГОТОВ'}
             </span>
@@ -338,12 +331,12 @@ export const OptimizationPage: React.FC = () => {
                       isOptimal
                         ? 'text-emerald-700 font-bold'
                         : isIteration
-                        ? 'text-cyan-300'
+                        ? 'text-cyan-700 font-semibold'
                         : isHeader
-                        ? 'text-amber-700 font-semibold'
+                        ? 'text-amber-800 font-semibold'
                         : isWarning
-                        ? 'text-rose-700'
-                        : 'text-slate-700'
+                        ? 'text-rose-700 font-medium'
+                        : 'text-slate-800'
                     }`}
                   >
                     {line}

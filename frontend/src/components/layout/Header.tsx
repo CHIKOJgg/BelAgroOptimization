@@ -28,10 +28,10 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
         )}
 
         <div className="flex items-center gap-2 text-slate-700">
-          <img src="/daos_emblem.png" alt="DAOS" className="w-6 h-6 object-contain hidden sm:block" />
-          <span className="font-bold text-sm hidden sm:inline text-slate-900 tracking-tight">DAOS</span>
-          <span className="text-slate-300 hidden md:inline">/</span>
-          <span className="text-xs text-slate-600 hidden md:inline font-medium">СПК «Оптимум-Агро»</span>
+          <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold hidden sm:inline">СПК:</span>
+          <span className="text-xs font-bold text-slate-800 hidden sm:inline bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+            «Оптимум-Агро»
+          </span>
         </div>
 
         {/* Scenario Switcher Dropdown */}
@@ -81,8 +81,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
         </button>
 
         <div className="flex items-center gap-2.5 pl-1">
-          <div className="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-300 p-0.5 flex items-center justify-center shadow-xs">
-            <img src="/daos_emblem.png" alt="DAOS" className="w-full h-full object-contain" />
+          <div className="w-8 h-8 rounded-full bg-emerald-700 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+            DA
           </div>
           <div className="hidden lg:block text-left">
             <div className="text-xs font-semibold text-slate-800">Аналитик DAOS</div>

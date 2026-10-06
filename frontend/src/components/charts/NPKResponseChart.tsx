@@ -215,9 +215,9 @@ export const NPKResponseChart: React.FC = () => {
                 Оптимум: {s.optimalKg} кг/га
               </span>
             </div>
-            <div className="mt-2 text-slate-500 text-[11px] leading-relaxed">
+            <div className="mt-2 text-slate-600 text-[11px] leading-relaxed">
               Предельная окупаемость: 1 кг NPK даёт{' '}
-              <span className="text-emerald-400 font-medium">
+              <span className="text-emerald-700 font-bold">
                 {((s.b1 - 2 * s.b2 * 120) * 100).toFixed(0)} кг зерна
               </span>{' '}
               при дозе 120 кг/га.
@@ -226,8 +226,8 @@ export const NPKResponseChart: React.FC = () => {
         ))}
       </div>
 
-      <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-500 bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/40">
-        <Info className="w-4 h-4 text-emerald-400 shrink-0" />
+      <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+        <Info className="w-4 h-4 text-emerald-600 shrink-0" />
         <span>
           При превышении точки перегиба (&gt;180 кг/га) маржинальные затраты на удобрения превышают стоимость
           дополнительного прироста зерна (закон убывающего плодородия Либиха-Митчерлиха).

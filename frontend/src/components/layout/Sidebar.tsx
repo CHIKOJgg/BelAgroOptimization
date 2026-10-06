@@ -157,7 +157,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
       {/* Footer Info Box */}
       <div className="p-3.5 border-t border-slate-100 bg-slate-50/80">
         <div className="flex items-center gap-2 mb-1.5">
-          <img src="/daos_emblem.png" alt="DAOS" className="w-4 h-4 object-contain" />
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           <span className="text-xs font-semibold text-slate-700">Активный сценарий:</span>
         </div>
         <div className="text-xs font-semibold text-emerald-800 truncate" title={activeScenario?.name}>

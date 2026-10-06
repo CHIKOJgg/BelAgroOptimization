@@ -87,7 +87,7 @@ export const WeatherPage: React.FC = () => {
               {
                 yAxis: 480,
                 lineStyle: { color: '#ef4444', type: 'dashed', width: 2 },
-                label: { formatter: 'Порог засухи (<480 мм)', color: '#f87171' },
+                label: { formatter: 'Порог засухи (<480 мм)', color: '#dc2626', fontWeight: 'bold' },
               },
             ],
           },
@@ -145,7 +145,7 @@ export const WeatherPage: React.FC = () => {
           isPositive={false}
           icon={<AlertTriangle className="w-5 h-5" />}
           subtitle="9.1°C — Засушливый стресс-тест"
-          color="slate"
+          color="rose"
         />
       </div>
 
@@ -159,27 +159,27 @@ export const WeatherPage: React.FC = () => {
       {/* Sensitivity table */}
       <Card title="Чувствительность культур к засухе" subtitle="Коэффициенты стресс-тестирования моделей DAOS при дефиците влаги">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-          <div className="p-4 rounded-xl bg-slate-100/60 border border-slate-200/50">
-            <div className="font-bold text-slate-800 mb-1">Сахарная свёкла</div>
-            <div className="text-slate-500">Коэфф. чувствительности: <b className="text-rose-700">0.60</b></div>
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 shadow-2xs">
+            <div className="font-bold text-slate-900 mb-1">Сахарная свёкла</div>
+            <div className="text-slate-600">Коэфф. чувствительности: <b className="text-rose-600">0.60</b></div>
             <div className="text-[11px] text-slate-500 mt-2">Наиболее уязвима к засухе; урожай падает до 40%</div>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-100/60 border border-slate-200/50">
-            <div className="font-bold text-slate-800 mb-1">Картофель</div>
-            <div className="text-slate-500">Коэфф. чувствительности: <b className="text-rose-700">0.50</b></div>
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 shadow-2xs">
+            <div className="font-bold text-slate-900 mb-1">Картофель</div>
+            <div className="text-slate-600">Коэфф. чувствительности: <b className="text-rose-600">0.50</b></div>
             <div className="text-[11px] text-slate-500 mt-2">Высокая потребность в регулярном поливе и осадках</div>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-100/60 border border-slate-200/50">
-            <div className="font-bold text-slate-800 mb-1">Рапс</div>
-            <div className="text-slate-500">Коэфф. чувствительности: <b className="text-amber-700">0.45</b></div>
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 shadow-2xs">
+            <div className="font-bold text-slate-900 mb-1">Рапс</div>
+            <div className="text-slate-600">Коэфф. чувствительности: <b className="text-amber-600">0.45</b></div>
             <div className="text-[11px] text-slate-500 mt-2">Умеренно-высокая зависимость от весенних осадков</div>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-100/60 border border-slate-200/50">
-            <div className="font-bold text-slate-800 mb-1">Озимая пшеница & Ячмень</div>
-            <div className="text-slate-500">Коэфф. чувствительности: <b className="text-emerald-700">0.30</b></div>
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 shadow-2xs">
+            <div className="font-bold text-slate-900 mb-1">Озимая пшеница & Ячмень</div>
+            <div className="text-slate-600">Коэфф. чувствительности: <b className="text-emerald-700">0.30</b></div>
             <div className="text-[11px] text-slate-500 mt-2">Устойчивые зерновые за счет ранней вегетации</div>
           </div>
         </div>

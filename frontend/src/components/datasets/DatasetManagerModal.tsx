@@ -10,6 +10,7 @@ import {
   X,
   FileText,
   Building2,
+  Database,
 } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import { useScenario } from '../../context/ScenarioContext';
@@ -316,8 +317,8 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
         {/* Modal Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
           <div className="flex items-center gap-3">
-            <div className="p-1.5 rounded-lg bg-emerald-50 border border-emerald-200 shadow-2xs">
-              <img src="/daos_emblem.png" alt="DAOS" className="w-6 h-6 object-contain" />
+            <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 shadow-xs">
+              <Database className="w-5 h-5 text-emerald-600" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-slate-900">Менеджер агрономических датасетов DAOS</h2>
@@ -433,7 +434,7 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
                       <span className="text-xs font-semibold text-slate-800">
                         Предпросмотр данных ({fileName}):
                       </span>
-                      <span className="px-2 py-0.5 rounded text-[11px] bg-emerald-950/80 text-emerald-700 border border-emerald-500/30">
+                      <span className="px-2 py-0.5 rounded text-[11px] bg-emerald-100 text-emerald-800 border border-emerald-200 font-medium">
                         {validCount} валидных из {parsedRows.length}
                       </span>
                       <span className="px-2 py-0.5 rounded text-[11px] bg-slate-100 text-slate-700 font-mono">
@@ -444,18 +445,18 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
 
                   <div className="border border-slate-200 rounded-lg overflow-hidden max-h-56 overflow-y-auto">
                     <table className="w-full text-left text-xs border-collapse">
-                      <thead className="bg-slate-950 text-slate-500 font-medium sticky top-0 border-b border-slate-200">
+                      <thead className="bg-slate-100 text-slate-700 font-semibold sticky top-0 border-b border-slate-200">
                         <tr>
-                          <th className="py-2 px-3">Код поля</th>
-                          <th className="py-2 px-3 text-right">Площадь (га)</th>
-                          <th className="py-2 px-3">Тип почвы</th>
-                          <th className="py-2 px-3 text-right">Плодородие</th>
-                          <th className="py-2 px-3 text-center">Статус</th>
+                          <th className="py-2.5 px-3">Код поля</th>
+                          <th className="py-2.5 px-3 text-right">Площадь (га)</th>
+                          <th className="py-2.5 px-3">Тип почвы</th>
+                          <th className="py-2.5 px-3 text-right">Плодородие</th>
+                          <th className="py-2.5 px-3 text-center">Статус</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-800/60 bg-slate-900/40">
+                      <tbody className="divide-y divide-slate-200 bg-white">
                         {parsedRows.map((r, i) => (
-                          <tr key={i} className="hover:bg-slate-100/30">
+                          <tr key={i} className="hover:bg-slate-50 transition-colors">
                             <td className="py-2 px-3 font-mono font-medium text-slate-800">
                               {r.code}
                             </td>

@@ -417,33 +417,33 @@ export const CadastralMap: React.FC<CadastralMapProps> = ({
 
         {/* Hover Inspection Popup (Overlay) */}
         {hoveredFieldData && (
-          <div className="absolute top-3 left-3 pointer-events-none bg-slate-900/95 border border-slate-700/80 rounded-xl p-3.5 shadow-2xl backdrop-blur-md max-w-xs text-xs space-y-2 animate-in fade-in zoom-in-95 duration-100 z-10 text-white">
-            <div className="flex items-center justify-between gap-2 border-b border-slate-700 pb-2">
-              <span className="font-bold text-white flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="absolute top-3 left-3 pointer-events-none bg-white/95 border border-slate-200 rounded-xl p-3.5 shadow-xl backdrop-blur-md max-w-xs text-xs space-y-2 animate-in fade-in zoom-in-95 duration-100 z-10 text-slate-900">
+            <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
+              <span className="font-bold text-slate-900 flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-emerald-600" />
                 {FIELD_GEOMETRIES[hoveredFieldData.code]?.name || hoveredFieldData.code.toUpperCase()}
               </span>
-              <span className="font-mono text-emerald-300 font-bold bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded text-[10px]">
+              <span className="font-mono text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[10px]">
                 {hoveredFieldData.area_ha} га
               </span>
             </div>
             <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[11px]">
-              <span className="text-slate-400">Тип почвы:</span>
-              <span className="font-semibold text-slate-100 capitalize">{hoveredFieldData.soil_type || 'суглинок'}</span>
-              <span className="text-slate-400">Бонитет:</span>
-              <span className="font-semibold text-slate-100 font-mono">×{hoveredFieldData.soil_fertility}</span>
+              <span className="text-slate-500">Тип почвы:</span>
+              <span className="font-semibold text-slate-800 capitalize">{hoveredFieldData.soil_type || 'суглинок'}</span>
+              <span className="text-slate-500">Бонитет:</span>
+              <span className="font-semibold text-slate-800 font-mono">×{hoveredFieldData.soil_fertility}</span>
               {hoveredAlloc && (
                 <>
-                  <span className="text-slate-400">Культура ({activeYear}):</span>
-                  <span className="font-bold text-amber-300">
+                  <span className="text-slate-500">Культура ({activeYear}):</span>
+                  <span className="font-bold text-emerald-700">
                     {CROP_COLOR_MAP[hoveredAlloc.crop_code]?.label || hoveredAlloc.crop_code}
                   </span>
-                  <span className="text-slate-400">Сбор:</span>
-                  <span className="font-semibold text-slate-100 font-mono">
+                  <span className="text-slate-500">Сбор:</span>
+                  <span className="font-semibold text-slate-800 font-mono">
                     {hoveredAlloc.yield_ts ? `${hoveredAlloc.yield_ts.toLocaleString()} ц` : '—'}
                   </span>
-                  <span className="text-slate-400">Внесение NPK:</span>
-                  <span className="font-semibold text-emerald-300 font-mono">
+                  <span className="text-slate-500">Внесение NPK:</span>
+                  <span className="font-semibold text-emerald-700 font-mono">
                     {hoveredAlloc.fert_kg} кг/га
                   </span>
                 </>

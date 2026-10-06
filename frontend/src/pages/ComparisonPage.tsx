@@ -43,23 +43,23 @@ export const ComparisonPage: React.FC = () => {
         shape: 'polygon',
         splitNumber: 4,
         axisName: {
-          color: '#cbd5e1',
+          color: '#334155',
           fontSize: 11,
           fontWeight: 600,
         },
         splitLine: {
           lineStyle: {
-            color: ['#1e293b', '#334155', '#475569', '#64748b'].reverse(),
+            color: '#e2e8f0',
           },
         },
         splitArea: {
           show: true,
           areaStyle: {
-            color: ['rgba(15, 23, 42, 0.4)', 'rgba(30, 41, 59, 0.4)'],
+            color: ['rgba(248, 250, 252, 0.8)', 'rgba(241, 245, 249, 0.8)'],
           },
         },
         axisLine: {
-          lineStyle: { color: '#334155' },
+          lineStyle: { color: '#cbd5e1' },
         },
       },
       series: [
@@ -202,22 +202,22 @@ export const ComparisonPage: React.FC = () => {
       </div>
 
       {/* Delta Banner */}
-      <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex flex-wrap items-center justify-between gap-4 shadow-sm">
+      <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 flex flex-wrap items-center justify-between gap-4 shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-            <Scale className="w-5 h-5" />
+          <div className="p-2.5 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-2xs">
+            <Scale className="w-5 h-5 text-emerald-700" />
           </div>
           <div>
-            <div className="text-xs text-slate-400 uppercase font-bold tracking-wider">
+            <div className="text-xs text-emerald-800 uppercase font-bold tracking-wider">
               Чистая финансовая дельта (Сценарий А vs Б)
             </div>
-            <div className="text-xl font-extrabold font-mono text-emerald-400">
+            <div className="text-xl font-extrabold font-mono text-emerald-700">
               +{profitDelta > 0 ? profitDelta.toLocaleString('ru-RU') : 0} BYN ({profitDeltaPct}%)
             </div>
           </div>
         </div>
 
-        <div className="text-xs text-slate-300 max-w-md sm:text-right leading-relaxed">
+        <div className="text-xs text-slate-600 max-w-md sm:text-right leading-relaxed">
           Сценарий А обеспечивает преимущество за счет более точной оптимизации внесения NPK и сбалансированной структуры рационов КРС.
         </div>
       </div>
@@ -261,7 +261,7 @@ export const ComparisonPage: React.FC = () => {
                 <th className="py-3 px-4 text-right">Разница (Дельта)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 font-mono text-xs">
+            <tbody className="divide-y divide-slate-200 font-mono text-xs">
               <tr className="hover:bg-slate-100/40">
                 <td className="py-3.5 px-4 font-sans font-semibold text-slate-800">Итоговая чистая прибыль (BYN)</td>
                 <td className="py-3.5 px-4 text-emerald-700 font-bold">2 854 300 BYN</td>

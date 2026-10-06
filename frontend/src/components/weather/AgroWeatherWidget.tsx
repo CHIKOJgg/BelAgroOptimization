@@ -104,7 +104,7 @@ export const AgroWeatherWidget: React.FC<AgroWeatherWidgetProps> = ({ weatherDat
                     ? isYearDrought
                       ? 'bg-rose-600 text-white font-bold shadow-md shadow-rose-950'
                       : 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-950'
-                    : 'text-slate-500 hover:text-slate-200'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
                 }`}
               >
                 <span>{year}</span>
@@ -121,7 +121,7 @@ export const AgroWeatherWidget: React.FC<AgroWeatherWidgetProps> = ({ weatherDat
         <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
           <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
             <span>Ср. Температура</span>
-            <Thermometer className="w-3.5 h-3.5 text-amber-400" />
+            <Thermometer className="w-3.5 h-3.5 text-amber-500" />
           </div>
           <div className="text-lg font-bold font-mono text-slate-900">
             +{current.temp} °C
@@ -135,9 +135,9 @@ export const AgroWeatherWidget: React.FC<AgroWeatherWidgetProps> = ({ weatherDat
         <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
           <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
             <span>Осадки за год</span>
-            <CloudRain className="w-3.5 h-3.5 text-blue-400" />
+            <CloudRain className="w-3.5 h-3.5 text-sky-600" />
           </div>
-          <div className={`text-lg font-bold font-mono ${current.isDrought ? 'text-rose-400' : 'text-blue-400'}`}>
+          <div className={`text-lg font-bold font-mono ${current.isDrought ? 'text-rose-600' : 'text-sky-700'}`}>
             {current.rain} мм
           </div>
           <div className="text-[10px] text-slate-500 mt-1">
@@ -149,9 +149,9 @@ export const AgroWeatherWidget: React.FC<AgroWeatherWidgetProps> = ({ weatherDat
         <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
           <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
             <span>Индекс ГТК</span>
-            <Droplets className="w-3.5 h-3.5 text-teal-400" />
+            <Droplets className="w-3.5 h-3.5 text-teal-600" />
           </div>
-          <div className={`text-lg font-bold font-mono ${current.gtk < 0.8 ? 'text-rose-400' : current.gtk < 1.1 ? 'text-amber-400' : 'text-emerald-400'}`}>
+          <div className={`text-lg font-bold font-mono ${current.gtk < 0.8 ? 'text-rose-600' : current.gtk < 1.1 ? 'text-amber-600' : 'text-emerald-700'}`}>
             {current.gtk}
           </div>
           <div className="text-[10px] text-slate-500 mt-1 truncate">
@@ -163,14 +163,14 @@ export const AgroWeatherWidget: React.FC<AgroWeatherWidgetProps> = ({ weatherDat
         <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
           <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
             <span>Влага почвы (0-20см)</span>
-            <span className="w-2 h-2 rounded-full bg-cyan-400" />
+            <span className="w-2 h-2 rounded-full bg-sky-500" />
           </div>
-          <div className={`text-lg font-bold font-mono ${current.moisturePct < 50 ? 'text-rose-400' : 'text-cyan-400'}`}>
+          <div className={`text-lg font-bold font-mono ${current.moisturePct < 50 ? 'text-rose-600' : 'text-sky-700'}`}>
             {current.moisturePct}%
           </div>
-          <div className="w-full bg-slate-800 rounded-full h-1.5 mt-1.5 overflow-hidden">
+          <div className="w-full bg-slate-200 rounded-full h-1.5 mt-1.5 overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${current.moisturePct < 50 ? 'bg-rose-500' : 'bg-cyan-500'}`}
+              className={`h-full rounded-full transition-all duration-500 ${current.moisturePct < 50 ? 'bg-rose-500' : 'bg-sky-500'}`}
               style={{ width: `${current.moisturePct}%` }}
             />
           </div>

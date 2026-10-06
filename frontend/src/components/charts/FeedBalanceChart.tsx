@@ -120,7 +120,7 @@ export const FeedBalanceChart: React.FC<FeedBalanceChartProps> = ({ results }) =
               className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
                 selectedYearIndex === idx
                   ? 'bg-emerald-700 text-white shadow-xs'
-                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-800/60'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
               }`}
             >
               {y.year} год

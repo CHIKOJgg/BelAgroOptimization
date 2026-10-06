@@ -189,7 +189,7 @@ export const FieldsPage: React.FC = () => {
               action={
                 <button
                   onClick={() => startEdit(selectedField)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold transition-colors cursor-pointer"
                 >
                   <Edit2 className="w-3.5 h-3.5" />
                   <span>Редактировать</span>
@@ -204,14 +204,14 @@ export const FieldsPage: React.FC = () => {
                     <div className="text-xl font-bold font-mono text-slate-900 mt-0.5">
                       {selectedField.area_ha} га
                     </div>
-                    <span className="text-[10px] text-emerald-700">
+                    <span className="text-[10px] text-emerald-700 font-medium">
                       {totalArea ? `${((selectedField.area_ha / totalArea) * 100).toFixed(1)}% от пашни` : ''}
                     </span>
                   </div>
 
                   <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3">
                     <span className="text-[10px] text-slate-500 uppercase font-semibold">Бонитет</span>
-                    <div className="text-xl font-bold font-mono text-amber-300 mt-0.5">
+                    <div className="text-xl font-bold font-mono text-emerald-800 mt-0.5">
                       ×{selectedField.soil_fertility}
                     </div>
                     <span className="text-[10px] text-slate-500">
@@ -222,7 +222,7 @@ export const FieldsPage: React.FC = () => {
 
                 {/* Soil type banner */}
                 <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl flex items-center justify-between text-xs">
-                  <span className="text-slate-500">Тип почвы:</span>
+                  <span className="text-slate-600 font-medium">Тип почвы:</span>
                   <div>{getSoilBadge(selectedField.soil_type)}</div>
                 </div>
 
@@ -239,12 +239,12 @@ export const FieldsPage: React.FC = () => {
                           className="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs"
                         >
                           <div className="flex items-center gap-2">
-                            <span className="font-mono font-bold text-amber-300">{a.year} г:</span>
-                            <span className="font-semibold text-slate-800">{a.crop_code}</span>
+                            <span className="font-mono font-bold text-slate-700">{a.year} г:</span>
+                            <span className="font-semibold text-slate-900">{a.crop_code}</span>
                           </div>
-                          <div className="flex items-center gap-3 font-mono text-[11px] text-slate-500">
+                          <div className="flex items-center gap-3 font-mono text-[11px] text-slate-600">
                             <span>{a.yield_ts ? `${a.yield_ts} ц` : '—'}</span>
-                            <span className="text-emerald-700">{a.fert_kg} кг NPK</span>
+                            <span className="text-emerald-700 font-semibold">{a.fert_kg} кг NPK</span>
                           </div>
                         </div>
                       ))}
@@ -282,7 +282,7 @@ export const FieldsPage: React.FC = () => {
                 <th className="py-3 px-4 text-right">Действия</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-slate-200">
               {fields.map((field) => {
                 const isEditing = editingId === field.field_data_id;
                 const isSelected = selectedFieldCode.toLowerCase() === field.code.toLowerCase();
@@ -293,8 +293,8 @@ export const FieldsPage: React.FC = () => {
                     onClick={() => setSelectedFieldCode(field.code)}
                     className={`transition-colors cursor-pointer ${
                       isSelected
-                        ? 'bg-emerald-950/30 border-l-4 border-emerald-500'
-                        : 'hover:bg-slate-100/40'
+                        ? 'bg-emerald-50/90 border-l-4 border-emerald-600'
+                        : 'hover:bg-slate-50'
                     }`}
                   >
                     <td className="py-3.5 px-4 font-bold text-slate-800 font-mono">
@@ -307,7 +307,7 @@ export const FieldsPage: React.FC = () => {
                           type="number"
                           value={editArea}
                           onChange={(e) => setEditArea(Number(e.target.value))}
-                          className="w-24 bg-slate-100 border border-slate-200 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500"
+                          className="w-24 bg-white border border-slate-300 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500 font-mono"
                         />
                       ) : (
                         <span className="font-mono text-slate-800">{field.area_ha} га</span>
@@ -319,7 +319,7 @@ export const FieldsPage: React.FC = () => {
                         <select
                           value={editSoil}
                           onChange={(e) => setEditSoil(e.target.value)}
-                          className="bg-slate-100 border border-slate-200 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500"
+                          className="bg-white border border-slate-300 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500"
                         >
                           <option value="чернозём">чернозём</option>
                           <option value="суглинок">суглинок</option>
@@ -337,7 +337,7 @@ export const FieldsPage: React.FC = () => {
                           step="0.05"
                           value={editFertility}
                           onChange={(e) => setEditFertility(Number(e.target.value))}
-                          className="w-20 bg-slate-100 border border-slate-200 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500"
+                          className="w-20 bg-white border border-slate-300 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500 font-mono"
                         />
                       ) : (
                         <span className="font-mono text-slate-700">×{field.soil_fertility}</span>
@@ -354,14 +354,14 @@ export const FieldsPage: React.FC = () => {
                           <button
                             title="Сохранить"
                             onClick={() => saveEdit(field)}
-                            className="p-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg shadow transition-colors"
+                            className="p-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg shadow-xs transition-colors cursor-pointer"
                           >
                             <Check className="w-4 h-4" />
                           </button>
                           <button
                             title="Отмена"
                             onClick={cancelEdit}
-                            className="p-1.5 bg-slate-700 hover:bg-slate-600 text-slate-700 rounded-lg transition-colors"
+                            className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors cursor-pointer border border-slate-200"
                           >
                             <X className="w-4 h-4" />
                           </button>

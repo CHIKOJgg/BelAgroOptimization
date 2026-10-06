@@ -161,27 +161,30 @@ export const ScenariosPage: React.FC = () => {
               {!s.is_active && (
                 <button
                   onClick={() => handleActivate(s.scenario_id)}
-                  className="text-xs font-semibold text-emerald-700 hover:text-emerald-300 bg-emerald-950/40 hover:bg-emerald-900/50 px-3 py-1.5 rounded-lg transition-colors"
+                  className="text-xs font-semibold text-emerald-800 hover:text-emerald-950 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
                 >
                   Сделать активным
                 </button>
               )}
               {s.is_active && (
-                <span className="text-xs font-medium text-emerald-700/80">Используется в расчетах</span>
+                <span className="text-xs font-bold text-emerald-700 flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>Активен для расчетов</span>
+                </span>
               )}
 
               <div className="flex items-center gap-1">
                 <button
                   title="Клонировать сценарий"
                   onClick={() => handleClone(s.scenario_id)}
-                  className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                 >
                   <Copy className="w-4 h-4" />
                 </button>
                 <button
                   title="Удалить сценарий"
                   onClick={() => setScenarioToDelete(s.scenario_id)}
-                  className="p-1.5 text-rose-700 hover:text-rose-300 hover:bg-rose-950/40 rounded-lg transition-colors"
+                  className="p-1.5 text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -218,7 +221,7 @@ export const ScenariosPage: React.FC = () => {
                   placeholder="Например: Засушливое лето 2026 / Высокие цены на молоко"
                   value={newScenarioName}
                   onChange={(e) => setNewScenarioName(e.target.value)}
-                  className="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-500 outline-none focus:border-emerald-500"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 shadow-2xs"
                 />
               </div>
 
@@ -231,7 +234,7 @@ export const ScenariosPage: React.FC = () => {
                   placeholder="Опишите предпосылки сценария (климат, цены, технологии)..."
                   value={newScenarioDesc}
                   onChange={(e) => setNewScenarioDesc(e.target.value)}
-                  className="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-500 outline-none focus:border-emerald-500"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 shadow-2xs"
                 />
               </div>
 

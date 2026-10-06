@@ -81,16 +81,16 @@ export const CropsPage: React.FC = () => {
       </div>
 
       {/* Potato Penalty Notice Card */}
-      <div className="bg-amber-950/20 border border-amber-900/40 rounded-xl p-4 flex items-start gap-3">
-        <ShieldAlert className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+      <div className="bg-amber-50/80 border border-amber-200 rounded-xl p-4 flex items-start gap-3 shadow-2xs">
+        <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
         <div className="text-xs text-slate-700 space-y-1">
-          <div className="font-bold text-amber-300">
+          <div className="font-bold text-amber-900">
             Особые технологические ограничения по картофелю:
           </div>
-          <p>
+          <p className="text-amber-950/90 leading-relaxed">
             В модели учитывается повышенная трудоёмкость культуры: дополнительный скрытый штраф{' '}
-            <b className="text-amber-200">+8 000 BYN/га</b>, жёсткое ограничение площади посева{' '}
-            <b className="text-amber-200">≤ 18%</b> от пашни и запрет повторного посева на одном поле чаще 1 раза в 3 года.
+            <b className="text-amber-900 font-semibold">+8 000 BYN/га</b>, жёсткое ограничение площади посева{' '}
+            <b className="text-amber-900 font-semibold">≤ 18%</b> от пашни и запрет повторного посева на одном поле чаще 1 раза в 3 года.
           </p>
         </div>
       </div>
@@ -111,7 +111,7 @@ export const CropsPage: React.FC = () => {
                 <th className="pb-3 px-4 text-right">Действия</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-slate-200">
               {loading ? (
                 <tr>
                   <td colSpan={8} className="py-8 text-center text-slate-500">
@@ -139,7 +139,7 @@ export const CropsPage: React.FC = () => {
                           step="0.5"
                           value={editYield}
                           onChange={(e) => setEditYield(Number(e.target.value))}
-                          className="w-20 bg-slate-100 border border-slate-200 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500"
+                          className="w-20 bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 shadow-2xs"
                         />
                       ) : (
                         <span className="font-semibold text-slate-800">{crop.base_yield_tha}</span>
@@ -154,7 +154,7 @@ export const CropsPage: React.FC = () => {
                           step="0.5"
                           value={editPrice}
                           onChange={(e) => setEditPrice(Number(e.target.value))}
-                          className="w-20 bg-slate-100 border border-slate-200 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500"
+                          className="w-20 bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 shadow-2xs"
                         />
                       ) : (
                         <span className="font-semibold text-emerald-700">{crop.price_byn_per_ts} BYN</span>
@@ -169,7 +169,7 @@ export const CropsPage: React.FC = () => {
                           step="50"
                           value={editCost}
                           onChange={(e) => setEditCost(Number(e.target.value))}
-                          className="w-24 bg-slate-100 border border-slate-200 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500"
+                          className="w-24 bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 shadow-2xs"
                         />
                       ) : (
                         <span className="text-slate-700">{crop.cost_byn_per_ha} BYN</span>
@@ -184,10 +184,10 @@ export const CropsPage: React.FC = () => {
                           step="0.005"
                           value={editFertResponse}
                           onChange={(e) => setEditFertResponse(Number(e.target.value))}
-                          className="w-20 bg-slate-100 border border-slate-200 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500"
+                          className="w-20 bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 shadow-2xs"
                         />
                       ) : (
-                        <span className="text-xs text-slate-500">+{crop.fert_response} ц/кг</span>
+                        <span className="text-xs text-slate-600">+{crop.fert_response} ц/кг</span>
                       )}
                     </td>
 
@@ -201,7 +201,7 @@ export const CropsPage: React.FC = () => {
                     </td>
 
                     {/* Rotation gap */}
-                    <td className="py-3.5 px-4 text-xs text-slate-500">
+                    <td className="py-3.5 px-4 text-xs text-slate-600">
                       {crop.rotation_gap_years > 0 ? `≥ ${crop.rotation_gap_years} года` : '0 (бессменно)'}
                     </td>
 
@@ -211,23 +211,26 @@ export const CropsPage: React.FC = () => {
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => saveEdit(crop)}
-                            className="p-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white transition-colors"
+                            title="Сохранить"
+                            className="p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-2xs"
                           >
-                            <Check className="w-3.5 h-3.5" />
+                            <Check className="w-4 h-4" />
                           </button>
                           <button
                             onClick={cancelEdit}
-                            className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 transition-colors"
+                            title="Отмена"
+                            className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors border border-slate-200 shadow-2xs"
                           >
-                            <X className="w-3.5 h-3.5" />
+                            <X className="w-4 h-4" />
                           </button>
                         </div>
                       ) : (
                         <button
                           onClick={() => startEdit(crop)}
-                          className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-emerald-700 transition-colors"
+                          title="Редактировать параметры"
+                          className="p-1.5 rounded-lg hover:bg-emerald-50 text-slate-500 hover:text-emerald-700 transition-colors border border-transparent hover:border-emerald-200"
                         >
-                          <Edit2 className="w-3.5 h-3.5" />
+                          <Edit2 className="w-4 h-4" />
                         </button>
                       )}
                     </td>

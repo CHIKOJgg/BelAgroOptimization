@@ -89,7 +89,7 @@ export const DashboardPage: React.FC = () => {
         axisLine: { lineStyle: { color: '#cbd5e1' } },
         splitLine: { lineStyle: { color: '#f1f5f9' } },
         axisLabel: {
-          color: '#cbd5e1',
+          color: '#64748b',
           formatter: (v: number) => `${(v / 1000).toFixed(0)}k`,
         },
       },
@@ -172,7 +172,7 @@ export const DashboardPage: React.FC = () => {
         orient: 'vertical',
         right: '2%',
         top: 'middle',
-        textStyle: { color: '#94a3b8', fontSize: 11 },
+        textStyle: { color: '#475569', fontSize: 11 },
       },
       series: [
         {
@@ -197,17 +197,10 @@ export const DashboardPage: React.FC = () => {
     <div className="space-y-6">
       {/* Professional AgTech Command Banner */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 sm:p-6 rounded-xl bg-white border border-slate-200 shadow-xs relative overflow-hidden">
-        {/* Subtle Watermark Logo */}
-        <img
-          src="/daos_emblem.png"
-          alt=""
-          className="absolute -right-6 -bottom-6 w-44 h-44 opacity-[0.04] pointer-events-none select-none"
-        />
-
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold shadow-2xs">
-              <img src="/daos_emblem.png" alt="DAOS" className="w-3.5 h-3.5 object-contain" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               Ситуационный центр DAOS • 900 га
             </span>
             <span className="text-xs text-slate-500 font-mono">
@@ -314,7 +307,7 @@ export const DashboardPage: React.FC = () => {
             action={
               <button
                 onClick={() => navigate('/results')}
-                className="flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:text-emerald-300"
+                className="flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:text-emerald-800"
               >
                 <span>Детальный отчет</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
@@ -335,7 +328,7 @@ export const DashboardPage: React.FC = () => {
             action={
               <button
                 onClick={() => navigate('/crops')}
-                className="flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:text-emerald-300"
+                className="flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:text-emerald-800"
               >
                 <span>Культуры</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />

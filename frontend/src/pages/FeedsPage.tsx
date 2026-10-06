@@ -102,11 +102,11 @@ export const FeedsPage: React.FC = () => {
       <FeedBalanceChart results={results} />
 
       {/* Info notice */}
-      <div className="bg-blue-950/20 border border-blue-900/40 rounded-xl p-4 flex items-start gap-3">
-        <Info className="w-5 h-5 text-sky-700 shrink-0 mt-0.5" />
+      <div className="bg-sky-50/80 border border-sky-200 rounded-xl p-4 flex items-start gap-3 shadow-2xs">
+        <Info className="w-5 h-5 text-sky-600 shrink-0 mt-0.5" />
         <div className="text-xs text-slate-700 space-y-1">
-          <div className="font-bold text-blue-300">Баланс кормов в модели DAOS (Pyomo):</div>
-          <p>
+          <div className="font-bold text-sky-950">Баланс кормов в модели DAOS (Pyomo):</div>
+          <p className="text-slate-600 leading-relaxed">
             Собственное производство с полей (силос, сено, фуражное зерно, пастбище) покрывает потребность скота.
             При дефиците модель закупает корма на рынке по рыночной цене с учетом сезонной надбавки (зимой ×1.15 ... ×1.30).
             Пастбище не подлежит покупке на рынке.
@@ -130,7 +130,7 @@ export const FeedsPage: React.FC = () => {
                 <th className="pb-3 px-4 text-right">Действия</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-slate-200">
               {loading ? (
                 <tr>
                   <td colSpan={8} className="py-8 text-center text-slate-500">
@@ -158,7 +158,7 @@ export const FeedsPage: React.FC = () => {
                           step="0.5"
                           value={editPrice}
                           onChange={(e) => setEditPrice(Number(e.target.value))}
-                          className="w-20 bg-slate-100 border border-slate-200 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500"
+                          className="w-20 bg-white border border-slate-300 rounded-lg px-2 py-1 text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 shadow-2xs"
                         />
                       ) : (
                         <span className="font-semibold text-emerald-700">{feed.price_byn_per_centner} BYN</span>
@@ -178,7 +178,7 @@ export const FeedsPage: React.FC = () => {
                           step="0.5"
                           value={editCowNeed}
                           onChange={(e) => setEditCowNeed(Number(e.target.value))}
-                          className="w-16 bg-slate-100 border border-slate-200 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500"
+                          className="w-16 bg-white border border-slate-300 rounded-lg px-2 py-1 text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 shadow-2xs"
                         />
                       ) : (
                         <span className="text-slate-800">{feed.cow_need} ц</span>
@@ -193,7 +193,7 @@ export const FeedsPage: React.FC = () => {
                           step="0.5"
                           value={editCattleNeed}
                           onChange={(e) => setEditCattleNeed(Number(e.target.value))}
-                          className="w-16 bg-slate-100 border border-slate-200 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500"
+                          className="w-16 bg-white border border-slate-300 rounded-lg px-2 py-1 text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 shadow-2xs"
                         />
                       ) : (
                         <span className="text-slate-800">{feed.cattle_need} ц</span>
@@ -208,7 +208,7 @@ export const FeedsPage: React.FC = () => {
                           step="0.5"
                           value={editPigNeed}
                           onChange={(e) => setEditPigNeed(Number(e.target.value))}
-                          className="w-16 bg-slate-100 border border-slate-200 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500"
+                          className="w-16 bg-white border border-slate-300 rounded-lg px-2 py-1 text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 shadow-2xs"
                         />
                       ) : (
                         <span className="text-slate-800">{feed.pig_need} ц</span>
@@ -226,23 +226,26 @@ export const FeedsPage: React.FC = () => {
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => saveEdit(feed)}
-                            className="p-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white transition-colors"
+                            title="Сохранить"
+                            className="p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-2xs"
                           >
-                            <Check className="w-3.5 h-3.5" />
+                            <Check className="w-4 h-4" />
                           </button>
                           <button
                             onClick={cancelEdit}
-                            className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 transition-colors"
+                            title="Отмена"
+                            className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors border border-slate-200 shadow-2xs"
                           >
-                            <X className="w-3.5 h-3.5" />
+                            <X className="w-4 h-4" />
                           </button>
                         </div>
                       ) : (
                         <button
                           onClick={() => startEdit(feed)}
-                          className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-emerald-700 transition-colors"
+                          title="Редактировать параметры"
+                          className="p-1.5 rounded-lg hover:bg-emerald-50 text-slate-500 hover:text-emerald-700 transition-colors border border-transparent hover:border-emerald-200"
                         >
-                          <Edit2 className="w-3.5 h-3.5" />
+                          <Edit2 className="w-4 h-4" />
                         </button>
                       )}
                     </td>

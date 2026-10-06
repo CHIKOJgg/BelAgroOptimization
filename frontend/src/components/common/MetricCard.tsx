@@ -8,7 +8,7 @@ interface MetricCardProps {
   isPositive?: boolean;
   icon?: React.ReactNode;
   subtitle?: string;
-  color?: 'emerald' | 'amber' | 'blue' | 'purple' | 'slate';
+  color?: 'emerald' | 'amber' | 'blue' | 'purple' | 'slate' | 'rose';
   sparkline?: number[];
   targetProgress?: {
     current: number;
@@ -35,6 +35,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
     blue: 'text-sky-700 bg-sky-50 border-sky-200',
     purple: 'text-indigo-700 bg-indigo-50 border-indigo-200',
     slate: 'text-slate-700 bg-slate-100 border-slate-200',
+    rose: 'text-rose-700 bg-rose-50 border-rose-200',
   };
 
   const sparklineStroke = {
@@ -43,6 +44,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
     blue: '#0284c7',
     purple: '#6366f1',
     slate: '#64748b',
+    rose: '#e11d48',
   }[color];
 
   // Generate SVG path for sparkline if points provided

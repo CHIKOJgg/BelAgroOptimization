@@ -109,12 +109,12 @@ export const LivestockPage: React.FC = () => {
           return (
             <div
               key={item.livestock_data_id}
-              className="bg-white/80 border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col justify-between"
+              className="bg-white border border-slate-200/80 rounded-xl p-6 shadow-xs flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                   <div className="flex items-center gap-3">
-                    <div className="p-2.5 rounded-lg bg-slate-100/80 border border-slate-200/60">
+                    <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
                       {info.icon}
                     </div>
                     <div>
@@ -126,21 +126,24 @@ export const LivestockPage: React.FC = () => {
                   {!isEditing ? (
                     <button
                       onClick={() => startEdit(item)}
-                      className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-emerald-700 transition-colors"
+                      title="Редактировать параметры"
+                      className="p-1.5 rounded-lg hover:bg-emerald-50 text-slate-500 hover:text-emerald-700 transition-colors border border-transparent hover:border-emerald-200"
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
                   ) : (
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                       <button
                         onClick={() => saveEdit(item)}
-                        className="p-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white transition-colors"
+                        title="Сохранить"
+                        className="p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-2xs"
                       >
                         <Check className="w-4 h-4" />
                       </button>
                       <button
                         onClick={cancelEdit}
-                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 transition-colors"
+                        title="Отмена"
+                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors border border-slate-200 shadow-2xs"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -152,21 +155,21 @@ export const LivestockPage: React.FC = () => {
                 <div className="mt-5 space-y-3.5 text-xs">
                   {/* Herd Limits */}
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Лимит стада (мин / макс):</span>
+                    <span className="text-slate-600">Лимит стада (мин / макс):</span>
                     {isEditing ? (
                       <div className="flex items-center gap-1.5">
                         <input
                           type="number"
                           value={editMin}
                           onChange={(e) => setEditMin(Number(e.target.value))}
-                          className="w-16 bg-slate-100 border border-slate-200 rounded px-1.5 py-1 text-slate-900 text-center"
+                          className="w-16 bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-900 font-medium text-center shadow-2xs outline-none focus:border-emerald-600"
                         />
-                        <span className="text-slate-500">-</span>
+                        <span className="text-slate-400">-</span>
                         <input
                           type="number"
                           value={editMax}
                           onChange={(e) => setEditMax(Number(e.target.value))}
-                          className="w-16 bg-slate-100 border border-slate-200 rounded px-1.5 py-1 text-slate-900 text-center"
+                          className="w-16 bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-900 font-medium text-center shadow-2xs outline-none focus:border-emerald-600"
                         />
                       </div>
                     ) : (
@@ -178,13 +181,13 @@ export const LivestockPage: React.FC = () => {
 
                   {/* Productivity */}
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Продуктивность (базовая):</span>
+                    <span className="text-slate-600">Продуктивность (базовая):</span>
                     {isEditing ? (
                       <input
                         type="number"
                         value={editYield}
                         onChange={(e) => setEditYield(Number(e.target.value))}
-                        className="w-24 bg-slate-100 border border-slate-200 rounded px-2 py-1 text-slate-900 text-right"
+                        className="w-24 bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-900 font-medium text-right shadow-2xs outline-none focus:border-emerald-600"
                       />
                     ) : (
                       <span className="font-bold text-emerald-700">
@@ -195,14 +198,14 @@ export const LivestockPage: React.FC = () => {
 
                   {/* Price */}
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Цена реализации продукции:</span>
+                    <span className="text-slate-600">Цена реализации продукции:</span>
                     {isEditing ? (
                       <input
                         type="number"
                         step="0.1"
                         value={editPrice}
                         onChange={(e) => setEditPrice(Number(e.target.value))}
-                        className="w-24 bg-slate-100 border border-slate-200 rounded px-2 py-1 text-slate-900 text-right"
+                        className="w-24 bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-900 font-medium text-right shadow-2xs outline-none focus:border-emerald-600"
                       />
                     ) : (
                       <span className="font-semibold text-slate-800">{item.price_byn_per_kg} BYN/кг</span>
@@ -211,41 +214,41 @@ export const LivestockPage: React.FC = () => {
 
                   {/* Summer Cost */}
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Летние затраты на голову:</span>
+                    <span className="text-slate-600">Летние затраты на голову:</span>
                     {isEditing ? (
                       <input
                         type="number"
                         value={editCostSummer}
                         onChange={(e) => setEditCostSummer(Number(e.target.value))}
-                        className="w-24 bg-slate-100 border border-slate-200 rounded px-2 py-1 text-slate-900 text-right"
+                        className="w-24 bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-900 font-medium text-right shadow-2xs outline-none focus:border-emerald-600"
                       />
                     ) : (
-                      <span className="text-slate-700">{item.cost_summer_byn} BYN</span>
+                      <span className="text-slate-700 font-medium">{item.cost_summer_byn} BYN</span>
                     )}
                   </div>
 
                   {/* Winter Cost */}
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Зимние затраты на голову:</span>
+                    <span className="text-slate-600">Зимние затраты на голову:</span>
                     {isEditing ? (
                       <input
                         type="number"
                         value={editCostWinter}
                         onChange={(e) => setEditCostWinter(Number(e.target.value))}
-                        className="w-24 bg-slate-100 border border-slate-200 rounded px-2 py-1 text-slate-900 text-right"
+                        className="w-24 bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-900 font-medium text-right shadow-2xs outline-none focus:border-emerald-600"
                       />
                     ) : (
-                      <span className="text-slate-700">{item.cost_winter_byn} BYN</span>
+                      <span className="text-slate-700 font-medium">{item.cost_winter_byn} BYN</span>
                     )}
                   </div>
 
                   {/* Energy Winter Cost */}
-                  <div className="flex items-center justify-between text-slate-500">
+                  <div className="flex items-center justify-between text-slate-600">
                     <span className="flex items-center gap-1">
-                      <ThermometerSnowflake className="w-3.5 h-3.5 text-sky-700" />
+                      <ThermometerSnowflake className="w-3.5 h-3.5 text-sky-600" />
                       <span>Отопление/вентиляция зимой:</span>
                     </span>
-                    <span className="text-blue-300 font-semibold">{item.energy_cost_winter_byn} BYN/гол</span>
+                    <span className="text-sky-700 font-semibold">{item.energy_cost_winter_byn} BYN/гол</span>
                   </div>
                 </div>
               </div>
