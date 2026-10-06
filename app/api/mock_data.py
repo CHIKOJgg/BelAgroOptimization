@@ -13,8 +13,8 @@ MOCK_STORE = {
     "scenarios": [
         {
             "scenario_id": SCENARIO_BASE_ID,
-            "name": "Базовый план 2024–2026 (СПК «Оптимум-Агро»)",
-            "description": "Стандартный севооборот хозяйств Минской/Гродненской обл., средние климатические условия, 900 га пашни, 380 коров",
+            "name": "Базовый план DAOS 2024–2026 (СПК «Оптимум-Агро»)",
+            "description": "Стандартный севооборот DAOS: хозяйства Минской/Гродненской обл., средние климатические условия, 900 га пашни, 380 коров",
             "is_active": True,
             "created_at": "2024-03-15T09:00:00",
             "last_profit": 2854300.0,
@@ -387,7 +387,7 @@ MOCK_RESULTS_BY_SCENARIO = {
     SCENARIO_BASE_ID: {
         "result_id": "a1000000-0000-0000-0000-000000000001",
         "scenario_id": SCENARIO_BASE_ID,
-        "scenario_name": "Базовый план 2024–2026 (СПК «Оптимум-Агро»)",
+        "scenario_name": "Базовый план DAOS 2024–2026 (СПК «Оптимум-Агро»)",
         "total_profit_byn": 2854300.0,
         "avg_annual_profit_byn": 951433.33,
         "solver_status": "optimal",

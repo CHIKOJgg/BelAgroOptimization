@@ -5,10 +5,10 @@ services:
       dockerfile: Dockerfile
     labels:
       - author=wittiden
-      - project=BelAgroOptimization
-      - version=1.1
-    image: bel_agro_app:2.1
-    container_name: bel_agro_app
+      - project=DAOS
+      - version=2.4
+    image: daos_app:2.4
+    container_name: daos_app
     networks:
       - network
     restart: unless-stopped
@@ -33,8 +33,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    image: bel_agro_frontend:1.0
-    container_name: bel_agro_frontend
+    image: daos_frontend:2.4
+    container_name: daos_frontend
     networks:
       - network
     ports:
@@ -47,8 +47,8 @@ services:
     build:
       context: .
     command: ["alembic", "upgrade", "head"]
-    image: bel_agro_migrations:1.0
-    container_name: bel_agro_migrations
+    image: daos_migrations:2.4
+    container_name: daos_migrations
     networks:
       - network
     restart: no
@@ -62,7 +62,7 @@ services:
 
   db:
     image: postgres:16-alpine
-    container_name: bel_agro_db
+    container_name: daos_db
     networks:
       - network
     ports:
@@ -83,7 +83,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: bel_agro_pgadmin
+    container_name: daos_pgadmin
     networks:
       - network
     ports:
@@ -110,11 +110,11 @@ services:
 networks:
   network:
     driver: bridge
-    name: bel_agro_network
+    name: daos_network
 
 
 volumes:
   db_volume:
-    name: bel_agro_db_volume
+    name: daos_db_volume
   pgadmin_volume:
-    name: bel_agro_pgadmin_volume
+    name: daos_pgadmin_volume
