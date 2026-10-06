@@ -11,7 +11,6 @@ import {
   Cpu,
   BarChart3,
   GitCompare,
-  CheckCircle2,
   X,
 } from 'lucide-react';
 import { useScenario } from '../../context/ScenarioContext';
@@ -52,21 +51,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
   const sidebarContent = (
     <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen select-none shadow-xs">
       {/* Brand / Logo */}
-      <div className="p-4.5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-b from-emerald-50/40 to-transparent">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-800 flex items-center justify-center text-white shadow-md shadow-emerald-950/10 border border-emerald-500/30">
-            <svg className="w-6 h-6 text-emerald-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2v20" />
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
+      <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-gradient-to-b from-emerald-50/50 to-transparent">
+        <div className="flex flex-col">
+          <div className="flex items-center gap-2">
+            <img
+              src="/daos_logo.png"
+              alt="DAOS"
+              className="h-8.5 w-auto object-contain"
+            />
           </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-slate-900 text-base tracking-tight">DAOS</span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 uppercase tracking-wider">Agro</span>
+          <div className="mt-1 pl-0.5">
+            <div className="text-[10px] text-emerald-800 font-bold tracking-tight uppercase">
+              Digital Agro Optimization System
             </div>
-            <div className="text-[10.5px] text-emerald-700 font-semibold leading-tight">Digital Agro Optimization</div>
-            <div className="text-[9px] text-slate-400 font-medium leading-tight">Цифровая агросистема</div>
+            <div className="text-[9px] text-slate-400 font-medium leading-tight">
+              Цифровая система агрооптимизации
+            </div>
           </div>
         </div>
 
@@ -155,17 +155,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
       </div>
 
       {/* Footer Info Box */}
-      <div className="p-4 border-t border-slate-100 bg-slate-50/80">
+      <div className="p-3.5 border-t border-slate-100 bg-slate-50/80">
         <div className="flex items-center gap-2 mb-1.5">
-          <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-          <span className="text-xs font-semibold text-slate-700">Активный сценарий DAOS:</span>
+          <img src="/daos_emblem.png" alt="DAOS" className="w-4 h-4 object-contain" />
+          <span className="text-xs font-semibold text-slate-700">Активный сценарий:</span>
         </div>
-        <div className="text-xs font-semibold text-emerald-700 truncate" title={activeScenario?.name}>
+        <div className="text-xs font-semibold text-emerald-800 truncate" title={activeScenario?.name}>
           {activeScenario?.name || 'Загрузка...'}
         </div>
         <div className="text-[11px] text-slate-500 mt-1.5 flex justify-between pt-1 border-t border-slate-200/60">
           <span>Платформа DAOS</span>
-          <span className="text-emerald-700 font-semibold">Pyomo + GLPK</span>
+          <span className="text-emerald-800 font-semibold">Pyomo + GLPK</span>
         </div>
       </div>
     </aside>

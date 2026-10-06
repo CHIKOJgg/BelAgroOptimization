@@ -189,6 +189,21 @@ export const ResultsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Print-only DAOS Official Report Header */}
+      <div className="hidden print:flex items-center justify-between border-b border-slate-300 pb-4 mb-4">
+        <div className="flex items-center gap-3">
+          <img src="/daos_logo.png" alt="DAOS" className="h-10 w-auto object-contain" />
+          <div className="border-l border-slate-300 pl-3">
+            <div className="text-xs font-bold text-slate-800 uppercase tracking-wider">Digital Agro Optimization System</div>
+            <div className="text-[10px] text-slate-500">Цифровая система оптимизации сельскохозяйственного производства</div>
+          </div>
+        </div>
+        <div className="text-right text-xs text-slate-600">
+          <div>Сценарий: <b className="text-slate-900">{activeScenario?.name}</b></div>
+          <div>Дата формирования: {new Date().toLocaleDateString('ru-RU')}</div>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>

@@ -16,10 +16,10 @@ export const AppLayout: React.FC = () => {
         </main>
         <footer className="border-t border-slate-200/70 bg-white/50 py-3.5 px-4 text-center text-xs text-slate-500">
           <div className="flex flex-col sm:flex-row items-center justify-between max-w-7xl mx-auto gap-2">
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-700">DAOS</span>
-              <span className="text-slate-300">•</span>
-              <span className="text-slate-600">Digital Agro Optimization System</span>
+            <div className="flex items-center gap-2.5">
+              <img src="/daos_logo.png" alt="DAOS" className="h-5 w-auto object-contain opacity-90" />
+              <span className="text-slate-300">|</span>
+              <span className="text-slate-600 font-medium">Digital Agro Optimization System</span>
             </div>
             <div className="text-[11px] text-slate-500">
               Цифровая система оптимизации сельскохозяйственного производства • Pyomo & GLPK MILP Engine

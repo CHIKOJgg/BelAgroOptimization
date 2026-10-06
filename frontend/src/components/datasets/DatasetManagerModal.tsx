@@ -6,7 +6,6 @@ import {
   FileSpreadsheet,
   CheckCircle2,
   AlertTriangle,
-  Database,
   Check,
   X,
   FileText,
@@ -317,8 +316,8 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
         {/* Modal Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700">
-              <Database className="w-5 h-5" />
+            <div className="p-1.5 rounded-lg bg-emerald-50 border border-emerald-200 shadow-2xs">
+              <img src="/daos_emblem.png" alt="DAOS" className="w-6 h-6 object-contain" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-slate-900">Менеджер агрономических датасетов DAOS</h2>

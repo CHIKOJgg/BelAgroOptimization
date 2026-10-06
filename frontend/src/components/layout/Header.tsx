@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Play, Layers, Bell, Building2, Menu, Database } from 'lucide-react';
+import { Play, Layers, Bell, Menu, Database } from 'lucide-react';
 import { useScenario } from '../../context/ScenarioContext';
 import { DatasetManagerModal } from '../datasets/DatasetManagerModal';
 
@@ -28,10 +28,10 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
         )}
 
         <div className="flex items-center gap-2 text-slate-700">
-          <Building2 className="w-4 h-4 text-emerald-700" />
-          <span className="font-semibold text-sm hidden md:inline text-slate-800">DAOS • Агросистема</span>
+          <img src="/daos_emblem.png" alt="DAOS" className="w-6 h-6 object-contain hidden sm:block" />
+          <span className="font-bold text-sm hidden sm:inline text-slate-900 tracking-tight">DAOS</span>
           <span className="text-slate-300 hidden md:inline">/</span>
-          <span className="text-xs text-slate-600 hidden lg:inline font-medium">СПК «Оптимум-Агро»</span>
+          <span className="text-xs text-slate-600 hidden md:inline font-medium">СПК «Оптимум-Агро»</span>
         </div>
 
         {/* Scenario Switcher Dropdown */}
@@ -81,8 +81,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
         </button>
 
         <div className="flex items-center gap-2.5 pl-1">
-          <div className="w-8 h-8 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-[11px] font-bold text-emerald-800 tracking-wider">
-            DA
+          <div className="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-300 p-0.5 flex items-center justify-center shadow-xs">
+            <img src="/daos_emblem.png" alt="DAOS" className="w-full h-full object-contain" />
           </div>
           <div className="hidden lg:block text-left">
             <div className="text-xs font-semibold text-slate-800">Аналитик DAOS</div>
