@@ -71,7 +71,7 @@ export const AgroWeatherWidget: React.FC<AgroWeatherWidgetProps> = ({ weatherDat
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-sm font-bold text-slate-900">
-                Агроклиматическая станция
+                Агроклиматическая станция DAOS
               </h3>
               {current.isDrought ? (
                 <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
@@ -86,7 +86,7 @@ export const AgroWeatherWidget: React.FC<AgroWeatherWidgetProps> = ({ weatherDat
               )}
             </div>
             <p className="text-[11px] text-slate-500 font-mono">
-              Метеопост: БелАгро-Центр • Координаты 53°54′ N
+              Метеопост: DAOS-Агрометео • Координаты 53°54′ N
             </p>
           </div>
         </div>

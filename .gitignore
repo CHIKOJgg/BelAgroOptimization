@@ -91,3 +91,12 @@ certs/*.crt
 
 **/private*.pem
 **/*private*.key
+
+# Temporary presentation & screenshot files
+*.zip
+*.pptx
+*.pdf
+screenshots/
+generate_daos_pptx.py
+finalize_10slides.py
+take_all_screenshots.py

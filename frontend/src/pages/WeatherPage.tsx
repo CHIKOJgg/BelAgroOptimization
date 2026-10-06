@@ -111,11 +111,11 @@ export const WeatherPage: React.FC = () => {
       <div>
         <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
           <CloudSun className="w-6 h-6 text-emerald-700" />
-          <span>Погода, климат и риск засухи</span>
+          <span>Агрометеорология и климатические риски DAOS</span>
           {loading && <RefreshCw className="w-4 h-4 animate-spin text-emerald-700" />}
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          Климатический профиль сценария: температурный режим, влагообеспеченность и расчет стрессовых факторов
+          Климатический модуль DAOS: температурный режим, влагообеспеченность, расчет стрессовых факторов и риск засухи
         </p>
       </div>
 
@@ -150,14 +150,14 @@ export const WeatherPage: React.FC = () => {
       </div>
 
       {/* Chart */}
-      <Card title="Динамика осадков и температуры" subtitle="Сравнение с критическим порогом засухи Беларуси (480 мм)">
+      <Card title="Динамика осадков и температуры" subtitle="Сравнение с критическим порогом засухи DAOS (480 мм)">
         <div className="h-80 w-full">
           <ReactECharts option={getWeatherChartOption()} style={{ height: '100%', width: '100%' }} />
         </div>
       </Card>
 
       {/* Sensitivity table */}
-      <Card title="Чувствительность культур к засухе" subtitle="Коэффициенты снижения урожайности при дефиците влаги">
+      <Card title="Чувствительность культур к засухе" subtitle="Коэффициенты стресс-тестирования моделей DAOS при дефиците влаги">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           <div className="p-4 rounded-xl bg-slate-100/60 border border-slate-200/50">
             <div className="font-bold text-slate-800 mb-1">Сахарная свёкла</div>

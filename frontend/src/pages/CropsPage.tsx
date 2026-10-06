@@ -73,10 +73,10 @@ export const CropsPage: React.FC = () => {
       <div>
         <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
           <Wheat className="w-6 h-6 text-emerald-700" />
-          <span>Агротехника и экономика культур</span>
+          <span>Агротехнологические нормативы культур DAOS</span>
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          Базовые урожайности, рыночные цены реализации, производственные затраты и регламенты севооборота
+          Технологические карты DAOS: базовые урожайности, рыночные цены реализации, производственные затраты и регламенты севооборота
         </p>
       </div>
 

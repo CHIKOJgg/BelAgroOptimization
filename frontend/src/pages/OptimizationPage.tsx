@@ -69,11 +69,11 @@ export const OptimizationPage: React.FC = () => {
         if (updated.status === 'completed') {
           setIsRunning(false);
           await refreshScenarios();
-          success('Расчет успешно завершен! Решение оптимально (GLPK OPTIMAL).');
+          success('Расчет DAOS успешно завершен! Решение оптимально (GLPK OPTIMAL).');
         } else if (updated.status === 'failed') {
           setIsRunning(false);
           await refreshScenarios();
-          error('Ошибка расчета математической модели.');
+          error('Ошибка расчета математической модели DAOS.');
         }
       } catch (e) {
         console.error('Ошибка проверки статуса задачи:', e);
@@ -89,7 +89,7 @@ export const OptimizationPage: React.FC = () => {
       setIsRunning(true);
       const initiated = await api.runOptimization(activeScenario?.scenario_id);
       setJob(initiated);
-      success('Задача запущена в математическом ядре Pyomo/GLPK');
+      success('Задача запущена в математическом ядре DAOS (Pyomo/GLPK)');
     } catch (err) {
       error(`Ошибка запуска оптимизации: ${err}`);
       setIsRunning(false);
@@ -112,7 +112,7 @@ export const OptimizationPage: React.FC = () => {
           <div className="flex items-center gap-2 mb-1.5 flex-wrap">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-widest bg-emerald-950/90 border border-emerald-500/40 text-emerald-700 font-bold">
               <span className={`w-2 h-2 rounded-full ${isRunning ? 'bg-amber-400 animate-ping' : 'bg-emerald-400 animate-pulse'}`} />
-              {isRunning ? 'РЕШАТЕЛЬ: В ПРОЦЕССЕ РАСЧЕТА' : 'GLPK MILP SOLVER • ГОТОВ'}
+              {isRunning ? 'DAOS SOLVER: В ПРОЦЕССЕ РАСЧЕТА' : 'DAOS MILP ENGINE (GLPK 5.0) • ГОТОВ'}
             </span>
             <span className="text-xs text-slate-500 font-mono">
               Сценарий: <span className="text-slate-800 font-semibold">{activeScenario?.name || 'Базовый 2024–2026'}</span>
@@ -120,10 +120,10 @@ export const OptimizationPage: React.FC = () => {
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
             <Cpu className="w-7 h-7 text-emerald-700" />
-            <span>Центр оптимизации (Pyomo + GLPK 5.0)</span>
+            <span>Центр оптимизации DAOS (Pyomo + GLPK 5.0)</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl leading-relaxed">
-            Решение задачи смешанно-целочисленного линейного программирования: симплекс-метод, ветви и границы, агроклиматический баланс
+            Digital Agro Optimization System: расчет глобального оптимума многопериодной смешанно-целочисленной модели линейного программирования (MILP)
           </p>
         </div>
 
@@ -149,7 +149,7 @@ export const OptimizationPage: React.FC = () => {
             ) : (
               <>
                 <Play className="w-4 h-4 fill-current" />
-                <span>Запустить расчет модели</span>
+                <span>Запустить расчет DAOS</span>
               </>
             )}
           </button>
@@ -160,13 +160,13 @@ export const OptimizationPage: React.FC = () => {
       <div className="bg-white/80 border border-slate-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2">
           <Sliders className="w-4 h-4 text-emerald-700" />
-          <span className="font-semibold text-slate-700">Стратегический профиль модели:</span>
+          <span className="font-semibold text-slate-700">Стратегический профиль DAOS:</span>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           {[
-            { id: 'balanced', label: 'Сбалансированный оптимум (Базовый)', desc: 'Паритет зерно/корма' },
-            { id: 'margin', label: 'Максимизация маржи (Рыночный)', desc: 'Фокус на озимый рапс' },
-            { id: 'drought', label: 'Антизасуха 2026 (Минимизация рисков)', desc: 'Резерв влагостойких' },
+            { id: 'balanced', label: 'Сбалансированный оптимум DAOS (Базовый)', desc: 'Паритет зерно/корма' },
+            { id: 'margin', label: 'Максимизация маржи DAOS (Рыночный)', desc: 'Фокус на озимый рапс' },
+            { id: 'drought', label: 'Антизасуха DAOS 2026 (Минимизация рисков)', desc: 'Резерв влагостойких' },
           ].map((preset) => (
             <button
               key={preset.id}
@@ -246,10 +246,10 @@ export const OptimizationPage: React.FC = () => {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                Фаза выполнения алгоритма:
+                Фаза алгоритма DAOS:
               </span>
               <span className="text-xs font-mono font-bold text-emerald-700">
-                {job.message || 'Оптимизация структуры севооборота...'}
+                {job.message || 'DAOS: Оптимизация структуры севооборота и рационов...'}
               </span>
             </div>
             <span className="text-base font-bold font-mono text-emerald-700">{job.progress}%</span>
@@ -266,7 +266,7 @@ export const OptimizationPage: React.FC = () => {
             <div className="mt-4 flex items-center justify-between bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-3">
               <div className="flex items-center gap-2 text-xs text-emerald-300">
                 <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                <span>Глобальный оптимум найден. Производственная программа сформирована.</span>
+                <span>Глобальный оптимум DAOS найден. Производственная программа сформирована.</span>
               </div>
               <button
                 onClick={() => navigate('/results')}

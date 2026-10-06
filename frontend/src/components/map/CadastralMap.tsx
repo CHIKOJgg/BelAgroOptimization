@@ -149,7 +149,7 @@ export const CadastralMap: React.FC<CadastralMapProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                Кадастровая карта угодий
+                Кадастровая карта угодий DAOS
               </span>
               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-50 border border-emerald-200 text-emerald-800 font-semibold">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -157,7 +157,7 @@ export const CadastralMap: React.FC<CadastralMapProps> = ({
               </span>
             </div>
             <p className="text-[11px] text-slate-500 font-mono hidden sm:block">
-              GIS: 53°54′12″N 27°34′30″E • Минская возвышенность
+              DAOS GIS: 53°54′12″N 27°34′30″E • Центральный кластер
             </p>
           </div>
         </div>

@@ -201,7 +201,7 @@ export const DashboardPage: React.FC = () => {
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-mono uppercase tracking-wider bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold">
               <span className="w-2 h-2 rounded-full bg-emerald-600" />
-              Ситуационный центр • 900 га
+              Ситуационный центр DAOS • 900 га
             </span>
             <span className="text-xs text-slate-500 font-mono">
               Сценарий: <span className="text-slate-800 font-semibold">{activeScenario?.name || 'Базовый 2024–2026'}</span>
@@ -209,10 +209,10 @@ export const DashboardPage: React.FC = () => {
             {loading && <RefreshCw className="w-3.5 h-3.5 animate-spin text-emerald-700" />}
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Оптимизация агропроизводства Беларуси
+            DAOS — Цифровая система оптимизации сельскохозяйственного производства
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
-            Многопериодное моделирование севооборота, рационов скота, рисков засухи и маржинальной прибыли на базе математического решателя Pyomo/GLPK
+            Digital Agro Optimization System: многопериодное моделирование структуры посевов, кормовой базы, рисков засухи и маржинальной прибыли на базе математического решателя Pyomo/GLPK
           </p>
         </div>
 
@@ -222,7 +222,7 @@ export const DashboardPage: React.FC = () => {
             className="w-full md:w-auto flex items-center justify-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2.5 rounded-lg font-bold text-sm shadow-xs transition-all hover:scale-102 cursor-pointer"
           >
             <Cpu className="w-4 h-4" />
-            <span>Запустить расчет GLPK</span>
+            <span>Запустить расчет DAOS (GLPK)</span>
           </button>
         </div>
       </div>
@@ -260,12 +260,12 @@ export const DashboardPage: React.FC = () => {
           sparkline={[900, 900, 900, 900]}
         />
         <MetricCard
-          title="Статус решателя GLPK"
+          title="Статус решателя DAOS"
           value={results?.solver_status?.toUpperCase() || 'OPTIMAL'}
           change="0.00% GAP"
           isPositive={true}
           icon={<CheckCircle2 className="w-5 h-5" />}
-          subtitle="Время расчета: 1.48 с"
+          subtitle="Решатель: Pyomo/GLPK (1.48 с)"
           color="emerald"
         />
       </div>
@@ -279,7 +279,7 @@ export const DashboardPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <Layers className="w-4 h-4 text-emerald-700" />
             <h2 className="text-base font-bold text-slate-900">
-              Интерактивная карта полей хозяйства
+              Интерактивная карта полей DAOS
             </h2>
           </div>
           <button
@@ -443,7 +443,7 @@ export const DashboardPage: React.FC = () => {
         </Card>
 
         {/* Solver Highlights */}
-        <Card title="Модель оптимизации" subtitle="Параметры математического ядра">
+        <Card title="Математическое ядро DAOS" subtitle="Параметры модели оптимизации (Pyomo + GLPK)">
           <div className="space-y-3 text-xs">
             <div className="flex justify-between items-center py-1.5 border-b border-slate-200">
               <span className="text-slate-500">Решатель:</span>

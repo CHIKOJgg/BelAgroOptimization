@@ -91,10 +91,10 @@ export const FeedsPage: React.FC = () => {
       <div>
         <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
           <Sprout className="w-6 h-6 text-emerald-700" />
-          <span>Кормовая база и рационы</span>
+          <span>Баланс кормовой базы и рационы DAOS</span>
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          Нормативы потребности в кормах, рыночные цены закупки и сезонные коэффициенты удорожания
+          Оптимизация кормовых балансов DAOS: нормативы потребности в кормах, рыночные цены закупки и сезонные коэффициенты удорожания
         </p>
       </div>
 
@@ -105,7 +105,7 @@ export const FeedsPage: React.FC = () => {
       <div className="bg-blue-950/20 border border-blue-900/40 rounded-xl p-4 flex items-start gap-3">
         <Info className="w-5 h-5 text-sky-700 shrink-0 mt-0.5" />
         <div className="text-xs text-slate-700 space-y-1">
-          <div className="font-bold text-blue-300">Баланс кормов в модели Pyomo:</div>
+          <div className="font-bold text-blue-300">Баланс кормов в модели DAOS (Pyomo):</div>
           <p>
             Собственное производство с полей (силос, сено, фуражное зерно, пастбище) покрывает потребность скота.
             При дефиците модель закупает корма на рынке по рыночной цене с учетом сезонной надбавки (зимой ×1.15 ... ×1.30).

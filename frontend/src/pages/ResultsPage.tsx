@@ -72,7 +72,7 @@ export const ResultsPage: React.FC = () => {
         'Внесение NPK (кг/га)': a.fert_kg,
       }));
       const wsRotation = XLSX.utils.json_to_sheet(rotationRows);
-      XLSX.utils.book_append_sheet(wb, wsRotation, 'Севооборот');
+      XLSX.utils.book_append_sheet(wb, wsRotation, 'DAOS_Севооборот');
 
       // Sheet 2: Баланс кормов
       const feedRows = results.feed_allocations.map((f) => ({
@@ -83,7 +83,7 @@ export const ResultsPage: React.FC = () => {
         'Баланс / Излишек (ц)': f.surplus,
       }));
       const wsFeed = XLSX.utils.json_to_sheet(feedRows);
-      XLSX.utils.book_append_sheet(wb, wsFeed, 'Баланс кормов');
+      XLSX.utils.book_append_sheet(wb, wsFeed, 'DAOS_Баланс_кормов');
 
       // Sheet 3: Животноводство
       const livestockRows = results.livestock_allocations.map((l) => ({
@@ -94,7 +94,7 @@ export const ResultsPage: React.FC = () => {
         'Удой зима (кг/гол)': l.milk_yield_winter_kg ?? 0,
       }));
       const wsLivestock = XLSX.utils.json_to_sheet(livestockRows);
-      XLSX.utils.book_append_sheet(wb, wsLivestock, 'Животноводство');
+      XLSX.utils.book_append_sheet(wb, wsLivestock, 'DAOS_Животноводство');
 
       // Sheet 4: Финансовый план
       const financeRows: any[] = results.years.map((y) => ({
@@ -110,12 +110,12 @@ export const ResultsPage: React.FC = () => {
         'Чистая прибыль (BYN)': results.total_profit_byn,
       });
       const wsFinance = XLSX.utils.json_to_sheet(financeRows);
-      XLSX.utils.book_append_sheet(wb, wsFinance, 'Финансовый план');
+      XLSX.utils.book_append_sheet(wb, wsFinance, 'DAOS_Финансовый_план');
 
-      const fileName = `производственный_план_${activeScenario?.name || 'сценарий'}.xlsx`.replace(/[\\/*?:[\]]/g, '_');
+      const fileName = `daos_производственный_план_${activeScenario?.name || 'сценарий'}.xlsx`.replace(/[\\/*?:[\]]/g, '_');
       XLSX.writeFile(wb, fileName);
 
-      success('Многостраничный отчёт Excel (.xlsx) успешно сформирован');
+      success('Многостраничный отчёт DAOS Excel (.xlsx) успешно сформирован');
     } catch (err) {
       error(`Ошибка экспорта в Excel: ${err}`);
     }
@@ -129,7 +129,7 @@ export const ResultsPage: React.FC = () => {
 
     try {
       let csv = '\uFEFF'; // UTF-8 BOM for Excel Cyrillic
-      csv += '--- МАТРИЦА СЕВООБОРОТА (ПОЛЕ × ГОД) ---\r\n';
+      csv += '--- DAOS: МАТРИЦА СЕВООБОРОТА (ПОЛЕ × ГОД) ---\r\n';
       csv += 'Поле;Год;Культура;Площадь (га);Валовый сбор (ц);Внесение NPK (кг/га)\r\n';
       results.crop_allocations.forEach((a) => {
         const cropName = cropColors[a.crop_code]?.name || a.crop_code;
@@ -137,21 +137,21 @@ export const ResultsPage: React.FC = () => {
       });
       csv += '\r\n';
 
-      csv += '--- БАЛАНС КОРМОВ ---\r\n';
+      csv += '--- DAOS: БАЛАНС КОРМОВОЙ БАЗЫ ---\r\n';
       csv += 'Год;Вид корма;Произведено (ц);Потреблено (ц);Излишек/Баланс (ц)\r\n';
       results.feed_allocations.forEach((f) => {
         csv += `${f.year};"${f.feed_type}";${f.produced};${f.consumed};${f.surplus}\r\n`;
       });
       csv += '\r\n';
 
-      csv += '--- СТРУКТУРА ЖИВОТНОВОДСТВА ---\r\n';
+      csv += '--- DAOS: СТРУКТУРА ЖИВОТНОВОДСТВА ---\r\n';
       csv += 'Год;Вид животных;Поголовье (голов);Удой лето (кг/гол);Удой зима (кг/гол)\r\n';
       results.livestock_allocations.forEach((l) => {
         csv += `${l.year};"${l.animal_type}";${l.heads};${l.milk_yield_summer_kg ?? '—'};${l.milk_yield_winter_kg ?? '—'}\r\n`;
       });
       csv += '\r\n';
 
-      csv += '--- ФИНАНСОВЫЕ РЕЗУЛЬТАТЫ ---\r\n';
+      csv += '--- DAOS: ФИНАНСОВЫЕ РЕЗУЛЬТАТЫ ---\r\n';
       csv += 'Год;Прибыль растениеводства (BYN);Прибыль животноводства (BYN);Итоговая прибыль (BYN)\r\n';
       results.years.forEach((y) => {
         csv += `${y.year};${y.crop_profit};${y.livestock_profit};${y.total_profit}\r\n`;
@@ -162,13 +162,13 @@ export const ResultsPage: React.FC = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `plan_belagro_${activeScenario?.scenario_id || 'opt'}.csv`;
+      a.download = `plan_daos_${activeScenario?.scenario_id || 'opt'}.csv`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      success('Файл производственного плана (CSV/Excel) успешно сформирован');
+      success('Файл производственного плана DAOS (.CSV) успешно сформирован');
     } catch (err) {
       error(`Ошибка экспорта: ${err}`);
     }
@@ -194,10 +194,10 @@ export const ResultsPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
             <BarChart3 className="w-6 h-6 text-emerald-700" />
-            <span>Анализ результатов оптимизации</span>
+            <span>Производственная программа DAOS</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Детальная производственная программа: севооборот по полям, баланс кормовой базы и доходы
+            Результаты оптимизации DAOS (Digital Agro Optimization System): оптимальная матрица севооборота, баланс кормов и финансы
           </p>
         </div>
 

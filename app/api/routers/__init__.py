@@ -1,1 +1,1 @@
-"""API Routers for BelAgroOptimization"""
+"""API Routers for DAOS (Digital Agro Optimization System)"""

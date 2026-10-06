@@ -1,14 +1,16 @@
 from pathlib import Path
-from fastapi import FastAPI
+import os
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from app.api.routers import scenarios, data, optimization, dashboard
 
 app = FastAPI(
-    title="BelAgroOptimization API",
-    description="REST API для управления сценариями и оптимизацией аграрного производства Беларуси (Pyomo + GLPK)",
-    version="1.0.0",
+    title="DAOS API — Digital Agro Optimization System",
+    description="REST API цифровой системы оптимизации сельскохозяйственного производства DAOS (Pyomo + GLPK)",
+    version="2.4.0",
 )
 
 # CORS configuration for local development and Docker
@@ -35,9 +37,35 @@ app.include_router(optimization.router, prefix="/api")
 @app.get("/api/health")
 def health_check():
     """Health check endpoint."""
-    return {"status": "ok", "service": "BelAgroOptimization API", "version": "1.0.0"}
+    return {"status": "ok", "service": "DAOS Digital Agro Optimization System API", "version": "2.4.0"}
+
+
+# Mount frontend static files if available
+frontend_candidates = [
+    Path(__file__).resolve().parent.parent.parent / "frontend" / "dist",
+    Path("./frontend/dist"),
+    Path("/app/frontend/dist"),
+]
+frontend_dist = next((p for p in frontend_candidates if p.exists() and (p / "index.html").exists()), None)
+
+if frontend_dist:
+    assets_dir = frontend_dist / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        # Do not intercept API or docs routes
+        if full_path.startswith(("api/", "plots/", "docs", "redoc", "openapi.json")):
+            raise HTTPException(status_code=404, detail="Not found")
+
+        target = frontend_dist / full_path
+        if full_path and target.is_file():
+            return FileResponse(target)
+        return FileResponse(frontend_dist / "index.html")
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app.api.main:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("app.api.main:app", host="0.0.0.0", port=port, reload=True)

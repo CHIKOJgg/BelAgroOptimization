@@ -14,6 +14,18 @@ export const AppLayout: React.FC = () => {
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
           <Outlet />
         </main>
+        <footer className="border-t border-slate-200/70 bg-white/50 py-3.5 px-4 text-center text-xs text-slate-500">
+          <div className="flex flex-col sm:flex-row items-center justify-between max-w-7xl mx-auto gap-2">
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-slate-700">DAOS</span>
+              <span className="text-slate-300">•</span>
+              <span className="text-slate-600">Digital Agro Optimization System</span>
+            </div>
+            <div className="text-[11px] text-slate-500">
+              Цифровая система оптимизации сельскохозяйственного производства • Pyomo & GLPK MILP Engine
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );

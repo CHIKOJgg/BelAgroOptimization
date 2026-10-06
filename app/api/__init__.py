@@ -1,1 +1,1 @@
-"""API package for BelAgroOptimization"""
+"""API package for DAOS (Digital Agro Optimization System)"""

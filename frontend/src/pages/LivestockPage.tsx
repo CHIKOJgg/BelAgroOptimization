@@ -87,10 +87,10 @@ export const LivestockPage: React.FC = () => {
       <div>
         <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
           <Beef className="w-6 h-6 text-emerald-700" />
-          <span>Отрасль животноводства</span>
+          <span>Животноводство и конверсия кормов DAOS</span>
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          Параметры поголовья, базовой и предельной продуктивности, цен реализации и сезонных затрат на содержание
+          Моделирование продуктивности стада в системе DAOS: параметры поголовья, базовой и предельной продуктивности, цен реализации и сезонных затрат на содержание
         </p>
       </div>
 

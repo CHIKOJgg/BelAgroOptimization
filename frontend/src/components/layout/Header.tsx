@@ -29,8 +29,9 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
 
         <div className="flex items-center gap-2 text-slate-700">
           <Building2 className="w-4 h-4 text-emerald-700" />
-          <span className="font-semibold text-sm hidden md:inline text-slate-800">СПК «Оптимум-Агро»</span>
+          <span className="font-semibold text-sm hidden md:inline text-slate-800">DAOS • Агросистема</span>
           <span className="text-slate-300 hidden md:inline">/</span>
+          <span className="text-xs text-slate-600 hidden lg:inline font-medium">СПК «Оптимум-Агро»</span>
         </div>
 
         {/* Scenario Switcher Dropdown */}
@@ -56,7 +57,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
         <button
           onClick={() => setIsDatasetModalOpen(true)}
           className="hidden sm:flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-lg text-xs font-semibold border border-slate-200 shadow-xs transition-colors"
-          title="Загрузка Excel/CSV датасетов или выбор хозяйств Беларуси"
+          title="Загрузка Excel/CSV датасетов или выбор эталонных хозяйств в систему DAOS"
         >
           <Database className="w-3.5 h-3.5 text-emerald-700" />
           <span>Датасеты / Импорт</span>
@@ -67,7 +68,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
           className="flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-xs transition-all hover:scale-102"
         >
           <Play className="w-3.5 h-3.5 fill-white" />
-          <span>Запуск оптимизации</span>
+          <span>Запуск DAOS (GLPK)</span>
         </button>
 
         <div className="h-6 w-px bg-slate-200" />
@@ -80,12 +81,12 @@ export const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
         </button>
 
         <div className="flex items-center gap-2.5 pl-1">
-          <div className="w-8 h-8 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-xs font-bold text-emerald-800">
-            БА
+          <div className="w-8 h-8 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-[11px] font-bold text-emerald-800 tracking-wider">
+            DA
           </div>
           <div className="hidden lg:block text-left">
-            <div className="text-xs font-semibold text-slate-800">Агроном-аналитик</div>
-            <div className="text-[10px] text-slate-500">Администратор</div>
+            <div className="text-xs font-semibold text-slate-800">Аналитик DAOS</div>
+            <div className="text-[10px] text-slate-500">Администратор системы</div>
           </div>
         </div>
       </div>

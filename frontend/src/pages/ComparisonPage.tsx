@@ -144,10 +144,10 @@ export const ComparisonPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
             <GitCompare className="w-6 h-6 text-emerald-700" />
-            <span>Сравнительный What-if анализ сценариев</span>
+            <span>Сравнительный анализ сценариев DAOS</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Многокритериальное сопоставление производственных стратегий бок о бок по маржинальности, климатическим рискам и ресурсоемкости
+            Многокритериальная оценка сценариев развития в DAOS (Digital Agro Optimization System): «What-if» сопоставление маржинальности, климатических рисков и кормовой безопасности
           </p>
         </div>
       </div>

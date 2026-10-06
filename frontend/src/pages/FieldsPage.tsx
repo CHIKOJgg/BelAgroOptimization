@@ -116,10 +116,10 @@ export const FieldsPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
             <MapPin className="w-6 h-6 text-emerald-700" />
-            <span>Земельный фонд и кадастр полей</span>
+            <span>Земельный фонд и контуры полей DAOS</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Интерактивная карта участков, бонитет плодородия и параметры почвы для сценария «{activeScenario?.name}»
+            Цифровой кадастровый реестр полей DAOS: интерактивная карта контуров, бонитет плодородия и параметры почвы для сценария «{activeScenario?.name}»
           </p>
         </div>
 
@@ -135,7 +135,7 @@ export const FieldsPage: React.FC = () => {
             className="flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-2 rounded-lg text-xs font-semibold shadow-sm transition-all"
           >
             <Database className="w-3.5 h-3.5" />
-            <span>Импорт датасета (Excel / CSV)</span>
+            <span>Импорт датасета DAOS (Excel / CSV)</span>
           </button>
         </div>
       </div>
@@ -147,7 +147,7 @@ export const FieldsPage: React.FC = () => {
           value={totalArea}
           unit="га"
           icon={<MapPin className="w-5 h-5" />}
-          subtitle="Общий земельный банк предприятия"
+          subtitle="Общий земельный банк системы DAOS"
           color="emerald"
           sparkline={[850, 880, 900, 900]}
         />

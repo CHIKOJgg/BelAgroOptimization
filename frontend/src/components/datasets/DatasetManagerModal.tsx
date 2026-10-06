@@ -257,9 +257,9 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
 
     const ws = XLSX.utils.json_to_sheet(templateData);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Поля_Шаблон');
-    XLSX.writeFile(wb, 'belagro_fields_template.xlsx');
-    success('Шаблон таблицы полей .XLSX загружен');
+    XLSX.utils.book_append_sheet(wb, ws, 'DAOS_Поля_Шаблон');
+    XLSX.writeFile(wb, 'daos_fields_template.xlsx');
+    success('Шаблон полей DAOS (.XLSX) загружен');
   };
 
   // Download Sample CSV Template
@@ -276,12 +276,12 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'belagro_fields_template.csv';
+    a.download = 'daos_fields_template.csv';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    success('Шаблон таблицы полей .CSV загружен');
+    success('Шаблон полей DAOS (.CSV) загружен');
   };
 
   // Apply parsed rows
@@ -321,9 +321,9 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
               <Database className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Менеджер агрономических датасетов</h2>
+              <h2 className="text-lg font-bold text-slate-900">Менеджер агрономических датасетов DAOS</h2>
               <p className="text-xs text-slate-500">
-                Загрузка собственных контуров полей (Excel / CSV) или выбор эталонных хозяйств Беларуси
+                Загрузка собственных контуров полей (Excel / CSV) или выбор эталонных хозяйств в систему DAOS
               </p>
             </div>
           </div>
@@ -359,7 +359,7 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
             }`}
           >
             <Building2 className="w-4 h-4" />
-            <span>Готовые датасеты хозяйств РБ</span>
+            <span>Готовые датасеты хозяйств DAOS</span>
           </button>
         </div>
 
@@ -491,8 +491,7 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
             /* Presets Tab */
             <div className="space-y-4">
               <p className="text-xs text-slate-500">
-                Выберите агропромышленный комплекс с предварительно откалиброванными контурами пашни и
-                почвенно-климатическими паспортами:
+                Выберите агропромышленный комплекс с предварительно откалиброванными контурами пашни по стандартам системы DAOS:
               </p>
 
               <div className="grid grid-cols-1 gap-3.5">

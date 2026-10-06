@@ -86,10 +86,10 @@ export const ScenariosPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
             <Layers className="w-6 h-6 text-emerald-700" />
-            <span>Управление сценариями оптимизации</span>
+            <span>Управление сценариями оптимизации DAOS</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Создавайте альтернативные сценарии («What-if» анализ) для моделирования различных агроклиматических и экономических условий
+            Создавайте альтернативные сценарии («What-if» анализ) в системе DAOS (Digital Agro Optimization System) для моделирования различных агроклиматических и экономических условий
           </p>
         </div>
 
@@ -98,7 +98,7 @@ export const ScenariosPage: React.FC = () => {
           className="flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-emerald-950 transition-all hover:scale-102"
         >
           <Plus className="w-4 h-4" />
-          <span>Новый сценарий</span>
+          <span>Новый сценарий DAOS</span>
         </button>
       </div>
 
@@ -206,7 +206,7 @@ export const ScenariosPage: React.FC = () => {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-6 shadow-2xl">
-            <h2 className="text-lg font-bold text-slate-900 mb-4">Создание сценария</h2>
+            <h2 className="text-lg font-bold text-slate-900 mb-4">Создание сценария DAOS</h2>
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
