@@ -85,8 +85,9 @@ export const WaterfallMarginChart: React.FC<WaterfallMarginChartProps> = ({ resu
       formatter: (params: any) => {
         const item = rawItems[params[0].dataIndex];
         const sign = item.value > 0 && item.type !== 'total' ? '+' : '';
-        return `<div class="font-semibold text-slate-800 mb-1">${item.name}</div>
-          <div style="color: ${item.type === 'inflow' ? '#10b981' : item.type === 'cost' ? '#f43f5e' : '#38bdf8'}; font-weight: bold;">
+        const color = item.type === 'inflow' ? '#047857' : item.type === 'cost' ? '#e11d48' : '#0284c7';
+        return `<div style="font-weight:700; color:#0f172a; margin-bottom:4px;">${item.name}</div>
+          <div style="color: ${color}; font-weight:800; font-size:13px;">
             ${sign}${item.value.toLocaleString('ru-RU')} BYN
           </div>`;
       },
@@ -95,10 +96,11 @@ export const WaterfallMarginChart: React.FC<WaterfallMarginChartProps> = ({ resu
     xAxis: {
       type: 'category',
       data: categories,
-      axisLine: { lineStyle: { color: '#cbd5e1' } },
+      axisLine: { lineStyle: { color: '#94a3b8' } },
       axisLabel: {
-        color: '#64748b',
+        color: '#334155',
         fontSize: 11,
+        fontWeight: 500,
         interval: 0,
         rotate: 20,
         formatter: (v: string) => (v.length > 18 ? v.substring(0, 16) + '…' : v),
@@ -107,11 +109,11 @@ export const WaterfallMarginChart: React.FC<WaterfallMarginChartProps> = ({ resu
     yAxis: {
       type: 'value',
       name: 'BYN',
-      nameTextStyle: { color: '#64748b', fontSize: 11 },
-      axisLine: { lineStyle: { color: '#cbd5e1' } },
+      nameTextStyle: { color: '#475569', fontSize: 11, fontWeight: 600 },
+      axisLine: { lineStyle: { color: '#94a3b8' } },
       splitLine: { lineStyle: { color: '#f1f5f9' } },
       axisLabel: {
-        color: '#64748b',
+        color: '#475569',
         fontSize: 11,
         formatter: (v: number) => `${(v / 1000).toFixed(0)}k`,
       },

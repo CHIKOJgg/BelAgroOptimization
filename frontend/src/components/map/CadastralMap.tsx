@@ -215,10 +215,10 @@ export const CadastralMap: React.FC<CadastralMapProps> = ({
                 <button
                   key={year}
                   onClick={() => setActiveYear(year)}
-                  className={`px-2 py-1 rounded-md transition-all ${
+                  className={`px-2.5 py-1 rounded-md transition-all ${
                     activeYear === year
-                      ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30'
-                      : 'text-slate-500 hover:text-slate-800'
+                      ? 'bg-emerald-700 text-white font-bold shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                   }`}
                 >
                   {year}
@@ -323,18 +323,31 @@ export const CadastralMap: React.FC<CadastralMapProps> = ({
                 {/* Subtle pattern overlay */}
                 <path d={geo.path} fill="url(#diagonalHatch)" pointerEvents="none" />
 
-                {/* Field Label Badge */}
+                {/* Field Label Badge Card with High Contrast */}
                 <g transform={`translate(${geo.center.x}, ${geo.center.y})`} pointerEvents="none">
+                  {/* Floating Card Background with Subtle Shadow */}
+                  <rect
+                    x="-62"
+                    y="-30"
+                    width="124"
+                    height="60"
+                    rx="10"
+                    fill="rgba(255, 255, 255, 0.96)"
+                    stroke={isSelected ? '#059669' : isHovered ? '#0f172a' : '#cbd5e1'}
+                    strokeWidth={isSelected ? '2.5' : '1.5'}
+                    filter="drop-shadow(0px 3px 6px rgba(0,0,0,0.18))"
+                  />
+
                   {/* Field Code */}
                   <text
                     x="0"
-                    y="-8"
+                    y="-12"
                     textAnchor="middle"
                     fill="#0f172a"
-                    fontSize="13"
+                    fontSize="12"
                     fontWeight="800"
                     letterSpacing="0.05em"
-                    className="drop-shadow-md font-mono"
+                    fontFamily="monospace"
                   >
                     {fieldCode.toUpperCase()}
                   </text>
@@ -342,31 +355,29 @@ export const CadastralMap: React.FC<CadastralMapProps> = ({
                   {/* Area */}
                   <text
                     x="0"
-                    y="7"
+                    y="3"
                     textAnchor="middle"
-                    fill="#334155"
+                    fill="#475569"
                     fontSize="10"
                     fontWeight="600"
                   >
                     {field?.area_ha || 0} га
                   </text>
 
-                  {/* Dynamic Layer Info */}
+                  {/* Pill Badge for Active Layer */}
                   <rect
-                    x="-55"
-                    y="14"
-                    width="110"
-                    height="18"
-                    rx="9"
-                    fill="rgba(15, 23, 42, 0.85)"
-                    stroke={appearance.stroke}
-                    strokeWidth="1"
+                    x="-52"
+                    y="10"
+                    width="104"
+                    height="16"
+                    rx="8"
+                    fill={appearance.fill}
                   />
                   <text
                     x="0"
-                    y="26"
+                    y="22"
                     textAnchor="middle"
-                    fill={appearance.stroke}
+                    fill="#ffffff"
                     fontSize="9"
                     fontWeight="700"
                   >
@@ -406,33 +417,33 @@ export const CadastralMap: React.FC<CadastralMapProps> = ({
 
         {/* Hover Inspection Popup (Overlay) */}
         {hoveredFieldData && (
-          <div className="absolute top-3 left-3 pointer-events-none bg-slate-900/95 border border-emerald-500/40 rounded-xl p-3 shadow-2xl backdrop-blur-md max-w-xs text-xs space-y-1.5 animate-in fade-in zoom-in-95 duration-100 z-10">
-            <div className="flex items-center justify-between gap-2 border-b border-slate-800 pb-1.5">
-              <span className="font-bold text-slate-900 flex items-center gap-1.5">
+          <div className="absolute top-3 left-3 pointer-events-none bg-slate-900/95 border border-slate-700/80 rounded-xl p-3.5 shadow-2xl backdrop-blur-md max-w-xs text-xs space-y-2 animate-in fade-in zoom-in-95 duration-100 z-10 text-white">
+            <div className="flex items-center justify-between gap-2 border-b border-slate-700 pb-2">
+              <span className="font-bold text-white flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-emerald-400" />
                 {FIELD_GEOMETRIES[hoveredFieldData.code]?.name || hoveredFieldData.code.toUpperCase()}
               </span>
-              <span className="font-mono text-emerald-400 font-bold">
+              <span className="font-mono text-emerald-300 font-bold bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded text-[10px]">
                 {hoveredFieldData.area_ha} га
               </span>
             </div>
-            <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[11px]">
-              <span className="text-slate-500">Тип почвы:</span>
-              <span className="font-medium text-slate-800 capitalize">{hoveredFieldData.soil_type || 'суглинок'}</span>
-              <span className="text-slate-500">Бонитет:</span>
-              <span className="font-medium text-slate-800 font-mono">×{hoveredFieldData.soil_fertility}</span>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[11px]">
+              <span className="text-slate-400">Тип почвы:</span>
+              <span className="font-semibold text-slate-100 capitalize">{hoveredFieldData.soil_type || 'суглинок'}</span>
+              <span className="text-slate-400">Бонитет:</span>
+              <span className="font-semibold text-slate-100 font-mono">×{hoveredFieldData.soil_fertility}</span>
               {hoveredAlloc && (
                 <>
-                  <span className="text-slate-500">Культура ({activeYear}):</span>
-                  <span className="font-semibold text-amber-300">
+                  <span className="text-slate-400">Культура ({activeYear}):</span>
+                  <span className="font-bold text-amber-300">
                     {CROP_COLOR_MAP[hoveredAlloc.crop_code]?.label || hoveredAlloc.crop_code}
                   </span>
-                  <span className="text-slate-500">Сбор:</span>
-                  <span className="font-medium text-slate-800 font-mono">
+                  <span className="text-slate-400">Сбор:</span>
+                  <span className="font-semibold text-slate-100 font-mono">
                     {hoveredAlloc.yield_ts ? `${hoveredAlloc.yield_ts.toLocaleString()} ц` : '—'}
                   </span>
-                  <span className="text-slate-500">Внесение NPK:</span>
-                  <span className="font-medium text-emerald-400 font-mono">
+                  <span className="text-slate-400">Внесение NPK:</span>
+                  <span className="font-semibold text-emerald-300 font-mono">
                     {hoveredAlloc.fert_kg} кг/га
                   </span>
                 </>
@@ -443,73 +454,73 @@ export const CadastralMap: React.FC<CadastralMapProps> = ({
       </div>
 
       {/* Map Legend Footer */}
-      <div className="p-3 bg-slate-900/90 border-t border-slate-800/60 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
+      <div className="p-3.5 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between text-xs text-slate-600 gap-3">
         <div className="flex items-center gap-3 flex-wrap">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1">
-            <Eye className="w-3.5 h-3.5 text-emerald-400" />
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+            <Eye className="w-3.5 h-3.5 text-emerald-700" />
             Легенда:
           </span>
           {activeLayer === 'crops' && (
             <div className="flex items-center gap-2 flex-wrap text-[11px]">
               {Object.entries(CROP_COLOR_MAP).slice(0, 6).map(([key, style]) => (
-                <div key={key} className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: style.fill }} />
-                  <span className="text-slate-700">{style.label}</span>
+                <div key={key} className="flex items-center gap-1.5 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-2xs">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: style.fill }} />
+                  <span className="text-slate-800 font-semibold">{style.label}</span>
                 </div>
               ))}
             </div>
           )}
           {activeLayer === 'fertility' && (
-            <div className="flex items-center gap-3 text-[11px]">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm bg-emerald-600" />
-                <span className="text-slate-700">&gt; 1.15 (Чернозём)</span>
+            <div className="flex items-center gap-2 text-[11px] flex-wrap">
+              <div className="flex items-center gap-1.5 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-2xs">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 shrink-0" />
+                <span className="text-slate-800 font-semibold">&gt; 1.15 (Чернозём)</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm bg-teal-600" />
-                <span className="text-slate-700">1.00 (Суглинок)</span>
+              <div className="flex items-center gap-1.5 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-2xs">
+                <span className="w-2.5 h-2.5 rounded-full bg-teal-600 shrink-0" />
+                <span className="text-slate-800 font-semibold">1.00 (Суглинок)</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm bg-amber-600" />
-                <span className="text-slate-700">&lt; 0.95 (Супесь)</span>
+              <div className="flex items-center gap-1.5 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-2xs">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-600 shrink-0" />
+                <span className="text-slate-800 font-semibold">&lt; 0.95 (Супесь)</span>
               </div>
             </div>
           )}
           {activeLayer === 'npk' && (
-            <div className="flex items-center gap-3 text-[11px]">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm bg-purple-600" />
-                <span className="text-slate-700">&gt;150 кг/га</span>
+            <div className="flex items-center gap-2 text-[11px] flex-wrap">
+              <div className="flex items-center gap-1.5 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-2xs">
+                <span className="w-2.5 h-2.5 rounded-full bg-purple-600 shrink-0" />
+                <span className="text-slate-800 font-semibold">&gt;150 кг/га</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm bg-indigo-600" />
-                <span className="text-slate-700">100–150 кг/га</span>
+              <div className="flex items-center gap-1.5 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-2xs">
+                <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 shrink-0" />
+                <span className="text-slate-800 font-semibold">100–150 кг/га</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm bg-blue-700" />
-                <span className="text-slate-700">&lt;100 кг/га</span>
+              <div className="flex items-center gap-1.5 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-2xs">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-700 shrink-0" />
+                <span className="text-slate-800 font-semibold">&lt;100 кг/га</span>
               </div>
             </div>
           )}
           {activeLayer === 'soil' && (
-            <div className="flex items-center gap-3 text-[11px]">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm bg-green-800" />
-                <span className="text-slate-700">Чернозём</span>
+            <div className="flex items-center gap-2 text-[11px] flex-wrap">
+              <div className="flex items-center gap-1.5 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-2xs">
+                <span className="w-2.5 h-2.5 rounded-full bg-green-800 shrink-0" />
+                <span className="text-slate-800 font-semibold">Чернозём</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm bg-blue-800" />
-                <span className="text-slate-700">Суглинок</span>
+              <div className="flex items-center gap-1.5 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-2xs">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-800 shrink-0" />
+                <span className="text-slate-800 font-semibold">Суглинок</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm bg-amber-800" />
-                <span className="text-slate-700">Супесь</span>
+              <div className="flex items-center gap-1.5 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-2xs">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-800 shrink-0" />
+                <span className="text-slate-800 font-semibold">Супесь</span>
               </div>
             </div>
           )}
         </div>
 
-        <div className="text-[11px] text-slate-500 font-mono hidden md:block">
+        <div className="text-[11px] text-slate-500 font-medium hidden md:block">
           Нажмите на участок для детального инспектирования
         </div>
       </div>

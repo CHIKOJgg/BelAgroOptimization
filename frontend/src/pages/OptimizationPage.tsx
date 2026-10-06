@@ -105,31 +105,31 @@ export const OptimizationPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* High-Tech Mission Control Header */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-emerald-950/40 border border-slate-200 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-emerald-950/60 border border-slate-800 shadow-2xl backdrop-blur-xl relative overflow-hidden">
         {/* Subtle Watermark Logo on Dark Background */}
         <img
           src="/daos_emblem_white.png"
           alt=""
-          className="absolute -right-8 -bottom-8 w-56 h-56 opacity-[0.04] pointer-events-none select-none"
+          className="absolute -right-8 -bottom-8 w-56 h-56 opacity-[0.06] pointer-events-none select-none"
         />
         <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-emerald-950/90 border border-emerald-500/40 text-emerald-300 font-bold shadow-xs">
               <img src="/daos_emblem_white.png" alt="" className="w-3.5 h-3.5 object-contain" />
               <span className={`w-1.5 h-1.5 rounded-full ${isRunning ? 'bg-amber-400 animate-ping' : 'bg-emerald-400 animate-pulse'}`} />
               {isRunning ? 'DAOS SOLVER: В ПРОЦЕССЕ РАСЧЕТА' : 'DAOS MILP ENGINE (GLPK 5.0) • ГОТОВ'}
             </span>
-            <span className="text-xs text-slate-500 font-mono">
-              Сценарий: <span className="text-slate-800 font-semibold">{activeScenario?.name || 'Базовый 2024–2026'}</span>
+            <span className="text-xs text-slate-400 font-mono">
+              Сценарий: <span className="text-emerald-200 font-semibold">{activeScenario?.name || 'Базовый 2024–2026'}</span>
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
-            <Cpu className="w-7 h-7 text-emerald-700" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
+            <Cpu className="w-7 h-7 text-emerald-400" />
             <span>Центр оптимизации DAOS (Pyomo + GLPK 5.0)</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
             Digital Agro Optimization System: расчет глобального оптимума многопериодной смешанно-целочисленной модели линейного программирования (MILP)
           </p>
         </div>
@@ -137,8 +137,8 @@ export const OptimizationPage: React.FC = () => {
         {/* Action Button & Live Stopwatch */}
         <div className="flex items-center gap-4 w-full md:w-auto">
           <div className="hidden sm:flex flex-col items-end font-mono">
-            <span className="text-[10px] uppercase tracking-wider text-slate-500">Время счета</span>
-            <span className="text-lg font-bold text-emerald-700">
+            <span className="text-[10px] uppercase tracking-wider text-slate-400">Время счета</span>
+            <span className="text-lg font-bold text-emerald-400 font-mono">
               {(elapsedMs / 1000).toFixed(2)} с
             </span>
           </div>
@@ -164,10 +164,10 @@ export const OptimizationPage: React.FC = () => {
       </div>
 
       {/* Strategy Presets Bar */}
-      <div className="bg-white/80 border border-slate-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div className="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs shadow-2xs">
         <div className="flex items-center gap-2">
           <Sliders className="w-4 h-4 text-emerald-700" />
-          <span className="font-semibold text-slate-700">Стратегический профиль DAOS:</span>
+          <span className="font-bold text-slate-800">Стратегический профиль DAOS:</span>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           {[
@@ -178,10 +178,10 @@ export const OptimizationPage: React.FC = () => {
             <button
               key={preset.id}
               onClick={() => setActivePreset(preset.id as any)}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
                 activePreset === preset.id
-                  ? 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 font-semibold'
-                  : 'bg-slate-50/60 text-slate-500 hover:text-slate-800 border border-slate-200'
+                  ? 'bg-emerald-700 text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200/70 border border-slate-200/80'
               }`}
             >
               {preset.label}
@@ -192,8 +192,8 @@ export const OptimizationPage: React.FC = () => {
 
       {/* Solver Telemetry Matrix (6 High-Tech Cards) */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <div className="bg-white/80 border border-slate-200 rounded-xl p-3.5 backdrop-blur-md">
-          <div className="flex items-center justify-between text-slate-500 text-[11px] mb-1">
+        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-2xs">
+          <div className="flex items-center justify-between text-slate-600 text-[11px] mb-1 font-medium">
             <span>Переменных</span>
             <Activity className="w-3.5 h-3.5 text-emerald-700" />
           </div>
@@ -201,8 +201,8 @@ export const OptimizationPage: React.FC = () => {
           <div className="text-[10px] text-slate-500 mt-0.5">Вектор решений $x$</div>
         </div>
 
-        <div className="bg-white/80 border border-slate-200 rounded-xl p-3.5 backdrop-blur-md">
-          <div className="flex items-center justify-between text-slate-500 text-[11px] mb-1">
+        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-2xs">
+          <div className="flex items-center justify-between text-slate-600 text-[11px] mb-1 font-medium">
             <span>Ограничений</span>
             <ShieldCheck className="w-3.5 h-3.5 text-sky-700" />
           </div>
@@ -210,37 +210,37 @@ export const OptimizationPage: React.FC = () => {
           <div className="text-[10px] text-slate-500 mt-0.5">Агро & корма $Ax \le b$</div>
         </div>
 
-        <div className="bg-white/80 border border-slate-200 rounded-xl p-3.5 backdrop-blur-md">
-          <div className="flex items-center justify-between text-slate-500 text-[11px] mb-1">
+        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-2xs">
+          <div className="flex items-center justify-between text-slate-600 text-[11px] mb-1 font-medium">
             <span>Ненулевых (NNZ)</span>
-            <Zap className="w-3.5 h-3.5 text-amber-700" />
+            <Zap className="w-3.5 h-3.5 text-amber-600" />
           </div>
-          <div className="text-xl font-bold font-mono text-amber-300">1 240</div>
+          <div className="text-xl font-bold font-mono text-slate-900">1 240</div>
           <div className="text-[10px] text-slate-500 mt-0.5">Разреженность 98.4%</div>
         </div>
 
-        <div className="bg-white/80 border border-slate-200 rounded-xl p-3.5 backdrop-blur-md">
-          <div className="flex items-center justify-between text-slate-500 text-[11px] mb-1">
+        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-2xs">
+          <div className="flex items-center justify-between text-slate-600 text-[11px] mb-1 font-medium">
             <span>Итераций симплекса</span>
-            <RefreshCw className="w-3.5 h-3.5 text-cyan-400" />
+            <RefreshCw className="w-3.5 h-3.5 text-cyan-600" />
           </div>
-          <div className="text-xl font-bold font-mono text-cyan-300">342</div>
+          <div className="text-xl font-bold font-mono text-slate-900">342</div>
           <div className="text-[10px] text-slate-500 mt-0.5">Dual Simplex Phase II</div>
         </div>
 
-        <div className="bg-white/80 border border-slate-200 rounded-xl p-3.5 backdrop-blur-md">
-          <div className="flex items-center justify-between text-slate-500 text-[11px] mb-1">
+        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-2xs">
+          <div className="flex items-center justify-between text-slate-600 text-[11px] mb-1 font-medium">
             <span>Optimality GAP</span>
             <Gauge className="w-3.5 h-3.5 text-emerald-700" />
           </div>
-          <div className="text-xl font-bold font-mono text-emerald-700">0.00%</div>
-          <div className="text-[10px] text-slate-500 mt-0.5">Точный оптимум</div>
+          <div className="text-xl font-bold font-mono text-emerald-800">0.00%</div>
+          <div className="text-[10px] text-slate-500 mt-0.5 font-medium">Точный оптимум</div>
         </div>
 
-        <div className="bg-white/80 border border-slate-200 rounded-xl p-3.5 backdrop-blur-md">
-          <div className="flex items-center justify-between text-slate-500 text-[11px] mb-1">
+        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-2xs">
+          <div className="flex items-center justify-between text-slate-600 text-[11px] mb-1 font-medium">
             <span>Потребление ОЗУ</span>
-            <Cpu className="w-3.5 h-3.5 text-purple-400" />
+            <Cpu className="w-3.5 h-3.5 text-purple-600" />
           </div>
           <div className="text-xl font-bold font-mono text-slate-900">14.2 МБ</div>
           <div className="text-[10px] text-slate-500 mt-0.5">Пиковый стек GLPK</div>
@@ -249,35 +249,35 @@ export const OptimizationPage: React.FC = () => {
 
       {/* Convergence Progress Bar */}
       {job && (
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xl backdrop-blur-md">
+        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
                 Фаза алгоритма DAOS:
               </span>
-              <span className="text-xs font-mono font-bold text-emerald-700">
+              <span className="text-xs font-mono font-bold text-emerald-800">
                 {job.message || 'DAOS: Оптимизация структуры севооборота и рационов...'}
               </span>
             </div>
-            <span className="text-base font-bold font-mono text-emerald-700">{job.progress}%</span>
+            <span className="text-base font-bold font-mono text-emerald-800">{job.progress}%</span>
           </div>
 
-          <div className="w-full bg-slate-50 rounded-full h-3 p-0.5 border border-slate-200 overflow-hidden">
+          <div className="w-full bg-slate-100 rounded-full h-3 p-0.5 border border-slate-200 overflow-hidden">
             <div
-              className="bg-gradient-to-r from-emerald-600 to-teal-400 h-full rounded-full transition-all duration-300 shadow-lg shadow-emerald-500/20"
+              className="bg-gradient-to-r from-emerald-600 to-teal-500 h-full rounded-full transition-all duration-300 shadow-sm"
               style={{ width: `${job.progress}%` }}
             />
           </div>
 
           {job.status === 'completed' && (
-            <div className="mt-4 flex items-center justify-between bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-3">
-              <div className="flex items-center gap-2 text-xs text-emerald-300">
-                <CheckCircle2 className="w-4 h-4 text-emerald-700" />
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 shadow-2xs">
+              <div className="flex items-center gap-2.5 text-xs text-emerald-950 font-semibold">
+                <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
                 <span>Глобальный оптимум DAOS найден. Производственная программа сформирована.</span>
               </div>
               <button
                 onClick={() => navigate('/results')}
-                className="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow transition-colors cursor-pointer"
+                className="flex items-center justify-center gap-1.5 bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-xs transition-colors cursor-pointer shrink-0"
               >
                 <span>Перейти к матрице севооборота</span>
                 <ArrowRight className="w-3.5 h-3.5" />

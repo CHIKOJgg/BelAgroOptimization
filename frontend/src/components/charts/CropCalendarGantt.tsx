@@ -76,14 +76,14 @@ export const CropCalendarGantt: React.FC = () => {
     : TASKS.filter((t) => t.category === filterCategory);
 
   return (
-    <Card className="border-slate-200/80 bg-slate-900/50 backdrop-blur-sm p-5">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-200">
+    <Card className="border-slate-200 bg-white p-5 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
         <div>
           <div className="flex items-center gap-2">
             <div className="p-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700">
               <Calendar className="w-4 h-4" />
             </div>
-            <h3 className="font-semibold text-slate-100 text-base">
+            <h3 className="font-bold text-slate-900 text-base">
               Операционный календарь полевых агроработ (Гант-план)
             </h3>
           </div>
@@ -93,11 +93,13 @@ export const CropCalendarGantt: React.FC = () => {
         </div>
 
         {/* Category Filter */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-950 border border-slate-200 rounded-lg self-start sm:self-auto overflow-x-auto">
+        <div className="flex items-center gap-1.5 p-1 bg-slate-100 border border-slate-200 rounded-lg self-start sm:self-auto overflow-x-auto">
           <button
             onClick={() => setFilterCategory('all')}
-            className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
-              filterCategory === 'all' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-800'
+            className={`px-2.5 py-1 text-xs rounded-md transition-colors ${
+              filterCategory === 'all'
+                ? 'bg-emerald-700 text-white font-semibold shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
             }`}
           >
             Все работы
@@ -106,10 +108,10 @@ export const CropCalendarGantt: React.FC = () => {
             <button
               key={key}
               onClick={() => setFilterCategory(key)}
-              className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors whitespace-nowrap ${
+              className={`px-2.5 py-1 text-xs rounded-md transition-colors whitespace-nowrap ${
                 filterCategory === key
-                  ? 'bg-emerald-600 text-white'
-                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-800/50'
+                  ? 'bg-emerald-700 text-white font-semibold shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
               }`}
             >
               {style.label}
@@ -123,14 +125,14 @@ export const CropCalendarGantt: React.FC = () => {
         <div className="min-w-[760px]">
           {/* Timeline Header: Months & Decades */}
           <div className="grid grid-cols-[220px_1fr] border-b border-slate-200 pb-2 mb-2">
-            <div className="text-xs font-medium text-slate-500 uppercase tracking-wider pl-2">
+            <div className="text-xs font-bold text-slate-600 uppercase tracking-wider pl-2">
               Агрооперация / Культура
             </div>
             <div className="grid grid-cols-7 gap-1 text-center">
               {MONTHS.map((m) => (
-                <div key={m.num} className="border-l border-slate-200/80 px-1">
-                  <div className="text-xs font-semibold text-slate-700">{m.name}</div>
-                  <div className="grid grid-cols-3 text-[9px] text-slate-500 mt-0.5 font-mono">
+                <div key={m.num} className="border-l border-slate-200 px-1">
+                  <div className="text-xs font-bold text-slate-800">{m.name}</div>
+                  <div className="grid grid-cols-3 text-[10px] text-slate-400 mt-0.5 font-mono">
                     <span>I</span>
                     <span>II</span>
                     <span>III</span>
@@ -156,25 +158,25 @@ export const CropCalendarGantt: React.FC = () => {
                   key={idx}
                   onMouseEnter={() => setHoveredTask(t)}
                   onMouseLeave={() => setHoveredTask(null)}
-                  className="grid grid-cols-[220px_1fr] items-center hover:bg-slate-50 rounded-lg p-1 transition-colors"
+                  className="grid grid-cols-[220px_1fr] items-center hover:bg-slate-50/80 rounded-lg p-1 transition-colors"
                 >
                   <div className="pr-2 truncate">
-                    <div className="text-xs font-medium text-slate-800 truncate">{t.operation}</div>
-                    <div className="text-[10px] text-slate-500 truncate">{t.cropName}</div>
+                    <div className="text-xs font-semibold text-slate-800 truncate">{t.operation}</div>
+                    <div className="text-[11px] text-slate-500 truncate">{t.cropName}</div>
                   </div>
 
-                  <div className="relative h-7 bg-slate-100/70 rounded border border-slate-200 overflow-hidden flex items-center">
+                  <div className="relative h-7 bg-slate-50 rounded border border-slate-200 overflow-hidden flex items-center">
                     {/* Background gridlines for each month */}
                     <div className="absolute inset-0 grid grid-cols-7 pointer-events-none">
                       {MONTHS.map((m) => (
-                        <div key={m.num} className="border-r border-slate-200/80 h-full" />
+                        <div key={m.num} className="border-r border-slate-200 h-full" />
                       ))}
                     </div>
 
                     {/* Task Bar */}
                     <div
                       style={{ left: `${leftPct}%`, width: `${widthPct}%` }}
-                      className={`absolute h-5 rounded px-2 flex items-center border text-[10px] font-medium shadow-sm transition-all ${catStyle.bg}`}
+                      className={`absolute h-5 rounded px-2 flex items-center border text-[10px] font-bold shadow-2xs transition-all ${catStyle.bg}`}
                     >
                       <span className="truncate">{t.operation}</span>
                     </div>
@@ -187,12 +189,12 @@ export const CropCalendarGantt: React.FC = () => {
       </div>
 
       {/* Task Details Footer / Legend */}
-      <div className="mt-4 pt-3 border-t border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+      <div className="mt-4 pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
         {hoveredTask ? (
-          <div className="flex items-center gap-2 text-slate-700">
-            <Sparkles className="w-4 h-4 text-emerald-400" />
-            <span className="font-semibold text-white">{hoveredTask.cropName}:</span>
-            <span className="text-slate-500">{hoveredTask.details}</span>
+          <div className="flex items-center gap-2 text-slate-800">
+            <Sparkles className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span className="font-bold text-slate-900">{hoveredTask.cropName}:</span>
+            <span className="text-slate-600 font-medium">{hoveredTask.details}</span>
           </div>
         ) : (
           <div className="text-slate-500 text-[11px]">
@@ -204,7 +206,7 @@ export const CropCalendarGantt: React.FC = () => {
           {Object.entries(CATEGORY_STYLES).map(([_, s]) => (
             <div key={s.label} className="flex items-center gap-1.5">
               <span className={`w-2.5 h-2.5 rounded border ${s.bg}`} />
-              <span className="text-slate-500">{s.label}</span>
+              <span className="text-slate-700 font-semibold">{s.label}</span>
             </div>
           ))}
         </div>

@@ -39,13 +39,14 @@ export const FeedBalanceChart: React.FC<FeedBalanceChartProps> = ({ results }) =
       backgroundColor: '#ffffff',
       borderColor: '#e2e8f0',
       borderWidth: 1,
-      textStyle: { color: '#0f172a', fontSize: 12 }, extraCssText: 'box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 8px;',
+      textStyle: { color: '#0f172a', fontSize: 12 },
+      extraCssText: 'box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 8px;',
       formatter: (params: any) => {
-        let str = `<div class="font-semibold text-slate-800 mb-1">${params[0].axisValue}</div>`;
+        let str = `<div style="font-weight:700; color:#0f172a; margin-bottom:4px;">${params[0].axisValue}</div>`;
         params.forEach((p: any) => {
-          str += `<div style="display:flex; justify-content:space-between; gap:16px; margin-top:2px;">
-            <span style="color:#94a3b8">${p.marker} ${p.seriesName}:</span>
-            <span style="font-weight:600; color:#f8fafc">${p.value.toLocaleString('ru-RU')} ц</span>
+          str += `<div style="display:flex; justify-content:space-between; gap:16px; margin-top:3px;">
+            <span style="color:#475569; font-size:11px;">${p.marker} ${p.seriesName}:</span>
+            <span style="font-weight:700; color:#0f172a; font-size:12px;">${p.value.toLocaleString('ru-RU')} ц</span>
           </div>`;
         });
         return str;
@@ -53,23 +54,23 @@ export const FeedBalanceChart: React.FC<FeedBalanceChartProps> = ({ results }) =
     },
     legend: {
       data: ['Произведено в хозяйстве', 'Потребно стаду', 'Закуплено со стороны'],
-      textStyle: { color: '#64748b', fontSize: 11 },
+      textStyle: { color: '#334155', fontSize: 11, fontWeight: 500 },
       top: 0,
     },
     grid: { left: '3%', right: '4%', bottom: '5%', top: '15%', containLabel: true },
     xAxis: {
       type: 'category',
       data: categories,
-      axisLine: { lineStyle: { color: '#cbd5e1' } },
-      axisLabel: { color: '#cbd5e1', fontSize: 11 },
+      axisLine: { lineStyle: { color: '#94a3b8' } },
+      axisLabel: { color: '#334155', fontSize: 11, fontWeight: 500 },
     },
     yAxis: {
       type: 'value',
       name: 'Центнеры (ц)',
-      nameTextStyle: { color: '#64748b', fontSize: 11 },
-      axisLine: { lineStyle: { color: '#cbd5e1' } },
+      nameTextStyle: { color: '#475569', fontSize: 11, fontWeight: 600 },
+      axisLine: { lineStyle: { color: '#94a3b8' } },
       splitLine: { lineStyle: { color: '#f1f5f9' } },
-      axisLabel: { color: '#64748b', fontSize: 11 },
+      axisLabel: { color: '#475569', fontSize: 11 },
     },
     series: [
       {

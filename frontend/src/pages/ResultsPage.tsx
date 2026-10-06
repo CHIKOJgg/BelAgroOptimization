@@ -42,15 +42,15 @@ export const ResultsPage: React.FC = () => {
   }, [activeScenario]);
 
   const cropColors: Record<string, { bg: string; text: string; border: string; name: string }> = {
-    winter_wheat: { bg: 'bg-emerald-950/40', text: 'text-emerald-700', border: 'border-emerald-500/30', name: 'Озимая пшеница' },
-    spring_wheat: { bg: 'bg-teal-950/40', text: 'text-teal-400', border: 'border-teal-500/30', name: 'Яровая пшеница' },
-    barley: { bg: 'bg-amber-950/40', text: 'text-amber-700', border: 'border-amber-500/30', name: 'Ячмень' },
-    rapeseed: { bg: 'bg-yellow-950/40', text: 'text-yellow-400', border: 'border-yellow-500/30', name: 'Рапс' },
-    potato: { bg: 'bg-orange-950/40', text: 'text-orange-400', border: 'border-orange-500/30', name: 'Картофель' },
-    sugar_beet: { bg: 'bg-pink-950/40', text: 'text-pink-400', border: 'border-pink-500/30', name: 'Сахарная свёкла' },
-    corn_silage: { bg: 'bg-lime-950/40', text: 'text-lime-400', border: 'border-lime-500/30', name: 'Кукуруза на силос' },
-    grass: { bg: 'bg-green-950/40', text: 'text-green-400', border: 'border-green-500/30', name: 'Многолетние травы' },
-    fallow: { bg: 'bg-slate-100/60', text: 'text-slate-500', border: 'border-slate-200', name: 'Чистый пар' },
+    winter_wheat: { bg: 'bg-emerald-50/90', text: 'text-emerald-900', border: 'border-emerald-200', name: 'Озимая пшеница' },
+    spring_wheat: { bg: 'bg-teal-50/90', text: 'text-teal-900', border: 'border-teal-200', name: 'Яровая пшеница' },
+    barley: { bg: 'bg-amber-50/90', text: 'text-amber-950', border: 'border-amber-200', name: 'Ячмень' },
+    rapeseed: { bg: 'bg-yellow-50/90', text: 'text-yellow-950', border: 'border-yellow-200', name: 'Рапс' },
+    potato: { bg: 'bg-orange-50/90', text: 'text-orange-950', border: 'border-orange-200', name: 'Картофель' },
+    sugar_beet: { bg: 'bg-pink-50/90', text: 'text-pink-950', border: 'border-pink-200', name: 'Сахарная свёкла' },
+    corn_silage: { bg: 'bg-lime-50/90', text: 'text-lime-950', border: 'border-lime-200', name: 'Кукуруза на силос' },
+    grass: { bg: 'bg-green-50/90', text: 'text-green-950', border: 'border-green-200', name: 'Многолетние травы' },
+    fallow: { bg: 'bg-slate-50', text: 'text-slate-800', border: 'border-slate-200', name: 'Чистый пар' },
   };
 
   const handleExportXlsx = () => {
@@ -330,18 +330,18 @@ export const ResultsPage: React.FC = () => {
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60 text-sm">
+                <tbody className="divide-y divide-slate-200 text-sm">
                   {fieldsList.map((fieldCode) => (
-                    <tr key={fieldCode} className="hover:bg-slate-100/30">
-                      <td className="py-4 px-4 font-bold text-slate-800 bg-white/40">
+                    <tr key={fieldCode} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="py-4 px-4 font-bold text-slate-800 bg-slate-50/50">
                         {fieldCode.toUpperCase()}
                       </td>
                       {yearsList.map((year) => {
                         const alloc = getAllocation(fieldCode, year);
-                        if (!alloc) return <td key={year} className="py-4 px-4 text-center text-slate-600">—</td>;
+                        if (!alloc) return <td key={year} className="py-4 px-4 text-center text-slate-400 font-mono">—</td>;
 
                         const style = cropColors[alloc.crop_code] || {
-                          bg: 'bg-slate-100',
+                          bg: 'bg-slate-50',
                           text: 'text-slate-800',
                           border: 'border-slate-200',
                           name: alloc.crop_code,
@@ -349,19 +349,21 @@ export const ResultsPage: React.FC = () => {
 
                         return (
                           <td key={year} className="py-3 px-3">
-                            <div className={`p-3 rounded-xl border ${style.bg} ${style.border} space-y-1`}>
-                              <div className={`font-bold text-xs ${style.text}`}>{style.name}</div>
-                              <div className="text-[11px] text-slate-700 flex justify-between">
+                            <div className={`p-3 rounded-xl border ${style.bg} ${style.border} space-y-1.5 shadow-2xs`}>
+                              <div className={`font-bold text-xs ${style.text} flex items-center justify-between`}>
+                                <span>{style.name}</span>
+                              </div>
+                              <div className="text-[11px] text-slate-600 flex justify-between">
                                 <span>Площадь:</span>
-                                <span className="font-semibold">{alloc.area_ha} га</span>
+                                <span className="font-bold text-slate-900">{alloc.area_ha} га</span>
                               </div>
-                              <div className="text-[11px] text-slate-500 flex justify-between">
+                              <div className="text-[11px] text-slate-600 flex justify-between">
                                 <span>Сбор:</span>
-                                <span>{alloc.yield_ts ? `${alloc.yield_ts.toLocaleString()} ц` : '—'}</span>
+                                <span className="font-semibold text-slate-800">{alloc.yield_ts ? `${alloc.yield_ts.toLocaleString()} ц` : '—'}</span>
                               </div>
-                              <div className="text-[11px] text-slate-500 flex justify-between">
+                              <div className="text-[11px] text-slate-600 flex justify-between">
                                 <span>Удобрения (NPK):</span>
-                                <span className="text-emerald-700">{alloc.fert_kg} кг/га</span>
+                                <span className="font-bold text-emerald-800">{alloc.fert_kg} кг/га</span>
                               </div>
                             </div>
                           </td>
@@ -399,7 +401,7 @@ export const ResultsPage: React.FC = () => {
                     <th className="py-3 px-4 text-center">Статус</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60">
+                <tbody className="divide-y divide-slate-200">
                   {results.feed_allocations.map((fa, i) => {
                     const isSurplus = fa.surplus >= 0;
                     return (
@@ -449,9 +451,9 @@ export const ResultsPage: React.FC = () => {
                     <th className="py-3 px-4 text-right">Надой зима (кг)</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60">
+                <tbody className="divide-y divide-slate-200">
                   {results.livestock_allocations.map((la, i) => (
-                    <tr key={i} className="hover:bg-slate-100/40 transition-colors">
+                    <tr key={i} className="hover:bg-slate-50/80 transition-colors">
                       <td className="py-3.5 px-4 font-bold text-slate-800">{la.year}</td>
                       <td className="py-3.5 px-4 font-semibold text-slate-900 capitalize">
                         {la.animal_type === 'cow' ? 'Дойное стадо (Коровы)' : la.animal_type === 'cattle' ? 'КРС (Мясной откорм)' : 'Свинопоголовье'}
@@ -489,9 +491,9 @@ export const ResultsPage: React.FC = () => {
                     <th className="py-3 px-4 text-right">Итоговая чистая прибыль</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60">
+                <tbody className="divide-y divide-slate-200">
                   {results.years.map((y) => (
-                    <tr key={y.year} className="hover:bg-slate-100/40 transition-colors">
+                    <tr key={y.year} className="hover:bg-slate-50/80 transition-colors">
                       <td className="py-3.5 px-4 font-bold text-slate-800">{y.year} год</td>
                       <td className="py-3.5 px-4 text-right font-semibold text-emerald-700">
                         {y.crop_profit.toLocaleString()} BYN
@@ -504,7 +506,7 @@ export const ResultsPage: React.FC = () => {
                       </td>
                     </tr>
                   ))}
-                  <tr className="bg-white/90 font-bold border-t-2 border-slate-200">
+                  <tr className="bg-slate-50 font-bold border-t-2 border-slate-300">
                     <td className="py-4 px-4 text-slate-900">ИТОГО ЗА 3 ГОДА</td>
                     <td className="py-4 px-4 text-right text-emerald-700">
                       {results.years.reduce((a, y) => a + y.crop_profit, 0).toLocaleString()} BYN
@@ -512,7 +514,7 @@ export const ResultsPage: React.FC = () => {
                     <td className="py-4 px-4 text-right text-sky-700">
                       {results.years.reduce((a, y) => a + y.livestock_profit, 0).toLocaleString()} BYN
                     </td>
-                    <td className="py-4 px-4 text-right text-amber-700 text-lg">
+                    <td className="py-4 px-4 text-right text-amber-800 text-lg">
                       {results.total_profit_byn.toLocaleString()} BYN
                     </td>
                   </tr>
@@ -560,7 +562,7 @@ export const ResultsPage: React.FC = () => {
               ].map((plot, idx) => (
                 <div
                   key={idx}
-                  className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-slate-200 transition-all group flex flex-col justify-between"
+                  className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-slate-300 transition-all group flex flex-col justify-between shadow-2xs"
                 >
                   <div
                     className="relative overflow-hidden cursor-pointer bg-slate-50/80 flex items-center justify-center p-2"
@@ -572,10 +574,10 @@ export const ResultsPage: React.FC = () => {
                       className="w-full h-56 object-contain rounded-lg transition-transform duration-300 group-hover:scale-102"
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 pointer-events-none">
-                      <span className="bg-white/90 text-white text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-slate-200 shadow-lg">
+                    <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 pointer-events-none">
+                      <span className="bg-white text-slate-900 text-xs font-bold px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-xl border border-slate-200">
                         <ZoomIn className="w-4 h-4 text-emerald-700" />
-                        Увеличить
+                        Увеличить график
                       </span>
                     </div>
                   </div>

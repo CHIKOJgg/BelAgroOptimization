@@ -291,7 +291,7 @@ export const DashboardPage: React.FC = () => {
           </div>
           <button
             onClick={() => navigate('/fields')}
-            className="flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:text-emerald-300"
+            className="flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:text-emerald-800"
           >
             <span>Реестр полей</span>
             <ArrowUpRight className="w-3.5 h-3.5" />

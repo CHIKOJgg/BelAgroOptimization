@@ -202,22 +202,22 @@ export const ComparisonPage: React.FC = () => {
       </div>
 
       {/* Delta Banner */}
-      <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900/80 to-slate-950 border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+      <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex flex-wrap items-center justify-between gap-4 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
+          <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
             <Scale className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-xs text-slate-500 uppercase font-bold tracking-wider">
+            <div className="text-xs text-slate-400 uppercase font-bold tracking-wider">
               Чистая финансовая дельта (Сценарий А vs Б)
             </div>
-            <div className="text-xl font-extrabold font-mono text-emerald-700">
+            <div className="text-xl font-extrabold font-mono text-emerald-400">
               +{profitDelta > 0 ? profitDelta.toLocaleString('ru-RU') : 0} BYN ({profitDeltaPct}%)
             </div>
           </div>
         </div>
 
-        <div className="text-xs text-slate-500 max-w-md text-right">
+        <div className="text-xs text-slate-300 max-w-md sm:text-right leading-relaxed">
           Сценарий А обеспечивает преимущество за счет более точной оптимизации внесения NPK и сбалансированной структуры рационов КРС.
         </div>
       </div>
