@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { Layers, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { Card } from '../common/Card';
+import { M3Card } from '../m3/M3Card';
+import { M3SegmentedButton } from '../m3/M3SegmentedButton';
 import type { OptimizationResult } from '../../types';
 
 interface FeedBalanceChartProps {
@@ -36,17 +37,17 @@ export const FeedBalanceChart: React.FC<FeedBalanceChartProps> = ({ results }) =
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow' },
-      backgroundColor: '#ffffff',
-      borderColor: '#e2e8f0',
+      backgroundColor: 'rgba(28, 33, 29, 0.95)',
+      borderColor: 'rgba(113, 121, 113, 0.3)',
       borderWidth: 1,
-      textStyle: { color: '#0f172a', fontSize: 12 },
-      extraCssText: 'box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 8px;',
+      textStyle: { color: '#e0e4dc', fontSize: 12 },
+      extraCssText: 'box-shadow: 0 4px 12px rgba(0,0,0,0.25); border-radius: 12px; backdrop-filter: blur(8px);',
       formatter: (params: any) => {
-        let str = `<div style="font-weight:700; color:#0f172a; margin-bottom:4px;">${params[0].axisValue}</div>`;
+        let str = `<div style="font-weight:700; color:#e0e4dc; margin-bottom:4px;">${params[0].axisValue}</div>`;
         params.forEach((p: any) => {
           str += `<div style="display:flex; justify-content:space-between; gap:16px; margin-top:3px;">
-            <span style="color:#475569; font-size:11px;">${p.marker} ${p.seriesName}:</span>
-            <span style="font-weight:700; color:#0f172a; font-size:12px;">${p.value.toLocaleString('ru-RU')} ц</span>
+            <span style="color:#c1c9bf; font-size:11px;">${p.marker} ${p.seriesName}:</span>
+            <span style="font-weight:700; color:#76dba4; font-size:12px;">${p.value.toLocaleString('ru-RU')} ц</span>
           </div>`;
         });
         return str;
@@ -54,79 +55,73 @@ export const FeedBalanceChart: React.FC<FeedBalanceChartProps> = ({ results }) =
     },
     legend: {
       data: ['Произведено в хозяйстве', 'Потребно стаду', 'Закуплено со стороны'],
-      textStyle: { color: '#334155', fontSize: 11, fontWeight: 500 },
+      textStyle: { color: '#c1c9bf', fontSize: 11, fontWeight: 500 },
       top: 0,
     },
     grid: { left: '3%', right: '4%', bottom: '5%', top: '15%', containLabel: true },
     xAxis: {
       type: 'category',
       data: categories,
-      axisLine: { lineStyle: { color: '#94a3b8' } },
-      axisLabel: { color: '#334155', fontSize: 11, fontWeight: 500 },
+      axisLine: { lineStyle: { color: 'rgba(113, 121, 113, 0.4)' } },
+      axisLabel: { color: '#c1c9bf', fontSize: 11, fontWeight: 500 },
     },
     yAxis: {
       type: 'value',
       name: 'Центнеры (ц)',
-      nameTextStyle: { color: '#475569', fontSize: 11, fontWeight: 600 },
-      axisLine: { lineStyle: { color: '#94a3b8' } },
-      splitLine: { lineStyle: { color: '#f1f5f9' } },
-      axisLabel: { color: '#475569', fontSize: 11 },
+      nameTextStyle: { color: '#c1c9bf', fontSize: 11, fontWeight: 600 },
+      axisLine: { lineStyle: { color: 'rgba(113, 121, 113, 0.4)' } },
+      splitLine: { lineStyle: { color: 'rgba(113, 121, 113, 0.15)' } },
+      axisLabel: { color: '#c1c9bf', fontSize: 11 },
     },
     series: [
       {
         name: 'Произведено в хозяйстве',
         type: 'bar',
         data: producedData,
-        itemStyle: { color: '#10b981', borderRadius: [4, 4, 0, 0] },
+        itemStyle: { color: '#006d42', borderRadius: [6, 6, 0, 0] },
       },
       {
         name: 'Потребно стаду',
         type: 'bar',
         data: neededData,
-        itemStyle: { color: '#38bdf8', borderRadius: [4, 4, 0, 0] },
+        itemStyle: { color: '#3a6470', borderRadius: [6, 6, 0, 0] },
       },
       {
         name: 'Закуплено со стороны',
         type: 'bar',
         data: purchasedData,
-        itemStyle: { color: '#f59e0b', borderRadius: [4, 4, 0, 0] },
+        itemStyle: { color: '#f59e0b', borderRadius: [6, 6, 0, 0] },
       },
     ],
   };
 
   return (
-    <Card className="border-slate-200 bg-white p-5 shadow-xs">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+    <M3Card variant="elevated" className="p-5 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-4 border-b border-[var(--md-sys-color-outline-variant)]/30">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-full bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] flex items-center justify-center shadow-xs">
               <Layers className="w-4 h-4" />
             </div>
-            <h3 className="font-semibold text-slate-900 text-base">
+            <h3 className="font-bold text-[var(--md-sys-color-on-surface)] text-base tracking-tight">
               Баланс кормопроизводства и самообеспеченности стада
             </h3>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-[var(--md-sys-color-on-surface-variant)] mt-1">
             Соотношение собственной кормовой базы и коммерческих закупок кормов
           </p>
         </div>
 
         {/* Year Selector */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-100 border border-slate-200 rounded-lg">
-          {results.years.map((y, idx) => (
-            <button
-              key={y.year}
-              onClick={() => setSelectedYearIndex(idx)}
-              className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                selectedYearIndex === idx
-                  ? 'bg-emerald-700 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-              }`}
-            >
-              {y.year} год
-            </button>
-          ))}
-        </div>
+        <M3SegmentedButton
+          size="sm"
+          options={results.years.map((y, idx) => ({
+            value: idx,
+            label: `${y.year} год`,
+          }))}
+          value={selectedYearIndex}
+          onChange={(val) => setSelectedYearIndex(Number(val))}
+        />
       </div>
 
       <div className="h-72 w-full">
@@ -134,7 +129,7 @@ export const FeedBalanceChart: React.FC<FeedBalanceChartProps> = ({ results }) =
       </div>
 
       {/* Breakdown indicators */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mt-4 pt-3 border-t border-slate-100">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mt-4 pt-3.5 border-t border-[var(--md-sys-color-outline-variant)]/30">
         {feedKeys.map((k) => {
           const item = feedBalances[k];
           const sufficiency = item.needed > 0 ? (item.produced / item.needed) * 100 : 100;
@@ -143,28 +138,38 @@ export const FeedBalanceChart: React.FC<FeedBalanceChartProps> = ({ results }) =
           return (
             <div
               key={k}
-              className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs flex flex-col justify-between"
+              className="bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)]/30 rounded-[14px] p-3.5 text-xs flex flex-col justify-between"
             >
               <div className="flex items-center justify-between">
-                <span className="font-medium text-slate-800 truncate">{FEED_NAMES[k] || k}</span>
+                <span className="font-bold text-[var(--md-sys-color-on-surface)] truncate">
+                  {FEED_NAMES[k] || k}
+                </span>
                 {isFullySupplied ? (
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-[var(--md-sys-color-primary)] shrink-0" />
                 ) : (
-                  <AlertCircle className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                  <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
                 )}
               </div>
 
-              <div className="mt-2 space-y-1">
-                <div className="flex justify-between text-slate-500 text-[11px]">
+              <div className="mt-2.5 space-y-1">
+                <div className="flex justify-between text-[var(--md-sys-color-on-surface-variant)] text-[11px]">
                   <span>Обеспеченность:</span>
-                  <span className={`font-mono font-semibold ${isFullySupplied ? 'text-emerald-700' : 'text-amber-700'}`}>
+                  <span
+                    className={`font-mono font-bold ${
+                      isFullySupplied
+                        ? 'text-[var(--md-sys-color-primary)]'
+                        : 'text-amber-600 dark:text-amber-400'
+                    }`}
+                  >
                     {sufficiency.toFixed(0)}%
                   </span>
                 </div>
                 {item.purchased > 0 && (
-                  <div className="flex justify-between text-slate-500 text-[11px]">
+                  <div className="flex justify-between text-[var(--md-sys-color-on-surface-variant)] text-[11px]">
                     <span>Закупка:</span>
-                    <span className="font-mono text-amber-700 font-semibold">{item.purchased} ц</span>
+                    <span className="font-mono text-amber-600 dark:text-amber-400 font-bold">
+                      {item.purchased} ц
+                    </span>
                   </div>
                 )}
               </div>
@@ -172,6 +177,6 @@ export const FeedBalanceChart: React.FC<FeedBalanceChartProps> = ({ results }) =
           );
         })}
       </div>
-    </Card>
+    </M3Card>
   );
 };

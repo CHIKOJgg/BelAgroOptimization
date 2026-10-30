@@ -13,10 +13,15 @@ import {
   Gauge,
   Sliders,
   ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 import { useScenario } from '../context/ScenarioContext';
 import { useToast } from '../context/ToastContext';
 import { api } from '../api/client';
+import { M3Card } from '../components/m3/M3Card';
+import { M3Button } from '../components/m3/M3Button';
+import { M3Badge } from '../components/m3/M3Badge';
+import { M3SegmentedButton } from '../components/m3/M3SegmentedButton';
 import type { OptimizationJobStatus } from '../types';
 
 export const OptimizationPage: React.FC = () => {
@@ -42,7 +47,7 @@ export const OptimizationPage: React.FC = () => {
   // Stopwatch timer when running
   useEffect(() => {
     if (isRunning) {
-      const startTime = Date.now() - elapsedMs;
+      const startTime = Date.now();
       timerRef.current = setInterval(() => {
         setElapsedMs(Date.now() - startTime);
       }, 50);
@@ -57,11 +62,9 @@ export const OptimizationPage: React.FC = () => {
   // Polling for job progress while running
   useEffect(() => {
     if (!job || job.status === 'completed' || job.status === 'failed') {
-      setIsRunning(false);
       return;
     }
 
-    setIsRunning(true);
     const timer = setInterval(async () => {
       try {
         const updated = await api.getJobStatus(job.job_id);
@@ -81,7 +84,7 @@ export const OptimizationPage: React.FC = () => {
     }, 400);
 
     return () => clearInterval(timer);
-  }, [job?.job_id, job?.status]);
+  }, [job, refreshScenarios, success, error]);
 
   const handleStartOptimization = async () => {
     try {
@@ -104,239 +107,233 @@ export const OptimizationPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* High-Tech Mission Control Header */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-emerald-950/60 border border-slate-800 shadow-2xl backdrop-blur-xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-
+      {/* M3 Mission Control Banner */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 p-6 sm:p-7 rounded-[28px] bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)]/40 shadow-[var(--md-sys-elevation-1)] relative overflow-hidden">
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-2 flex-wrap">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest bg-emerald-950/90 border border-emerald-500/40 text-emerald-300 font-bold shadow-xs">
-              <span className={`w-1.5 h-1.5 rounded-full ${isRunning ? 'bg-amber-400 animate-ping' : 'bg-emerald-400 animate-pulse'}`} />
+            <M3Badge
+              tone={isRunning ? 'secondary' : 'primary'}
+              size="sm"
+              icon={<Sparkles className="w-3.5 h-3.5" />}
+            >
               {isRunning ? 'DAOS SOLVER: В ПРОЦЕССЕ РАСЧЕТА' : 'DAOS MILP ENGINE (GLPK 5.0) • ГОТОВ'}
-            </span>
-            <span className="text-xs text-slate-400 font-mono">
-              Сценарий: <span className="text-emerald-200 font-semibold">{activeScenario?.name || 'Базовый 2024–2026'}</span>
+            </M3Badge>
+            <span className="text-xs text-[var(--md-sys-color-on-surface-variant)] font-mono">
+              Сценарий: <b className="text-[var(--md-sys-color-on-surface)]">{activeScenario?.name || 'Базовый 2024–2026'}</b>
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
-            <Cpu className="w-7 h-7 text-emerald-400" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--md-sys-color-on-surface)] tracking-tight flex items-center gap-2.5">
+            <Cpu className="w-7 h-7 text-[var(--md-sys-color-primary)]" />
             <span>Центр оптимизации DAOS (Pyomo + GLPK 5.0)</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
-            Digital Agro Optimization System: расчет глобального оптимума многопериодной смешанно-целочисленной модели линейного программирования (MILP)
+          <p className="text-xs sm:text-sm text-[var(--md-sys-color-on-surface-variant)] mt-1.5 max-w-2xl leading-relaxed">
+            Расчет глобального оптимума многопериодной смешанно-целочисленной модели линейного программирования (MILP)
           </p>
         </div>
 
         {/* Action Button & Live Stopwatch */}
-        <div className="flex items-center gap-4 w-full md:w-auto">
+        <div className="flex items-center gap-4 w-full md:w-auto relative z-10">
           <div className="hidden sm:flex flex-col items-end font-mono">
-            <span className="text-[10px] uppercase tracking-wider text-slate-400">Время счета</span>
-            <span className="text-lg font-bold text-emerald-400 font-mono">
+            <span className="text-[10px] uppercase tracking-wider text-[var(--md-sys-color-on-surface-variant)]">
+              Время счета
+            </span>
+            <span className="text-lg font-bold text-[var(--md-sys-color-primary)] font-['JetBrains_Mono',monospace]">
               {(elapsedMs / 1000).toFixed(2)} с
             </span>
           </div>
 
-          <button
+          <M3Button
+            variant="filled"
+            size="lg"
             onClick={handleStartOptimization}
             disabled={isRunning}
-            className="w-full md:w-auto flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-xl shadow-emerald-950 transition-all hover:scale-102 cursor-pointer"
+            icon={isRunning ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
+            className="w-full md:w-auto shadow-sm"
           >
-            {isRunning ? (
-              <>
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                <span>Идет вычисление...</span>
-              </>
-            ) : (
-              <>
-                <Play className="w-4 h-4 fill-current" />
-                <span>Запустить расчет DAOS</span>
-              </>
-            )}
-          </button>
+            {isRunning ? 'Идет вычисление...' : 'Запустить расчет DAOS'}
+          </M3Button>
         </div>
       </div>
 
       {/* Strategy Presets Bar */}
-      <div className="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs shadow-2xs">
+      <div className="bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)]/40 rounded-[20px] p-4 flex flex-wrap items-center justify-between gap-3 text-xs shadow-xs">
         <div className="flex items-center gap-2">
-          <Sliders className="w-4 h-4 text-emerald-700" />
-          <span className="font-bold text-slate-800">Стратегический профиль DAOS:</span>
+          <Sliders className="w-4 h-4 text-[var(--md-sys-color-primary)]" />
+          <span className="font-bold text-[var(--md-sys-color-on-surface)]">
+            Стратегический профиль DAOS:
+          </span>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          {[
-            { id: 'balanced', label: 'Сбалансированный оптимум DAOS (Базовый)', desc: 'Паритет зерно/корма' },
-            { id: 'margin', label: 'Максимизация маржи DAOS (Рыночный)', desc: 'Фокус на озимый рапс' },
-            { id: 'drought', label: 'Антизасуха DAOS 2026 (Минимизация рисков)', desc: 'Резерв влагостойких' },
-          ].map((preset) => (
-            <button
-              key={preset.id}
-              onClick={() => setActivePreset(preset.id as any)}
-              className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
-                activePreset === preset.id
-                  ? 'bg-emerald-700 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200/70 border border-slate-200/80'
-              }`}
-            >
-              {preset.label}
-            </button>
-          ))}
-        </div>
+        <M3SegmentedButton
+          options={[
+            { value: 'balanced', label: 'Сбалансированный оптимум' },
+            { value: 'margin', label: 'Максимизация маржи' },
+            { value: 'drought', label: 'Антизасуха 2026' },
+          ]}
+          value={activePreset}
+          onChange={(val) => setActivePreset(val as any)}
+        />
       </div>
 
-      {/* Solver Telemetry Matrix (6 High-Tech Cards) */}
+      {/* Solver Telemetry Matrix */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-2xs">
-          <div className="flex items-center justify-between text-slate-600 text-[11px] mb-1 font-medium">
+        <div className="bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)]/40 rounded-[16px] p-3.5 shadow-xs">
+          <div className="flex items-center justify-between text-[var(--md-sys-color-on-surface-variant)] text-[11px] mb-1 font-medium">
             <span>Переменных</span>
-            <Activity className="w-3.5 h-3.5 text-emerald-700" />
+            <Activity className="w-3.5 h-3.5 text-[var(--md-sys-color-primary)]" />
           </div>
-          <div className="text-xl font-bold font-mono text-slate-900">276</div>
-          <div className="text-[10px] text-slate-500 mt-0.5">Вектор решений $x$</div>
+          <div className="text-xl font-bold font-mono text-[var(--md-sys-color-on-surface)]">276</div>
+          <div className="text-[10px] text-[var(--md-sys-color-on-surface-variant)] mt-0.5">Вектор решений $x$</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-2xs">
-          <div className="flex items-center justify-between text-slate-600 text-[11px] mb-1 font-medium">
+        <div className="bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)]/40 rounded-[16px] p-3.5 shadow-xs">
+          <div className="flex items-center justify-between text-[var(--md-sys-color-on-surface-variant)] text-[11px] mb-1 font-medium">
             <span>Ограничений</span>
-            <ShieldCheck className="w-3.5 h-3.5 text-sky-700" />
+            <ShieldCheck className="w-3.5 h-3.5 text-[var(--md-sys-color-tertiary)]" />
           </div>
-          <div className="text-xl font-bold font-mono text-slate-900">148</div>
-          <div className="text-[10px] text-slate-500 mt-0.5">Агро & корма $Ax \le b$</div>
+          <div className="text-xl font-bold font-mono text-[var(--md-sys-color-on-surface)]">148</div>
+          <div className="text-[10px] text-[var(--md-sys-color-on-surface-variant)] mt-0.5">Агро & корма $Ax \le b$</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-2xs">
-          <div className="flex items-center justify-between text-slate-600 text-[11px] mb-1 font-medium">
+        <div className="bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)]/40 rounded-[16px] p-3.5 shadow-xs">
+          <div className="flex items-center justify-between text-[var(--md-sys-color-on-surface-variant)] text-[11px] mb-1 font-medium">
             <span>Ненулевых (NNZ)</span>
-            <Zap className="w-3.5 h-3.5 text-amber-600" />
+            <Zap className="w-3.5 h-3.5 text-amber-500" />
           </div>
-          <div className="text-xl font-bold font-mono text-slate-900">1 240</div>
-          <div className="text-[10px] text-slate-500 mt-0.5">Разреженность 98.4%</div>
+          <div className="text-xl font-bold font-mono text-[var(--md-sys-color-on-surface)]">1 240</div>
+          <div className="text-[10px] text-[var(--md-sys-color-on-surface-variant)] mt-0.5">Разреженность 98.4%</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-2xs">
-          <div className="flex items-center justify-between text-slate-600 text-[11px] mb-1 font-medium">
+        <div className="bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)]/40 rounded-[16px] p-3.5 shadow-xs">
+          <div className="flex items-center justify-between text-[var(--md-sys-color-on-surface-variant)] text-[11px] mb-1 font-medium">
             <span>Итераций симплекса</span>
-            <RefreshCw className="w-3.5 h-3.5 text-cyan-600" />
+            <RefreshCw className="w-3.5 h-3.5 text-cyan-500" />
           </div>
-          <div className="text-xl font-bold font-mono text-slate-900">342</div>
-          <div className="text-[10px] text-slate-500 mt-0.5">Dual Simplex Phase II</div>
+          <div className="text-xl font-bold font-mono text-[var(--md-sys-color-on-surface)]">342</div>
+          <div className="text-[10px] text-[var(--md-sys-color-on-surface-variant)] mt-0.5">Dual Simplex Phase II</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-2xs">
-          <div className="flex items-center justify-between text-slate-600 text-[11px] mb-1 font-medium">
+        <div className="bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)]/40 rounded-[16px] p-3.5 shadow-xs">
+          <div className="flex items-center justify-between text-[var(--md-sys-color-on-surface-variant)] text-[11px] mb-1 font-medium">
             <span>Optimality GAP</span>
-            <Gauge className="w-3.5 h-3.5 text-emerald-700" />
+            <Gauge className="w-3.5 h-3.5 text-[var(--md-sys-color-primary)]" />
           </div>
-          <div className="text-xl font-bold font-mono text-emerald-800">0.00%</div>
-          <div className="text-[10px] text-slate-500 mt-0.5 font-medium">Точный оптимум</div>
+          <div className="text-xl font-bold font-mono text-[var(--md-sys-color-primary)]">0.00%</div>
+          <div className="text-[10px] text-[var(--md-sys-color-on-surface-variant)] mt-0.5 font-medium">Точный оптимум</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-2xs">
-          <div className="flex items-center justify-between text-slate-600 text-[11px] mb-1 font-medium">
+        <div className="bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)]/40 rounded-[16px] p-3.5 shadow-xs">
+          <div className="flex items-center justify-between text-[var(--md-sys-color-on-surface-variant)] text-[11px] mb-1 font-medium">
             <span>Потребление ОЗУ</span>
-            <Cpu className="w-3.5 h-3.5 text-purple-600" />
+            <Cpu className="w-3.5 h-3.5 text-indigo-500" />
           </div>
-          <div className="text-xl font-bold font-mono text-slate-900">14.2 МБ</div>
-          <div className="text-[10px] text-slate-500 mt-0.5">Пиковый стек GLPK</div>
+          <div className="text-xl font-bold font-mono text-[var(--md-sys-color-on-surface)]">14.2 МБ</div>
+          <div className="text-[10px] text-[var(--md-sys-color-on-surface-variant)] mt-0.5">Пиковый стек GLPK</div>
         </div>
       </div>
 
       {/* Convergence Progress Bar */}
       {job && (
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+        <M3Card variant="elevated" className="p-5">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--md-sys-color-on-surface)]">
                 Фаза алгоритма DAOS:
               </span>
-              <span className="text-xs font-mono font-bold text-emerald-800">
+              <span className="text-xs font-mono font-bold text-[var(--md-sys-color-primary)]">
                 {job.message || 'DAOS: Оптимизация структуры севооборота и рационов...'}
               </span>
             </div>
-            <span className="text-base font-bold font-mono text-emerald-800">{job.progress}%</span>
+            <span className="text-base font-bold font-mono text-[var(--md-sys-color-primary)]">
+              {job.progress}%
+            </span>
           </div>
 
-          <div className="w-full bg-slate-100 rounded-full h-3 p-0.5 border border-slate-200 overflow-hidden">
+          <div className="w-full bg-[var(--md-sys-color-surface-container-highest)] rounded-full h-2.5 overflow-hidden">
             <div
-              className="bg-gradient-to-r from-emerald-600 to-teal-500 h-full rounded-full transition-all duration-300 shadow-sm"
+              className="bg-[var(--md-sys-color-primary)] h-full rounded-full transition-all duration-300"
               style={{ width: `${job.progress}%` }}
             />
           </div>
 
           {job.status === 'completed' && (
-            <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 shadow-2xs">
-              <div className="flex items-center gap-2.5 text-xs text-emerald-950 font-semibold">
-                <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[var(--md-sys-color-primary-container)]/50 border border-[var(--md-sys-color-primary)]/20 rounded-[16px] p-4 shadow-xs">
+              <div className="flex items-center gap-2.5 text-xs text-[var(--md-sys-color-on-primary-container)] font-semibold">
+                <CheckCircle2 className="w-4 h-4 text-[var(--md-sys-color-primary)] shrink-0" />
                 <span>Глобальный оптимум DAOS найден. Производственная программа сформирована.</span>
               </div>
-              <button
+              <M3Button
+                variant="filled"
+                size="sm"
                 onClick={() => navigate('/results')}
-                className="flex items-center justify-center gap-1.5 bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-xs transition-colors cursor-pointer shrink-0"
+                icon={<ArrowRight className="w-3.5 h-3.5" />}
+                className="shrink-0"
               >
-                <span>Перейти к матрице севооборота</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+                К результатам севооборота
+              </M3Button>
             </div>
           )}
-        </div>
+        </M3Card>
       )}
 
-      {/* Cyberpunk Hacker Style Console Terminal */}
-      <div className="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden shadow-2xl">
+      {/* M3 Terminal Console Window */}
+      <div className="bg-[var(--md-sys-color-surface-container-lowest)] border border-[var(--md-sys-color-outline-variant)]/40 rounded-[24px] overflow-hidden shadow-[var(--md-sys-elevation-2)]">
         {/* Terminal Titlebar */}
-        <div className="bg-white/90 border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+        <div className="bg-[var(--md-sys-color-surface-container)] border-b border-[var(--md-sys-color-outline-variant)]/30 px-5 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-full bg-rose-500/80" />
               <div className="w-3 h-3 rounded-full bg-amber-500/80" />
               <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
             </div>
-            <div className="flex items-center gap-2 text-xs font-mono text-slate-700">
-              <Terminal className="w-3.5 h-3.5 text-emerald-700" />
+            <div className="flex items-center gap-2 text-xs font-mono text-[var(--md-sys-color-on-surface)]">
+              <Terminal className="w-3.5 h-3.5 text-[var(--md-sys-color-primary)]" />
               <span>glpk-opt-engine :: simplex-stream.log</span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <button
+            <M3Button
+              variant="tonal"
+              size="sm"
               onClick={copyLogs}
-              title="Скопировать логи"
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100/80 hover:bg-slate-100 text-slate-700 text-xs font-mono transition-colors cursor-pointer"
+              icon={<Copy className="w-3.5 h-3.5" />}
             >
-              <Copy className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Копировать</span>
-            </button>
+              Копировать
+            </M3Button>
           </div>
         </div>
 
         {/* Log Window */}
         <div
           ref={logContainerRef}
-          className="p-4 h-96 overflow-y-auto font-mono text-xs leading-relaxed space-y-1 bg-slate-50/95"
+          className="p-5 h-96 overflow-y-auto font-mono text-xs leading-relaxed space-y-1 bg-[var(--md-sys-color-surface-container-lowest)]"
         >
           {job?.logs && job.logs.length > 0 ? (
             job.logs.map((line, idx) => {
-              // Colorize tokens for terminal aesthetics
               const isHeader = line.includes('GLPK') || line.includes('PYOMO');
               const isIteration = line.includes('obj =') || line.includes('Simplex');
               const isOptimal = line.includes('OPTIMAL') || line.includes('Успешно');
               const isWarning = line.includes('Warning') || line.includes('Внимание');
 
               return (
-                <div key={idx} className="flex items-start gap-3 hover:bg-white/50 px-1 py-0.5 rounded">
-                  <span className="text-slate-600 select-none w-8 text-right font-mono text-[10px]">
+                <div
+                  key={idx}
+                  className="flex items-start gap-3 hover:bg-[var(--md-sys-color-surface-container)]/50 px-1 py-0.5 rounded"
+                >
+                  <span className="text-[var(--md-sys-color-outline)] select-none w-8 text-right font-mono text-[10px]">
                     {idx + 1}
                   </span>
                   <span
                     className={`${
                       isOptimal
-                        ? 'text-emerald-700 font-bold'
+                        ? 'text-[var(--md-sys-color-primary)] font-bold'
                         : isIteration
-                        ? 'text-cyan-700 font-semibold'
+                        ? 'text-cyan-600 dark:text-cyan-400 font-semibold'
                         : isHeader
-                        ? 'text-amber-800 font-semibold'
+                        ? 'text-amber-600 dark:text-amber-400 font-semibold'
                         : isWarning
-                        ? 'text-rose-700 font-medium'
-                        : 'text-slate-800'
+                        ? 'text-[var(--md-sys-color-error)] font-medium'
+                        : 'text-[var(--md-sys-color-on-surface)]'
                     }`}
                   >
                     {line}
@@ -345,21 +342,25 @@ export const OptimizationPage: React.FC = () => {
               );
             })
           ) : (
-            <div className="flex flex-col items-center justify-center h-full text-slate-600 space-y-2">
+            <div className="flex flex-col items-center justify-center h-full text-[var(--md-sys-color-on-surface-variant)] space-y-2">
               <Terminal className="w-8 h-8 opacity-40" />
-              <p className="text-xs">Нажмите «Запустить расчет модели» для активации потока GLPK</p>
+              <p className="text-xs">Нажмите «Запустить расчет DAOS» для активации потока GLPK</p>
             </div>
           )}
         </div>
 
         {/* Terminal Status Footer */}
-        <div className="bg-white/60 border-t border-slate-200 px-4 py-2 flex items-center justify-between text-[11px] font-mono text-slate-500">
+        <div className="bg-[var(--md-sys-color-surface-container)] border-t border-[var(--md-sys-color-outline-variant)]/30 px-5 py-2.5 flex items-center justify-between text-[11px] font-mono text-[var(--md-sys-color-on-surface-variant)]">
           <div className="flex items-center gap-3">
             <span>КОДИРОВКА: UTF-8</span>
             <span>МАТЕМАТИКА: Pyomo ConcreteModel</span>
           </div>
-          <span className="text-emerald-700 font-semibold">
-            {job?.status === 'completed' ? 'STATUS: OPTIMAL SOLVED' : job?.status === 'running' ? 'STATUS: SOLVING...' : 'STATUS: IDLE'}
+          <span className="text-[var(--md-sys-color-primary)] font-semibold">
+            {job?.status === 'completed'
+              ? 'STATUS: OPTIMAL SOLVED'
+              : job?.status === 'running'
+              ? 'STATUS: SOLVING...'
+              : 'STATUS: IDLE'}
           </span>
         </div>
       </div>

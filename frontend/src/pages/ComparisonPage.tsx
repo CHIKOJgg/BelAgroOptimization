@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import ReactECharts from 'echarts-for-react';
-import { GitCompare, Scale } from 'lucide-react';
-import { Card } from '../components/common/Card';
+import { GitCompare, Scale, ArrowUpRight } from 'lucide-react';
+import { M3Card } from '../components/m3/M3Card';
+import { M3Badge } from '../components/m3/M3Badge';
 import { useScenario } from '../context/ScenarioContext';
 
 export const ComparisonPage: React.FC = () => {
@@ -23,13 +24,15 @@ export const ComparisonPage: React.FC = () => {
     return {
       backgroundColor: 'transparent',
       tooltip: {
-        backgroundColor: '#ffffff',
-        borderColor: '#e2e8f0',
-        textStyle: { color: '#0f172a' }, extraCssText: 'box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 8px;',
+        backgroundColor: 'rgba(28, 33, 29, 0.95)',
+        borderColor: 'rgba(113, 121, 116, 0.3)',
+        borderWidth: 1,
+        textStyle: { color: '#e1e3df', fontSize: 12 },
+        extraCssText: 'border-radius: 12px; backdrop-filter: blur(8px); box-shadow: 0 8px 24px rgba(0,0,0,0.18);',
       },
       legend: {
         data: [scA?.name || 'Сценарий A', scB?.name || 'Сценарий B'],
-        textStyle: { color: '#475569' },
+        textStyle: { color: '#859388' },
         bottom: 0,
       },
       radar: {
@@ -43,23 +46,23 @@ export const ComparisonPage: React.FC = () => {
         shape: 'polygon',
         splitNumber: 4,
         axisName: {
-          color: '#334155',
+          color: '#859388',
           fontSize: 11,
           fontWeight: 600,
         },
         splitLine: {
           lineStyle: {
-            color: '#e2e8f0',
+            color: 'rgba(113, 121, 116, 0.2)',
           },
         },
         splitArea: {
           show: true,
           areaStyle: {
-            color: ['rgba(248, 250, 252, 0.8)', 'rgba(241, 245, 249, 0.8)'],
+            color: ['rgba(0, 109, 66, 0.03)', 'rgba(0, 109, 66, 0.08)'],
           },
         },
         axisLine: {
-          lineStyle: { color: '#cbd5e1' },
+          lineStyle: { color: 'rgba(113, 121, 116, 0.25)' },
         },
       },
       series: [
@@ -72,18 +75,18 @@ export const ComparisonPage: React.FC = () => {
               name: scA?.name || 'Сценарий A',
               symbol: 'circle',
               symbolSize: 4,
-              lineStyle: { width: 2, color: '#10b981' },
-              areaStyle: { color: 'rgba(16, 185, 129, 0.25)' },
-              itemStyle: { color: '#10b981' },
+              lineStyle: { width: 2.5, color: '#006d42' },
+              areaStyle: { color: 'rgba(0, 109, 66, 0.25)' },
+              itemStyle: { color: '#006d42' },
             },
             {
               value: [72, 88, 78, 90, 70],
               name: scB?.name || 'Сценарий B',
               symbol: 'rect',
               symbolSize: 4,
-              lineStyle: { width: 2, color: '#3b82f6' },
-              areaStyle: { color: 'rgba(59, 130, 246, 0.25)' },
-              itemStyle: { color: '#3b82f6' },
+              lineStyle: { width: 2.5, color: '#0284c7' },
+              areaStyle: { color: 'rgba(2, 132, 199, 0.25)' },
+              itemStyle: { color: '#0284c7' },
             },
           ],
         },
@@ -98,40 +101,42 @@ export const ComparisonPage: React.FC = () => {
       tooltip: {
         trigger: 'axis',
         axisPointer: { type: 'shadow' },
-        backgroundColor: '#ffffff',
-        borderColor: '#e2e8f0',
-        textStyle: { color: '#0f172a' }, extraCssText: 'box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 8px;',
+        backgroundColor: 'rgba(28, 33, 29, 0.95)',
+        borderColor: 'rgba(113, 121, 116, 0.3)',
+        borderWidth: 1,
+        textStyle: { color: '#e1e3df', fontSize: 12 },
+        extraCssText: 'border-radius: 12px; backdrop-filter: blur(8px); box-shadow: 0 8px 24px rgba(0,0,0,0.18);',
       },
       legend: {
         data: [scA?.name || 'Сценарий A', scB?.name || 'Сценарий B'],
-        textStyle: { color: '#475569' },
+        textStyle: { color: '#859388' },
         top: 0,
       },
       grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
       xAxis: {
         type: 'category',
-        data: ['Общая прибыль (тыс. BYN)', 'Растениеводство (тыс. BYN)', 'Животноводство (тыс. BYN)', 'Расход NPK (т)'],
-        axisLine: { lineStyle: { color: '#cbd5e1' } },
-        axisLabel: { color: '#64748b', fontSize: 11 },
+        data: ['Общая прибыль', 'Растениеводство', 'Животноводство', 'Расход NPK (т)'],
+        axisLine: { lineStyle: { color: 'rgba(113, 121, 116, 0.25)' } },
+        axisLabel: { color: '#859388', fontSize: 11 },
       },
       yAxis: {
         type: 'value',
-        axisLine: { lineStyle: { color: '#cbd5e1' } },
-        splitLine: { lineStyle: { color: '#f1f5f9' } },
-        axisLabel: { color: '#64748b' },
+        axisLine: { lineStyle: { color: 'rgba(113, 121, 116, 0.25)' } },
+        splitLine: { lineStyle: { color: 'rgba(113, 121, 116, 0.12)' } },
+        axisLabel: { color: '#859388' },
       },
       series: [
         {
           name: scA?.name || 'Сценарий A',
           type: 'bar',
           data: [2854, 1547, 1307, 135],
-          itemStyle: { color: '#10b981', borderRadius: [4, 4, 0, 0] },
+          itemStyle: { color: '#006d42', borderRadius: [6, 6, 0, 0] },
         },
         {
           name: scB?.name || 'Сценарий B',
           type: 'bar',
           data: [2510, 1320, 1190, 120],
-          itemStyle: { color: '#3b82f6', borderRadius: [4, 4, 0, 0] },
+          itemStyle: { color: '#0284c7', borderRadius: [6, 6, 0, 0] },
         },
       ],
     };
@@ -142,32 +147,47 @@ export const ComparisonPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-            <GitCompare className="w-6 h-6 text-emerald-700" />
+          <h1 className="m3-headline-small flex items-center gap-2.5" style={{ color: 'var(--md-sys-color-on-surface)' }}>
+            <div
+              className="p-2 rounded-[14px] flex items-center justify-center"
+              style={{
+                backgroundColor: 'var(--md-sys-color-primary-container)',
+                color: 'var(--md-sys-color-on-primary-container)',
+              }}
+            >
+              <GitCompare className="w-6 h-6" />
+            </div>
             <span>Сравнительный анализ сценариев DAOS</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Многокритериальная оценка сценариев развития в DAOS (Digital Agro Optimization System): «What-if» сопоставление маржинальности, климатических рисков и кормовой безопасности
+          <p className="m3-body-small mt-1" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
+            Многокритериальная оценка сценариев развития DAOS: сопоставление маржинальности, климатических рисков и кормовой безопасности
           </p>
         </div>
       </div>
 
       {/* Selectors Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div className="bg-white/80 border border-emerald-500/30 rounded-2xl p-4 shadow-xl backdrop-blur-md">
-          <div className="flex items-center justify-between mb-2">
-            <label className="text-xs font-bold text-emerald-700 uppercase tracking-wider flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              Сценарий А (Базовый)
-            </label>
-            <span className="text-[11px] font-mono text-emerald-700 font-bold">
-              {profitA.toLocaleString()} BYN
-            </span>
+        <M3Card variant="outlined" className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'var(--md-sys-color-primary)' }} />
+              <span className="m3-label-medium font-bold uppercase tracking-wider" style={{ color: 'var(--md-sys-color-primary)' }}>
+                Сценарий А (Базовый)
+              </span>
+            </div>
+            <M3Badge variant="primary" size="md">
+              {profitA.toLocaleString('ru-RU')} BYN
+            </M3Badge>
           </div>
           <select
             value={scenarioA}
             onChange={(e) => setScenarioA(e.target.value)}
-            className="w-full bg-slate-50/80 border border-slate-200 rounded-xl p-2.5 text-sm text-slate-900 outline-none focus:border-emerald-500 font-medium"
+            className="w-full rounded-[12px] p-2.5 m3-body-medium outline-none border transition-colors cursor-pointer"
+            style={{
+              backgroundColor: 'var(--md-sys-color-surface-container-high)',
+              borderColor: 'var(--md-sys-color-outline-variant)',
+              color: 'var(--md-sys-color-on-surface)',
+            }}
           >
             {scenarios.map((s) => (
               <option key={s.scenario_id} value={s.scenario_id}>
@@ -175,22 +195,29 @@ export const ComparisonPage: React.FC = () => {
               </option>
             ))}
           </select>
-        </div>
+        </M3Card>
 
-        <div className="bg-white/80 border border-blue-500/30 rounded-2xl p-4 shadow-xl backdrop-blur-md">
-          <div className="flex items-center justify-between mb-2">
-            <label className="text-xs font-bold text-sky-700 uppercase tracking-wider flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-blue-400" />
-              Сценарий Б (Сравниваемый)
-            </label>
-            <span className="text-[11px] font-mono text-sky-700 font-bold">
-              {profitB.toLocaleString()} BYN
-            </span>
+        <M3Card variant="outlined" className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-sky-600" />
+              <span className="m3-label-medium font-bold uppercase tracking-wider text-sky-600">
+                Сценарий Б (Сравниваемый)
+              </span>
+            </div>
+            <M3Badge variant="secondary" size="md">
+              {profitB.toLocaleString('ru-RU')} BYN
+            </M3Badge>
           </div>
           <select
             value={scenarioB}
             onChange={(e) => setScenarioB(e.target.value)}
-            className="w-full bg-slate-50/80 border border-slate-200 rounded-xl p-2.5 text-sm text-slate-900 outline-none focus:border-blue-500 font-medium"
+            className="w-full rounded-[12px] p-2.5 m3-body-medium outline-none border transition-colors cursor-pointer"
+            style={{
+              backgroundColor: 'var(--md-sys-color-surface-container-high)',
+              borderColor: 'var(--md-sys-color-outline-variant)',
+              color: 'var(--md-sys-color-on-surface)',
+            }}
           >
             {scenarios.map((s) => (
               <option key={s.scenario_id} value={s.scenario_id}>
@@ -198,27 +225,43 @@ export const ComparisonPage: React.FC = () => {
               </option>
             ))}
           </select>
-        </div>
+        </M3Card>
       </div>
 
-      {/* Delta Banner */}
-      <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 flex flex-wrap items-center justify-between gap-4 shadow-xs">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-2xs">
-            <Scale className="w-5 h-5 text-emerald-700" />
+      {/* Delta Banner in M3 Primary Container */}
+      <div
+        className="p-5 rounded-[20px] border flex flex-wrap items-center justify-between gap-4 transition-all"
+        style={{
+          backgroundColor: 'var(--md-sys-color-primary-container)',
+          borderColor: 'var(--md-sys-color-primary)',
+          color: 'var(--md-sys-color-on-primary-container)',
+        }}
+      >
+        <div className="flex items-center gap-3.5">
+          <div
+            className="p-3 rounded-[16px] flex items-center justify-center shadow-sm"
+            style={{
+              backgroundColor: 'var(--md-sys-color-surface)',
+              color: 'var(--md-sys-color-primary)',
+            }}
+          >
+            <Scale className="w-6 h-6" />
           </div>
           <div>
-            <div className="text-xs text-emerald-800 uppercase font-bold tracking-wider">
+            <div className="m3-label-small uppercase tracking-wider font-bold opacity-80">
               Чистая финансовая дельта (Сценарий А vs Б)
             </div>
-            <div className="text-xl font-extrabold font-mono text-emerald-700">
-              +{profitDelta > 0 ? profitDelta.toLocaleString('ru-RU') : 0} BYN ({profitDeltaPct}%)
+            <div className="m3-headline-small font-mono font-bold flex items-center gap-2 mt-0.5">
+              <span>+{profitDelta > 0 ? profitDelta.toLocaleString('ru-RU') : 0} BYN</span>
+              <span className="m3-label-medium px-2 py-0.5 rounded-full bg-white/20">
+                +{profitDeltaPct}%
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="text-xs text-slate-600 max-w-md sm:text-right leading-relaxed">
-          Сценарий А обеспечивает преимущество за счет более точной оптимизации внесения NPK и сбалансированной структуры рационов КРС.
+        <div className="m3-body-small max-w-md sm:text-right opacity-90 leading-relaxed">
+          Сценарий А обеспечивает экономическое преимущество за счет оптимизации доз NPK и сбалансированной структуры севооборота и рационов КРС.
         </div>
       </div>
 
@@ -226,76 +269,99 @@ export const ComparisonPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Radar Trade-off (5 cols) */}
         <div className="lg:col-span-5">
-          <Card
+          <M3Card
             title="Многокритериальный агро-радар"
             subtitle="Сопоставление стратегических преимуществ и рисков"
+            variant="elevated"
           >
             <div className="h-80 w-full">
               <ReactECharts option={getRadarChartOption()} style={{ height: '100%', width: '100%' }} />
             </div>
-          </Card>
+          </M3Card>
         </div>
 
         {/* Bar Chart (7 cols) */}
         <div className="lg:col-span-7">
-          <Card
-            title="Сравнение ключевых финансовых показателей"
+          <M3Card
+            title="Сравнение ключевых показателей"
             subtitle="Выручка, затраты и ресурсные потребности"
+            variant="elevated"
           >
             <div className="h-80 w-full">
               <ReactECharts option={getComparisonChartOption()} style={{ height: '100%', width: '100%' }} />
             </div>
-          </Card>
+          </M3Card>
         </div>
       </div>
 
       {/* Delta Table */}
-      <Card title="Сравнительная ведомость показателей" subtitle="Построчный анализ различий между сценариями">
+      <M3Card
+        title="Сравнительная ведомость показателей"
+        subtitle="Построчный анализ различий между сценариями"
+        variant="elevated"
+      >
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-xs font-semibold uppercase text-slate-500">
+          <table className="w-full text-left m3-body-medium">
+            <thead
+              className="border-b m3-label-small uppercase"
+              style={{
+                borderColor: 'var(--md-sys-color-outline-variant)',
+                color: 'var(--md-sys-color-on-surface-variant)',
+              }}
+            >
               <tr>
-                <th className="py-3 px-4">Показатель эффективности</th>
-                <th className="py-3 px-4 text-emerald-700">Сценарий А</th>
-                <th className="py-3 px-4 text-sky-700">Сценарий Б</th>
-                <th className="py-3 px-4 text-right">Разница (Дельта)</th>
+                <th className="py-3.5 px-4 font-semibold">Показатель эффективности</th>
+                <th className="py-3.5 px-4 font-semibold" style={{ color: 'var(--md-sys-color-primary)' }}>Сценарий А</th>
+                <th className="py-3.5 px-4 font-semibold text-sky-600">Сценарий Б</th>
+                <th className="py-3.5 px-4 text-right font-semibold">Разница (Дельта)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 font-mono text-xs">
-              <tr className="hover:bg-slate-100/40">
-                <td className="py-3.5 px-4 font-sans font-semibold text-slate-800">Итоговая чистая прибыль (BYN)</td>
-                <td className="py-3.5 px-4 text-emerald-700 font-bold">2 854 300 BYN</td>
-                <td className="py-3.5 px-4 text-sky-700 font-bold">2 510 000 BYN</td>
-                <td className="py-3.5 px-4 text-right text-emerald-700 font-bold">+344 300 BYN (+13.7%)</td>
+            <tbody
+              className="divide-y font-mono text-xs"
+              style={{
+                borderColor: 'var(--md-sys-color-outline-variant)',
+                color: 'var(--md-sys-color-on-surface)',
+              }}
+            >
+              <tr className="transition-colors hover:bg-black/5 dark:hover:bg-white/5">
+                <td className="py-3.5 px-4 font-sans font-semibold">Итоговая чистая прибыль (BYN)</td>
+                <td className="py-3.5 px-4 font-bold" style={{ color: 'var(--md-sys-color-primary)' }}>2 854 300 BYN</td>
+                <td className="py-3.5 px-4 font-bold text-sky-600">2 510 000 BYN</td>
+                <td className="py-3.5 px-4 text-right font-bold" style={{ color: 'var(--md-sys-color-primary)' }}>
+                  <div className="flex items-center justify-end gap-1">
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                    <span>+344 300 BYN (+13.7%)</span>
+                  </div>
+                </td>
               </tr>
-              <tr className="hover:bg-slate-100/40">
-                <td className="py-3.5 px-4 font-sans text-slate-700">Прибыль растениеводства (BYN)</td>
-                <td className="py-3.5 px-4 text-slate-800">1 547 200 BYN</td>
-                <td className="py-3.5 px-4 text-slate-800">1 320 000 BYN</td>
-                <td className="py-3.5 px-4 text-right text-emerald-700 font-bold">+227 200 BYN</td>
+              <tr className="transition-colors hover:bg-black/5 dark:hover:bg-white/5">
+                <td className="py-3.5 px-4 font-sans" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>Прибыль растениеводства (BYN)</td>
+                <td className="py-3.5 px-4">1 547 200 BYN</td>
+                <td className="py-3.5 px-4">1 320 000 BYN</td>
+                <td className="py-3.5 px-4 text-right font-bold" style={{ color: 'var(--md-sys-color-primary)' }}>+227 200 BYN</td>
               </tr>
-              <tr className="hover:bg-slate-100/40">
-                <td className="py-3.5 px-4 font-sans text-slate-700">Прибыль животноводства (BYN)</td>
-                <td className="py-3.5 px-4 text-slate-800">1 307 100 BYN</td>
-                <td className="py-3.5 px-4 text-slate-800">1 190 000 BYN</td>
-                <td className="py-3.5 px-4 text-right text-emerald-700 font-bold">+117 100 BYN</td>
+              <tr className="transition-colors hover:bg-black/5 dark:hover:bg-white/5">
+                <td className="py-3.5 px-4 font-sans" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>Прибыль животноводства (BYN)</td>
+                <td className="py-3.5 px-4">1 307 100 BYN</td>
+                <td className="py-3.5 px-4">1 190 000 BYN</td>
+                <td className="py-3.5 px-4 text-right font-bold" style={{ color: 'var(--md-sys-color-primary)' }}>+117 100 BYN</td>
               </tr>
-              <tr className="hover:bg-slate-100/40">
-                <td className="py-3.5 px-4 font-sans text-slate-700">Расход минеральных удобрений NPK</td>
-                <td className="py-3.5 px-4 text-slate-800">135 тонн</td>
-                <td className="py-3.5 px-4 text-slate-800">120 тонн</td>
-                <td className="py-3.5 px-4 text-right text-amber-700">+15 тонн (+12.5%)</td>
+              <tr className="transition-colors hover:bg-black/5 dark:hover:bg-white/5">
+                <td className="py-3.5 px-4 font-sans" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>Расход минеральных удобрений NPK</td>
+                <td className="py-3.5 px-4">135 тонн</td>
+                <td className="py-3.5 px-4">120 тонн</td>
+                <td className="py-3.5 px-4 text-right font-bold text-amber-600">+15 тонн (+12.5%)</td>
               </tr>
-              <tr className="hover:bg-slate-100/40">
-                <td className="py-3.5 px-4 font-sans text-slate-700">Штраф за монокультуру картофеля</td>
-                <td className="py-3.5 px-4 text-emerald-700">0 BYN</td>
-                <td className="py-3.5 px-4 text-rose-700">16 000 BYN</td>
-                <td className="py-3.5 px-4 text-right text-emerald-700">-16 000 BYN (Соблюдено)</td>
+              <tr className="transition-colors hover:bg-black/5 dark:hover:bg-white/5">
+                <td className="py-3.5 px-4 font-sans" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>Штраф за монокультуру картофеля</td>
+                <td className="py-3.5 px-4" style={{ color: 'var(--md-sys-color-primary)' }}>0 BYN</td>
+                <td className="py-3.5 px-4 text-red-500">16 000 BYN</td>
+                <td className="py-3.5 px-4 text-right font-bold" style={{ color: 'var(--md-sys-color-primary)' }}>-16 000 BYN (Соблюдено)</td>
               </tr>
             </tbody>
           </table>
         </div>
-      </Card>
+      </M3Card>
     </div>
   );
 };

@@ -1,22 +1,27 @@
 import React, { useState } from 'react';
-import { CloudRain, Thermometer, Wind, Droplets, Sun, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { CloudRain, Thermometer, Wind, Droplets, Sun, ShieldAlert } from 'lucide-react';
 import type { WeatherSummary } from '../../types';
+import { M3Badge } from '../m3/M3Badge';
+import { M3SegmentedButton } from '../m3/M3SegmentedButton';
 
 interface AgroWeatherWidgetProps {
   weatherData?: WeatherSummary[];
   className?: string;
 }
 
-const DEFAULT_WEATHER: Record<number, {
-  temp: number;
-  rain: number;
-  gtk: number;
-  moisturePct: number;
-  eto: number;
-  gdd: number;
-  isDrought: boolean;
-  droughtLevel: string;
-}> = {
+const DEFAULT_WEATHER: Record<
+  number,
+  {
+    temp: number;
+    rain: number;
+    gtk: number;
+    moisturePct: number;
+    eto: number;
+    gdd: number;
+    isDrought: boolean;
+    droughtLevel: string;
+  }
+> = {
   2024: {
     temp: 7.8,
     rain: 650,
@@ -49,158 +54,140 @@ const DEFAULT_WEATHER: Record<number, {
   },
 };
 
-export const AgroWeatherWidget: React.FC<AgroWeatherWidgetProps> = ({ weatherData: _weatherData = [], className = '' }) => {
+export const AgroWeatherWidget: React.FC<AgroWeatherWidgetProps> = ({
+  weatherData: _weatherData = [],
+  className = '',
+}) => {
   const [selectedYear, setSelectedYear] = useState<number>(2024);
-
-  // Merge with API data if available
   const current = DEFAULT_WEATHER[selectedYear] || DEFAULT_WEATHER[2024];
 
   return (
-    <div className={`bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xl backdrop-blur-md relative overflow-hidden ${className}`}>
+    <div
+      className={`bg-[var(--md-sys-color-surface-container-low)] text-[var(--md-sys-color-on-surface)] border border-[var(--md-sys-color-outline-variant)]/40 rounded-[20px] p-5 shadow-[var(--md-sys-elevation-1)] relative overflow-hidden transition-all ${className}`}
+    >
       {/* Background glow when drought year selected */}
       {current.isDrought && (
-        <div className="absolute top-0 right-0 w-72 h-72 bg-rose-500/10 rounded-full blur-3xl pointer-events-none animate-pulse" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--md-sys-color-error-container)]/30 rounded-full blur-3xl pointer-events-none" />
       )}
 
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
-        <div className="flex items-center gap-2.5">
-          <div className={`p-2 rounded-xl border ${current.isDrought ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
-            {current.isDrought ? <ShieldAlert className="w-5 h-5 animate-bounce" /> : <Sun className="w-5 h-5" />}
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3.5 border-b border-[var(--md-sys-color-outline-variant)]/30">
+        <div className="flex items-center gap-3">
+          <div
+            className={`w-10 h-10 rounded-full flex items-center justify-center shadow-xs ${
+              current.isDrought
+                ? 'bg-[var(--md-sys-color-error-container)] text-[var(--md-sys-color-on-error-container)]'
+                : 'bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)]'
+            }`}
+          >
+            {current.isDrought ? (
+              <ShieldAlert className="w-5 h-5" />
+            ) : (
+              <Sun className="w-5 h-5" />
+            )}
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-bold text-slate-900">
+              <h3 className="text-sm font-bold tracking-tight text-[var(--md-sys-color-on-surface)]">
                 Агроклиматическая станция DAOS
               </h3>
               {current.isDrought ? (
-                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
-                  Угроза засухи (&lt;480 мм)
-                </span>
+                <M3Badge tone="error" size="sm">
+                  Засуха (&lt;480 мм)
+                </M3Badge>
               ) : (
-                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <CheckCircle2 className="w-3 h-3" />
-                  Благоприятно
-                </span>
+                <M3Badge tone="primary" size="sm">
+                  Оптимум
+                </M3Badge>
               )}
             </div>
-            <p className="text-[11px] text-slate-500 font-mono">
-              Метеопост: DAOS-Агрометео • Координаты 53°54′ N
+            <p className="text-[11px] text-[var(--md-sys-color-on-surface-variant)]">
+              Метеомониторинг и гидротермический коэффициент Селянинова (ГТК)
             </p>
           </div>
         </div>
 
-        {/* Year Pills */}
-        <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl p-1 text-xs font-mono">
-          {[2024, 2025, 2026].map((year) => {
-            const isYearDrought = year === 2026;
-            return (
-              <button
-                key={year}
-                onClick={() => setSelectedYear(year)}
-                className={`px-3 py-1 rounded-lg transition-all flex items-center gap-1.5 ${
-                  selectedYear === year
-                    ? isYearDrought
-                      ? 'bg-rose-600 text-white font-bold shadow-md shadow-rose-950'
-                      : 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-950'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-                }`}
-              >
-                <span>{year}</span>
-                {isYearDrought && <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />}
-              </button>
-            );
-          })}
-        </div>
+        {/* Year Selector */}
+        <M3SegmentedButton
+          size="sm"
+          options={[
+            { value: 2024, label: '2024' },
+            { value: 2025, label: '2025' },
+            { value: 2026, label: '2026' },
+          ]}
+          value={selectedYear}
+          onChange={(yr) => setSelectedYear(Number(yr))}
+        />
       </div>
 
-      {/* Main Telemetry Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-4">
+      {/* Grid of Weather Metrics */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
         {/* Metric 1: Temp */}
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
-          <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-            <span>Ср. Температура</span>
-            <Thermometer className="w-3.5 h-3.5 text-amber-500" />
+        <div className="p-3.5 rounded-[16px] bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)]/30">
+          <div className="flex items-center gap-2 text-[var(--md-sys-color-on-surface-variant)] text-xs mb-1">
+            <Thermometer className="w-4 h-4 text-amber-500" />
+            <span>Среднегодовая t°</span>
           </div>
-          <div className="text-lg font-bold font-mono text-slate-900">
-            +{current.temp} °C
+          <div className="text-xl font-bold font-mono text-[var(--md-sys-color-on-surface)]">
+            +{current.temp}°C
           </div>
-          <div className="text-[10px] text-slate-500 mt-1">
-            Вегетац. период
+          <div className="text-[10px] text-[var(--md-sys-color-on-surface-variant)] mt-0.5">
+            GDD (&gt;10°C): {current.gdd}
           </div>
         </div>
 
-        {/* Metric 2: Rain */}
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
-          <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+        {/* Metric 2: Precipitation */}
+        <div className="p-3.5 rounded-[16px] bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)]/30">
+          <div className="flex items-center gap-2 text-[var(--md-sys-color-on-surface-variant)] text-xs mb-1">
+            <CloudRain className="w-4 h-4 text-sky-500" />
             <span>Осадки за год</span>
-            <CloudRain className="w-3.5 h-3.5 text-sky-600" />
           </div>
-          <div className={`text-lg font-bold font-mono ${current.isDrought ? 'text-rose-600' : 'text-sky-700'}`}>
+          <div className="text-xl font-bold font-mono text-[var(--md-sys-color-on-surface)]">
             {current.rain} мм
           </div>
-          <div className="text-[10px] text-slate-500 mt-1">
-            {current.isDrought ? 'Дефицит: -210 мм' : 'Норма для региона'}
+          <div className="text-[10px] text-[var(--md-sys-color-on-surface-variant)] mt-0.5">
+            Испаряемость: {current.eto} мм/день
           </div>
         </div>
 
-        {/* Metric 3: GTK (Hydrothermal) */}
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
-          <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+        {/* Metric 3: GTK Index */}
+        <div className="p-3.5 rounded-[16px] bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)]/30">
+          <div className="flex items-center gap-2 text-[var(--md-sys-color-on-surface-variant)] text-xs mb-1">
+            <Droplets className="w-4 h-4 text-[var(--md-sys-color-primary)]" />
             <span>Индекс ГТК</span>
-            <Droplets className="w-3.5 h-3.5 text-teal-600" />
           </div>
-          <div className={`text-lg font-bold font-mono ${current.gtk < 0.8 ? 'text-rose-600' : current.gtk < 1.1 ? 'text-amber-600' : 'text-emerald-700'}`}>
+          <div
+            className={`text-xl font-bold font-mono ${
+              current.gtk < 1.0
+                ? 'text-[var(--md-sys-color-error)]'
+                : 'text-[var(--md-sys-color-primary)]'
+            }`}
+          >
             {current.gtk}
           </div>
-          <div className="text-[10px] text-slate-500 mt-1 truncate">
+          <div className="text-[10px] text-[var(--md-sys-color-on-surface-variant)] mt-0.5 truncate">
             {current.droughtLevel}
           </div>
         </div>
 
         {/* Metric 4: Soil Moisture */}
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
-          <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-            <span>Влага почвы (0-20см)</span>
-            <span className="w-2 h-2 rounded-full bg-sky-500" />
+        <div className="p-3.5 rounded-[16px] bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)]/30">
+          <div className="flex items-center gap-2 text-[var(--md-sys-color-on-surface-variant)] text-xs mb-1">
+            <Wind className="w-4 h-4 text-teal-500" />
+            <span>Влажность почвы</span>
           </div>
-          <div className={`text-lg font-bold font-mono ${current.moisturePct < 50 ? 'text-rose-600' : 'text-sky-700'}`}>
+          <div className="text-xl font-bold font-mono text-[var(--md-sys-color-on-surface)]">
             {current.moisturePct}%
           </div>
-          <div className="w-full bg-slate-200 rounded-full h-1.5 mt-1.5 overflow-hidden">
+          <div className="w-full bg-[var(--md-sys-color-surface-container-highest)] h-1.5 rounded-full mt-2 overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${current.moisturePct < 50 ? 'bg-rose-500' : 'bg-sky-500'}`}
+              className={`h-full rounded-full ${
+                current.moisturePct < 50
+                  ? 'bg-[var(--md-sys-color-error)]'
+                  : 'bg-[var(--md-sys-color-primary)]'
+              }`}
               style={{ width: `${current.moisturePct}%` }}
             />
-          </div>
-        </div>
-
-        {/* Metric 5: GDD */}
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
-          <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-            <span>Сумма ΣT &gt; 10°C</span>
-            <Sun className="w-3.5 h-3.5 text-amber-400" />
-          </div>
-          <div className="text-lg font-bold font-mono text-slate-900">
-            {current.gdd} °C
-          </div>
-          <div className="text-[10px] text-slate-500 mt-1">
-            Теплообеспеч.
-          </div>
-        </div>
-
-        {/* Metric 6: ETo */}
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
-          <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-            <span>Испарение ETo</span>
-            <Wind className="w-3.5 h-3.5 text-slate-500" />
-          </div>
-          <div className="text-lg font-bold font-mono text-slate-900">
-            {current.eto} мм/сут
-          </div>
-          <div className="text-[10px] text-slate-500 mt-1">
-            Пенман-Монтейт
           </div>
         </div>
       </div>

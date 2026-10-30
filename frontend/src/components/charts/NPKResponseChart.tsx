@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { Sprout, Info } from 'lucide-react';
-import { Card } from '../common/Card';
+import { M3Card } from '../m3/M3Card';
+import { M3SegmentedButton } from '../m3/M3SegmentedButton';
+import { M3Badge } from '../m3/M3Badge';
 
 interface CropProfile {
   name: string;
@@ -29,9 +31,9 @@ const CROP_PROFILES: Record<string, CropProfile> = {
     costPerKgNpk: 2.7,
     cropPricePerTs: 46.0,
     soils: [
-      { name: 'Чернозём типичный', color: '#10b981', b0: 38, b1: 0.26, b2: 0.00062, optimalKg: 175 },
-      { name: 'Дерново-подзолистый суглинок', color: '#38bdf8', b0: 27, b1: 0.22, b2: 0.00058, optimalKg: 155 },
-      { name: 'Супесь связная', color: '#f59e0b', b0: 19, b1: 0.17, b2: 0.00052, optimalKg: 130 },
+      { name: 'Чернозём типичный', color: '#006d42', b0: 38, b1: 0.26, b2: 0.00062, optimalKg: 175 },
+      { name: 'Дерново-подзолистый суглинок', color: '#3a6470', b0: 27, b1: 0.22, b2: 0.00058, optimalKg: 155 },
+      { name: 'Супесь связная', color: '#8b5000', b0: 19, b1: 0.17, b2: 0.00052, optimalKg: 130 },
     ],
   },
   barley: {
@@ -42,9 +44,9 @@ const CROP_PROFILES: Record<string, CropProfile> = {
     costPerKgNpk: 2.7,
     cropPricePerTs: 40.0,
     soils: [
-      { name: 'Чернозём типичный', color: '#10b981', b0: 32, b1: 0.23, b2: 0.00060, optimalKg: 160 },
-      { name: 'Дерново-подзолистый суглинок', color: '#38bdf8', b0: 24, b1: 0.20, b2: 0.00056, optimalKg: 145 },
-      { name: 'Супесь связная', color: '#f59e0b', b0: 17, b1: 0.15, b2: 0.00050, optimalKg: 120 },
+      { name: 'Чернозём типичный', color: '#006d42', b0: 32, b1: 0.23, b2: 0.0006, optimalKg: 160 },
+      { name: 'Дерново-подзолистый суглинок', color: '#3a6470', b0: 24, b1: 0.2, b2: 0.00056, optimalKg: 145 },
+      { name: 'Супесь связная', color: '#8b5000', b0: 17, b1: 0.15, b2: 0.0005, optimalKg: 120 },
     ],
   },
   rapeseed: {
@@ -55,9 +57,9 @@ const CROP_PROFILES: Record<string, CropProfile> = {
     costPerKgNpk: 2.7,
     cropPricePerTs: 98.0,
     soils: [
-      { name: 'Чернозём типичный', color: '#10b981', b0: 22, b1: 0.16, b2: 0.00042, optimalKg: 165 },
-      { name: 'Дерново-подзолистый суглинок', color: '#38bdf8', b0: 16, b1: 0.14, b2: 0.00040, optimalKg: 150 },
-      { name: 'Супесь связная', color: '#f59e0b', b0: 11, b1: 0.11, b2: 0.00038, optimalKg: 125 },
+      { name: 'Чернозём типичный', color: '#006d42', b0: 22, b1: 0.16, b2: 0.00042, optimalKg: 165 },
+      { name: 'Дерново-подзолистый суглинок', color: '#3a6470', b0: 16, b1: 0.14, b2: 0.0004, optimalKg: 150 },
+      { name: 'Супесь связная', color: '#8b5000', b0: 11, b1: 0.11, b2: 0.00038, optimalKg: 125 },
     ],
   },
   corn_silage: {
@@ -68,9 +70,9 @@ const CROP_PROFILES: Record<string, CropProfile> = {
     costPerKgNpk: 2.7,
     cropPricePerTs: 8.5,
     soils: [
-      { name: 'Чернозём типичный', color: '#10b981', b0: 280, b1: 1.85, b2: 0.0042, optimalKg: 200 },
-      { name: 'Дерново-подзолистый суглинок', color: '#38bdf8', b0: 220, b1: 1.60, b2: 0.0040, optimalKg: 180 },
-      { name: 'Супесь связная', color: '#f59e0b', b0: 160, b1: 1.25, b2: 0.0036, optimalKg: 150 },
+      { name: 'Чернозём типичный', color: '#006d42', b0: 280, b1: 1.85, b2: 0.0042, optimalKg: 200 },
+      { name: 'Дерново-подзолистый суглинок', color: '#3a6470', b0: 220, b1: 1.6, b2: 0.004, optimalKg: 180 },
+      { name: 'Супесь связная', color: '#8b5000', b0: 160, b1: 1.25, b2: 0.0036, optimalKg: 150 },
     ],
   },
 };
@@ -115,17 +117,18 @@ export const NPKResponseChart: React.FC = () => {
     backgroundColor: 'transparent',
     tooltip: {
       trigger: 'axis',
-      backgroundColor: '#ffffff',
-      borderColor: '#e2e8f0',
+      backgroundColor: 'rgba(28, 33, 29, 0.95)',
+      borderColor: 'rgba(113, 121, 113, 0.3)',
       borderWidth: 1,
-      textStyle: { color: '#0f172a', fontSize: 12 }, extraCssText: 'box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 8px;',
+      textStyle: { color: '#e0e4dc', fontSize: 12 },
+      extraCssText: 'box-shadow: 0 4px 12px rgba(0,0,0,0.25); border-radius: 12px; backdrop-filter: blur(8px);',
       formatter: (params: any) => {
         const dose = params[0].axisValue;
-        let str = `<div class="font-semibold text-emerald-700 mb-1">Доза NPK: ${dose} кг д.в./га</div>`;
+        let str = `<div style="font-weight:700; color:#76dba4; margin-bottom:4px;">Доза NPK: ${dose} кг д.в./га</div>`;
         params.forEach((p: any) => {
           str += `<div style="display:flex; justify-content:space-between; gap:16px; margin-top:2px;">
-            <span style="color:#64748b">${p.marker} ${p.seriesName}:</span>
-            <span style="font-weight:600; color:#0f172a">${p.value} ц/га</span>
+            <span style="color:#c1c9bf">${p.marker} ${p.seriesName}:</span>
+            <span style="font-weight:700; color:#e0e4dc">${p.value} ц/га</span>
           </div>`;
         });
         return str;
@@ -133,7 +136,7 @@ export const NPKResponseChart: React.FC = () => {
     },
     legend: {
       data: crop.soils.map((s) => s.name),
-      textStyle: { color: '#475569', fontSize: 11 },
+      textStyle: { color: '#c1c9bf', fontSize: 11 },
       top: 0,
       icon: 'roundRect',
     },
@@ -143,56 +146,50 @@ export const NPKResponseChart: React.FC = () => {
       name: 'Доза NPK (кг д.в./га)',
       nameLocation: 'middle',
       nameGap: 28,
-      nameTextStyle: { color: '#64748b', fontSize: 11 },
+      nameTextStyle: { color: '#c1c9bf', fontSize: 11 },
       data: DOSES.map(String),
-      axisLine: { lineStyle: { color: '#cbd5e1' } },
-      axisLabel: { color: '#64748b', fontSize: 11 },
-      splitLine: { show: true, lineStyle: { color: '#f1f5f9' } },
+      axisLine: { lineStyle: { color: 'rgba(113, 121, 113, 0.4)' } },
+      axisLabel: { color: '#c1c9bf', fontSize: 11 },
+      splitLine: { show: true, lineStyle: { color: 'rgba(113, 121, 113, 0.15)' } },
     },
     yAxis: {
       type: 'value',
       name: 'Урожайность (ц/га)',
-      nameTextStyle: { color: '#64748b', fontSize: 11 },
-      axisLine: { lineStyle: { color: '#cbd5e1' } },
-      splitLine: { lineStyle: { color: '#f1f5f9' } },
-      axisLabel: { color: '#64748b', fontSize: 11 },
+      nameTextStyle: { color: '#c1c9bf', fontSize: 11 },
+      axisLine: { lineStyle: { color: 'rgba(113, 121, 113, 0.4)' } },
+      splitLine: { lineStyle: { color: 'rgba(113, 121, 113, 0.15)' } },
+      axisLabel: { color: '#c1c9bf', fontSize: 11 },
     },
     series,
   };
 
   return (
-    <Card className="border-slate-200 bg-white p-5 shadow-xs">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+    <M3Card variant="elevated" className="p-5 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-4 border-b border-[var(--md-sys-color-outline-variant)]/30">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-full bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] flex items-center justify-center shadow-xs">
               <Sprout className="w-4 h-4" />
             </div>
-            <h3 className="font-semibold text-slate-900 text-base">
+            <h3 className="font-bold text-[var(--md-sys-color-on-surface)] text-base tracking-tight">
               Кривая агрономического отклика урожайности на дозы NPK
             </h3>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-[var(--md-sys-color-on-surface-variant)] mt-1">
             Модель Митчерлиха-Бауле с эффектом убывающей отдачи по гранулометрическим типам почв РБ
           </p>
         </div>
 
         {/* Crop Selector */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-100 border border-slate-200 rounded-lg self-start sm:self-auto overflow-x-auto">
-          {Object.values(CROP_PROFILES).map((cp) => (
-            <button
-              key={cp.code}
-              onClick={() => setSelectedCrop(cp.code)}
-              className={`px-3 py-1 text-xs font-medium rounded-md transition-colors whitespace-nowrap ${
-                selectedCrop === cp.code
-                  ? 'bg-emerald-700 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white'
-              }`}
-            >
-              {cp.name}
-            </button>
-          ))}
-        </div>
+        <M3SegmentedButton
+          size="sm"
+          options={Object.values(CROP_PROFILES).map((cp) => ({
+            value: cp.code,
+            label: cp.name,
+          }))}
+          value={selectedCrop}
+          onChange={(val) => setSelectedCrop(String(val))}
+        />
       </div>
 
       <div className="h-72 w-full">
@@ -200,24 +197,24 @@ export const NPKResponseChart: React.FC = () => {
       </div>
 
       {/* Soil metrics cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 pt-3 border-t border-slate-100">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 pt-3.5 border-t border-[var(--md-sys-color-outline-variant)]/30">
         {crop.soils.map((s) => (
           <div
             key={s.name}
-            className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs flex flex-col justify-between"
+            className="bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)]/30 rounded-[14px] p-3.5 text-xs flex flex-col justify-between"
           >
             <div className="flex items-center justify-between">
-              <span className="font-medium text-slate-800 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: s.color }} />
+              <span className="font-bold text-[var(--md-sys-color-on-surface)] flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: s.color }} />
                 {s.name}
               </span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-mono">
+              <M3Badge tone="neutral" size="sm">
                 Оптимум: {s.optimalKg} кг/га
-              </span>
+              </M3Badge>
             </div>
-            <div className="mt-2 text-slate-600 text-[11px] leading-relaxed">
+            <div className="mt-2 text-[var(--md-sys-color-on-surface-variant)] text-[11px] leading-relaxed">
               Предельная окупаемость: 1 кг NPK даёт{' '}
-              <span className="text-emerald-700 font-bold">
+              <span className="text-[var(--md-sys-color-primary)] font-bold">
                 {((s.b1 - 2 * s.b2 * 120) * 100).toFixed(0)} кг зерна
               </span>{' '}
               при дозе 120 кг/га.
@@ -226,13 +223,13 @@ export const NPKResponseChart: React.FC = () => {
         ))}
       </div>
 
-      <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-        <Info className="w-4 h-4 text-emerald-600 shrink-0" />
+      <div className="mt-3.5 flex items-center gap-2.5 text-[11px] text-[var(--md-sys-color-on-surface-variant)] bg-[var(--md-sys-color-surface-container)] p-3 rounded-[12px] border border-[var(--md-sys-color-outline-variant)]/30">
+        <Info className="w-4 h-4 text-[var(--md-sys-color-primary)] shrink-0" />
         <span>
           При превышении точки перегиба (&gt;180 кг/га) маржинальные затраты на удобрения превышают стоимость
           дополнительного прироста зерна (закон убывающего плодородия Либиха-Митчерлиха).
         </span>
       </div>
-    </Card>
+    </M3Card>
   );
 };

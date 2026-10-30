@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { DollarSign } from 'lucide-react';
-import { Card } from '../common/Card';
+import { M3Card } from '../m3/M3Card';
+import { M3SegmentedButton } from '../m3/M3SegmentedButton';
 import type { OptimizationResult } from '../../types';
 
 interface WaterfallMarginChartProps {
@@ -17,14 +18,14 @@ export const WaterfallMarginChart: React.FC<WaterfallMarginChartProps> = ({ resu
 
   const currentYear = results.years[selectedYearIndex] || results.years[0];
 
-  // Derive realistic financial breakdown components based on currentYear
   const cropRev = currentYear.crop_profit * 2.35;
-  const livestockRev = currentYear.livestock_profit * 2.10;
+  const livestockRev = currentYear.livestock_profit * 2.1;
   const seedCosts = -(cropRev * 0.18);
   const npkCosts = -(cropRev * 0.22);
   const feedCosts = -(livestockRev * 0.38);
   const machineryFuel = -(cropRev * 0.16 + livestockRev * 0.12);
-  const microclimatePenalty = currentYear.weather_rain && currentYear.weather_rain < 450 ? -85000 : 0;
+  const microclimatePenalty =
+    currentYear.weather_rain && currentYear.weather_rain < 450 ? -85000 : 0;
   const netMargin = currentYear.total_profit;
 
   const rawItems = [
@@ -40,7 +41,6 @@ export const WaterfallMarginChart: React.FC<WaterfallMarginChartProps> = ({ resu
     { name: 'Чистая операционная прибыль', value: Math.round(netMargin), type: 'total' },
   ];
 
-  // Build Waterfall running sum
   const categories: string[] = [];
   const placeholderData: number[] = [];
   const positiveData: (number | string)[] = [];
@@ -63,7 +63,6 @@ export const WaterfallMarginChart: React.FC<WaterfallMarginChartProps> = ({ resu
       totalData.push('-');
       running += item.value;
     } else {
-      // cost
       const absVal = Math.abs(item.value);
       running -= absVal;
       placeholderData.push(running);
@@ -78,42 +77,48 @@ export const WaterfallMarginChart: React.FC<WaterfallMarginChartProps> = ({ resu
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow' },
-      backgroundColor: '#ffffff',
-      borderColor: '#e2e8f0',
+      backgroundColor: 'rgba(28, 33, 29, 0.95)',
+      borderColor: 'rgba(113, 121, 113, 0.3)',
       borderWidth: 1,
-      textStyle: { color: '#0f172a', fontSize: 12 }, extraCssText: 'box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 8px;',
+      textStyle: { color: '#e0e4dc', fontSize: 12 },
+      extraCssText: 'box-shadow: 0 4px 12px rgba(0,0,0,0.25); border-radius: 12px; backdrop-filter: blur(8px);',
       formatter: (params: any) => {
         const item = rawItems[params[0].dataIndex];
         const sign = item.value > 0 && item.type !== 'total' ? '+' : '';
-        const color = item.type === 'inflow' ? '#047857' : item.type === 'cost' ? '#e11d48' : '#0284c7';
-        return `<div style="font-weight:700; color:#0f172a; margin-bottom:4px;">${item.name}</div>
-          <div style="color: ${color}; font-weight:800; font-size:13px;">
+        const color =
+          item.type === 'inflow'
+            ? '#76dba4'
+            : item.type === 'cost'
+            ? '#ffb4ab'
+            : '#a2cddb';
+        return `<div style="font-weight:700; color:#e0e4dc; margin-bottom:4px;">${item.name}</div>
+          <div style="color: ${color}; font-weight:800; font-size:13px; font-family: 'JetBrains Mono', monospace;">
             ${sign}${item.value.toLocaleString('ru-RU')} BYN
           </div>`;
       },
     },
-    grid: { left: '3%', right: '4%', bottom: '10%', top: '8%', containLabel: true },
+    grid: { left: '3%', right: '4%', bottom: '12%', top: '8%', containLabel: true },
     xAxis: {
       type: 'category',
       data: categories,
-      axisLine: { lineStyle: { color: '#94a3b8' } },
+      axisLine: { lineStyle: { color: 'rgba(113, 121, 113, 0.4)' } },
       axisLabel: {
-        color: '#334155',
+        color: '#c1c9bf',
         fontSize: 11,
         fontWeight: 500,
         interval: 0,
-        rotate: 20,
+        rotate: 18,
         formatter: (v: string) => (v.length > 18 ? v.substring(0, 16) + '…' : v),
       },
     },
     yAxis: {
       type: 'value',
       name: 'BYN',
-      nameTextStyle: { color: '#475569', fontSize: 11, fontWeight: 600 },
-      axisLine: { lineStyle: { color: '#94a3b8' } },
-      splitLine: { lineStyle: { color: '#f1f5f9' } },
+      nameTextStyle: { color: '#c1c9bf', fontSize: 11, fontWeight: 600 },
+      axisLine: { lineStyle: { color: 'rgba(113, 121, 113, 0.4)' } },
+      splitLine: { lineStyle: { color: 'rgba(113, 121, 113, 0.15)' } },
       axisLabel: {
-        color: '#475569',
+        color: '#c1c9bf',
         fontSize: 11,
         formatter: (v: number) => `${(v / 1000).toFixed(0)}k`,
       },
@@ -133,8 +138,8 @@ export const WaterfallMarginChart: React.FC<WaterfallMarginChartProps> = ({ resu
         stack: 'all',
         data: positiveData,
         itemStyle: {
-          color: '#10b981',
-          borderRadius: [4, 4, 0, 0],
+          color: '#006d42',
+          borderRadius: [6, 6, 0, 0],
         },
       },
       {
@@ -143,8 +148,8 @@ export const WaterfallMarginChart: React.FC<WaterfallMarginChartProps> = ({ resu
         stack: 'all',
         data: negativeData,
         itemStyle: {
-          color: '#f43f5e',
-          borderRadius: [0, 0, 4, 4],
+          color: '#ba1a1a',
+          borderRadius: [0, 0, 6, 6],
         },
       },
       {
@@ -153,82 +158,66 @@ export const WaterfallMarginChart: React.FC<WaterfallMarginChartProps> = ({ resu
         stack: 'all',
         data: totalData,
         itemStyle: {
-          color: '#0284c7',
-          borderRadius: [4, 4, 0, 0],
+          color: '#3a6470',
+          borderRadius: [6, 6, 0, 0],
         },
       },
     ],
   };
 
   return (
-    <Card className="border-slate-200 bg-white p-5 shadow-xs">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+    <M3Card variant="elevated" className="p-5 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-4 border-b border-[var(--md-sys-color-outline-variant)]/30">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-sky-50 border border-sky-200 text-sky-700">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-full bg-[var(--md-sys-color-tertiary-container)] text-[var(--md-sys-color-on-tertiary-container)] flex items-center justify-center shadow-xs">
               <DollarSign className="w-4 h-4" />
             </div>
-            <h3 className="font-semibold text-slate-900 text-base">
+            <h3 className="font-bold text-[var(--md-sys-color-on-surface)] text-base tracking-tight">
               Водопад формирования маржинальной прибыли (Waterfall Breakdown)
             </h3>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-[var(--md-sys-color-on-surface-variant)] mt-1">
             Декомпозиция выручки, прямых технологических затрат и результирующей чистой прибыли
           </p>
         </div>
 
         {/* Year Selector */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-100 border border-slate-200 rounded-lg">
-          {results.years.map((y, idx) => (
-            <button
-              key={y.year}
-              onClick={() => setSelectedYearIndex(idx)}
-              className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                selectedYearIndex === idx
-                  ? 'bg-sky-700 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white'
-              }`}
-            >
-              {y.year} год
-            </button>
-          ))}
-        </div>
+        <M3SegmentedButton
+          size="sm"
+          options={results.years.map((y, idx) => ({
+            value: idx,
+            label: `${y.year} год`,
+          }))}
+          value={selectedYearIndex}
+          onChange={(val) => setSelectedYearIndex(Number(val))}
+        />
       </div>
 
-      <div className="h-80 w-full">
+      <div className="h-72 w-full">
         <ReactECharts option={option} style={{ height: '100%', width: '100%' }} notMerge={true} />
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-3 border-t border-slate-100 text-xs">
-        <div className="bg-slate-50 border border-slate-200 rounded-lg p-3">
-          <span className="text-slate-500 block text-[11px]">Валовая выручка:</span>
-          <span className="text-emerald-700 font-bold font-mono text-sm mt-0.5 block">
-            +{Math.round(cropRev + livestockRev).toLocaleString('ru-RU')} BYN
-          </span>
+      {/* Summary Chips */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-3.5 border-t border-[var(--md-sys-color-outline-variant)]/30 text-xs">
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)]/40">
+            <span className="w-2.5 h-2.5 rounded-full bg-[var(--md-sys-color-primary)] shrink-0" />
+            <span className="text-[var(--md-sys-color-on-surface)] font-medium">Выручка растениеводства: {Math.round(cropRev).toLocaleString('ru-RU')} BYN</span>
+          </div>
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)]/40">
+            <span className="w-2.5 h-2.5 rounded-full bg-[var(--md-sys-color-primary)] shrink-0" />
+            <span className="text-[var(--md-sys-color-on-surface)] font-medium">Выручка животноводства: {Math.round(livestockRev).toLocaleString('ru-RU')} BYN</span>
+          </div>
         </div>
-        <div className="bg-slate-50 border border-slate-200 rounded-lg p-3">
-          <span className="text-slate-500 block text-[11px]">Технологические затраты:</span>
-          <span className="text-rose-700 font-bold font-mono text-sm mt-0.5 block">
-            {Math.round(seedCosts + npkCosts + feedCosts + machineryFuel).toLocaleString('ru-RU')} BYN
-          </span>
-        </div>
-        <div className="bg-slate-50 border border-slate-200 rounded-lg p-3">
-          <span className="text-slate-500 block text-[11px]">Рентабельность затрат:</span>
-          <span className="text-sky-700 font-bold font-mono text-sm mt-0.5 block">
-            {(
-              (netMargin / Math.abs(seedCosts + npkCosts + feedCosts + machineryFuel)) *
-              100
-            ).toFixed(1)}
-            %
-          </span>
-        </div>
-        <div className="bg-slate-50 border border-slate-200 rounded-lg p-3">
-          <span className="text-slate-500 block text-[11px]">Чистая прибыль:</span>
-          <span className="text-slate-900 font-bold font-mono text-sm mt-0.5 block">
-            {Math.round(netMargin).toLocaleString('ru-RU')} BYN
+
+        <div className="text-right">
+          <span className="text-[var(--md-sys-color-on-surface-variant)] mr-2">Итоговая чистая маржа:</span>
+          <span className="font-extrabold font-['JetBrains_Mono',monospace] text-base text-[var(--md-sys-color-primary)]">
+            {netMargin.toLocaleString('ru-RU')} BYN
           </span>
         </div>
       </div>
-    </Card>
+    </M3Card>
   );
 };

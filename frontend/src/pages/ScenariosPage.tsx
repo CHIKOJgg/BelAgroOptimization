@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Layers, Plus, Copy, Trash2, CheckCircle2, Calendar, TrendingUp } from 'lucide-react';
-import { Badge } from '../components/common/Badge';
+import { M3Card } from '../components/m3/M3Card';
+import { M3Button, M3IconButton } from '../components/m3/M3Button';
+import { M3Badge } from '../components/m3/M3Badge';
+import { M3Dialog } from '../components/m3/M3Dialog';
+import { M3TextField } from '../components/m3/M3TextField';
 import { ConfirmModal } from '../components/common/ConfirmModal';
 import { useScenario } from '../context/ScenarioContext';
 import { useToast } from '../context/ToastContext';
@@ -84,113 +88,138 @@ export const ScenariosPage: React.FC = () => {
       {/* Header & Create Button */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-            <Layers className="w-6 h-6 text-emerald-700" />
+          <h1 className="m3-headline-small flex items-center gap-2.5" style={{ color: 'var(--md-sys-color-on-surface)' }}>
+            <div
+              className="p-2 rounded-[14px] flex items-center justify-center"
+              style={{
+                backgroundColor: 'var(--md-sys-color-primary-container)',
+                color: 'var(--md-sys-color-on-primary-container)',
+              }}
+            >
+              <Layers className="w-6 h-6" />
+            </div>
             <span>Управление сценариями оптимизации DAOS</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Создавайте альтернативные сценарии («What-if» анализ) в системе DAOS (Digital Agro Optimization System) для моделирования различных агроклиматических и экономических условий
+          <p className="m3-body-small mt-1" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
+            Создавайте альтернативные сценарии («What-if» анализ) в системе DAOS для моделирования различных агроклиматических и экономических условий
           </p>
         </div>
 
-        <button
+        <M3Button
+          variant="filled"
+          icon={<Plus className="w-4 h-4" />}
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-emerald-950 transition-all hover:scale-102"
         >
-          <Plus className="w-4 h-4" />
-          <span>Новый сценарий DAOS</span>
-        </button>
+          Новый сценарий DAOS
+        </M3Button>
       </div>
 
       {/* Scenarios Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {scenarios.map((s) => (
-          <div
+          <M3Card
             key={s.scenario_id}
-            className={`bg-white/80 rounded-xl border p-5 flex flex-col justify-between transition-all ${
+            variant={s.is_active ? 'elevated' : 'outlined'}
+            className={`flex flex-col justify-between transition-all duration-200 ${
               s.is_active
-                ? 'border-emerald-500/50 shadow-lg shadow-emerald-950/20 ring-1 ring-emerald-500/30'
-                : 'border-slate-200 hover:border-slate-200'
+                ? 'ring-2'
+                : 'hover:shadow-md'
             }`}
+            style={{
+              borderColor: s.is_active ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-outline-variant)',
+            }}
           >
             <div>
               <div className="flex items-start justify-between gap-2 mb-3">
-                <h3 className="font-bold text-base text-slate-900 line-clamp-1">{s.name}</h3>
+                <h3 className="m3-title-medium line-clamp-1" style={{ color: 'var(--md-sys-color-on-surface)' }}>
+                  {s.name}
+                </h3>
                 {s.is_active ? (
-                  <Badge variant="emerald" className="gap-1 flex items-center">
-                    <CheckCircle2 className="w-3 h-3" />
-                    <span>Активный</span>
-                  </Badge>
+                  <M3Badge variant="primary" size="md" icon={<CheckCircle2 className="w-3.5 h-3.5" />}>
+                    Активный
+                  </M3Badge>
                 ) : (
-                  <Badge variant="slate">Черновик</Badge>
+                  <M3Badge variant="surface" size="md">
+                    Черновик
+                  </M3Badge>
                 )}
               </div>
 
-              <p className="text-xs text-slate-500 min-h-[36px] line-clamp-2">
+              <p className="m3-body-small min-h-[36px] line-clamp-2" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
                 {s.description || 'Описание не указано'}
               </p>
 
-              <div className="mt-4 pt-3 border-t border-slate-200 space-y-2 text-xs text-slate-500">
+              <div
+                className="mt-4 pt-3 space-y-2 m3-body-small border-t"
+                style={{ borderColor: 'var(--md-sys-color-outline-variant)', color: 'var(--md-sys-color-on-surface-variant)' }}
+              >
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
-                    <TrendingUp className="w-3.5 h-3.5 text-emerald-700" />
+                    <TrendingUp className="w-3.5 h-3.5" style={{ color: 'var(--md-sys-color-primary)' }} />
                     <span>Итоговая прибыль:</span>
                   </span>
-                  <span className="font-bold text-slate-800">
+                  <span className="font-mono font-bold" style={{ color: 'var(--md-sys-color-on-surface)' }}>
                     {s.last_profit ? `${s.last_profit.toLocaleString('ru-RU')} BYN` : 'Не рассчитан'}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                    <Calendar className="w-3.5 h-3.5" style={{ color: 'var(--md-sys-color-on-surface-variant)' }} />
                     <span>Создан:</span>
                   </span>
-                  <span>{new Date(s.created_at).toLocaleDateString('ru-RU')}</span>
+                  <span className="font-mono">{new Date(s.created_at).toLocaleDateString('ru-RU')}</span>
                 </div>
 
-                <div className="flex items-center justify-between text-[11px] text-slate-500">
+                <div className="flex items-center justify-between text-[11px]" style={{ color: 'var(--md-sys-color-outline)' }}>
                   <span>Полей: {s.fields_count || 5}</span>
                   <span>Культур: {s.crops_count || 9}</span>
                 </div>
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="mt-5 pt-3 border-t border-slate-200 flex items-center justify-between gap-2">
-              {!s.is_active && (
-                <button
+            {/* Actions Footer */}
+            <div
+              className="mt-5 pt-3 flex items-center justify-between gap-2 border-t"
+              style={{ borderColor: 'var(--md-sys-color-outline-variant)' }}
+            >
+              {!s.is_active ? (
+                <M3Button
+                  variant="tonal"
+                  size="sm"
                   onClick={() => handleActivate(s.scenario_id)}
-                  className="text-xs font-semibold text-emerald-800 hover:text-emerald-950 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
                 >
                   Сделать активным
-                </button>
-              )}
-              {s.is_active && (
-                <span className="text-xs font-bold text-emerald-700 flex items-center gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
+                </M3Button>
+              ) : (
+                <span
+                  className="m3-label-small flex items-center gap-1 font-bold"
+                  style={{ color: 'var(--md-sys-color-primary)' }}
+                >
+                  <CheckCircle2 className="w-4 h-4" />
                   <span>Активен для расчетов</span>
                 </span>
               )}
 
               <div className="flex items-center gap-1">
-                <button
+                <M3IconButton
                   title="Клонировать сценарий"
                   onClick={() => handleClone(s.scenario_id)}
-                  className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                  aria-label="Клонировать сценарий"
                 >
                   <Copy className="w-4 h-4" />
-                </button>
-                <button
+                </M3IconButton>
+                <M3IconButton
                   title="Удалить сценарий"
                   onClick={() => setScenarioToDelete(s.scenario_id)}
-                  className="p-1.5 text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                  aria-label="Удалить сценарий"
+                  className="hover:text-red-600"
                 >
                   <Trash2 className="w-4 h-4" />
-                </button>
+                </M3IconButton>
               </div>
             </div>
-          </div>
+          </M3Card>
         ))}
       </div>
 
@@ -205,72 +234,79 @@ export const ScenariosPage: React.FC = () => {
         onCancel={() => setScenarioToDelete(null)}
       />
 
-      {/* Modal Dialog */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-6 shadow-2xl">
-            <h2 className="text-lg font-bold text-slate-900 mb-4">Создание сценария DAOS</h2>
-            <form onSubmit={handleCreate} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Название сценария *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Например: Засушливое лето 2026 / Высокие цены на молоко"
-                  value={newScenarioName}
-                  onChange={(e) => setNewScenarioName(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 shadow-2xs"
-                />
-              </div>
+      {/* Creation Modal Dialog */}
+      <M3Dialog
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Создание сценария DAOS"
+        maxWidth="md"
+        actions={
+          <>
+            <M3Button
+              variant="text"
+              onClick={() => setIsModalOpen(false)}
+              disabled={isSubmitting}
+            >
+              Отмена
+            </M3Button>
+            <M3Button
+              variant="filled"
+              onClick={handleCreate}
+              loading={isSubmitting}
+            >
+              Создать сценарий
+            </M3Button>
+          </>
+        }
+      >
+        <form onSubmit={handleCreate} className="space-y-4">
+          <M3TextField
+            label="Название сценария"
+            required
+            placeholder="Например: Засушливое лето 2026 / Высокие цены на молоко"
+            value={newScenarioName}
+            onChange={(e) => setNewScenarioName(e.target.value)}
+          />
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Описание и гипотеза
-                </label>
-                <textarea
-                  rows={3}
-                  placeholder="Опишите предпосылки сценария (климат, цены, технологии)..."
-                  value={newScenarioDesc}
-                  onChange={(e) => setNewScenarioDesc(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 shadow-2xs"
-                />
-              </div>
-
-              <div className="flex items-center gap-2 pt-1">
-                <input
-                  type="checkbox"
-                  id="makeActive"
-                  checked={makeActive}
-                  onChange={(e) => setMakeActive(e.target.checked)}
-                  className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 bg-slate-100 border-slate-200"
-                />
-                <label htmlFor="makeActive" className="text-xs text-slate-700 select-none cursor-pointer">
-                  Сразу назначить сценарий активным
-                </label>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-lg text-xs font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
-                >
-                  Отмена
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white shadow-md shadow-emerald-950 transition-all disabled:opacity-50"
-                >
-                  {isSubmitting ? 'Создание...' : 'Создать сценарий'}
-                </button>
-              </div>
-            </form>
+          <div>
+            <label
+              className="block m3-label-medium mb-1.5"
+              style={{ color: 'var(--md-sys-color-on-surface)' }}
+            >
+              Описание и гипотеза
+            </label>
+            <textarea
+              rows={3}
+              placeholder="Опишите предпосылки сценария (климат, цены, технологии)..."
+              value={newScenarioDesc}
+              onChange={(e) => setNewScenarioDesc(e.target.value)}
+              className="w-full rounded-[12px] p-3 m3-body-medium outline-none transition-all duration-200 border"
+              style={{
+                backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                borderColor: 'var(--md-sys-color-outline-variant)',
+                color: 'var(--md-sys-color-on-surface)',
+              }}
+            />
           </div>
-        </div>
-      )}
+
+          <label
+            htmlFor="makeActive"
+            className="flex items-center gap-3 p-2.5 rounded-[12px] cursor-pointer transition-colors"
+            style={{ backgroundColor: 'var(--md-sys-color-surface-container)' }}
+          >
+            <input
+              type="checkbox"
+              id="makeActive"
+              checked={makeActive}
+              onChange={(e) => setMakeActive(e.target.checked)}
+              className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+            />
+            <span className="m3-label-medium select-none" style={{ color: 'var(--md-sys-color-on-surface)' }}>
+              Сразу назначить сценарий активным
+            </span>
+          </label>
+        </form>
+      </M3Dialog>
     </div>
   );
 };

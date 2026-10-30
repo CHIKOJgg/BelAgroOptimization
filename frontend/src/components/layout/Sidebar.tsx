@@ -12,13 +12,16 @@ import {
   BarChart3,
   GitCompare,
   X,
+  Sparkles,
 } from 'lucide-react';
 import { useScenario } from '../../context/ScenarioContext';
+import { useTheme } from '../../context/ThemeContext';
 
 interface NavItem {
   title: string;
   path: string;
   icon: React.ReactNode;
+  badge?: string;
 }
 
 interface SidebarProps {
@@ -27,145 +30,141 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
-  const { activeScenario } = useScenario();
+  const { activeScenario, scenarios } = useScenario();
+  const { theme } = useTheme();
 
   const mainNav: NavItem[] = [
-    { title: 'Главный дашборд', path: '/', icon: <LayoutDashboard className="w-4 h-4" /> },
-    { title: 'Сценарии', path: '/scenarios', icon: <Layers className="w-4 h-4" /> },
+    { title: 'Главный дашборд', path: '/', icon: <LayoutDashboard className="w-5 h-5 shrink-0" /> },
+    {
+      title: 'Сценарии',
+      path: '/scenarios',
+      icon: <Layers className="w-5 h-5 shrink-0" />,
+      badge: scenarios.length > 0 ? String(scenarios.length) : undefined,
+    },
   ];
 
   const paramsNav: NavItem[] = [
-    { title: 'Поля и угодья', path: '/fields', icon: <MapPin className="w-4 h-4" /> },
-    { title: 'Культуры', path: '/crops', icon: <Wheat className="w-4 h-4" /> },
-    { title: 'Животноводство', path: '/livestock', icon: <Beef className="w-4 h-4" /> },
-    { title: 'Кормовая база', path: '/feeds', icon: <Sprout className="w-4 h-4" /> },
-    { title: 'Погода и климат', path: '/weather', icon: <CloudSun className="w-4 h-4" /> },
+    { title: 'Поля и угодья', path: '/fields', icon: <MapPin className="w-5 h-5 shrink-0" /> },
+    { title: 'Культуры (севооборот)', path: '/crops', icon: <Wheat className="w-5 h-5 shrink-0" /> },
+    { title: 'Животноводство', path: '/livestock', icon: <Beef className="w-5 h-5 shrink-0" /> },
+    { title: 'Кормовая база', path: '/feeds', icon: <Sprout className="w-5 h-5 shrink-0" /> },
+    { title: 'Погода и климат', path: '/weather', icon: <CloudSun className="w-5 h-5 shrink-0" /> },
   ];
 
   const analyticsNav: NavItem[] = [
-    { title: 'Запуск решателя', path: '/optimization', icon: <Cpu className="w-4 h-4" /> },
-    { title: 'Анализ результатов', path: '/results', icon: <BarChart3 className="w-4 h-4" /> },
-    { title: 'Сравнение сценариев', path: '/comparison', icon: <GitCompare className="w-4 h-4" /> },
+    {
+      title: 'Запуск решателя',
+      path: '/optimization',
+      icon: <Cpu className="w-5 h-5 shrink-0" />,
+      badge: 'GLPK',
+    },
+    { title: 'Анализ результатов', path: '/results', icon: <BarChart3 className="w-5 h-5 shrink-0" /> },
+    { title: 'Сравнение сценариев', path: '/comparison', icon: <GitCompare className="w-5 h-5 shrink-0" /> },
   ];
 
+  const renderNavGroup = (title: string, items: NavItem[]) => (
+    <div className="mb-4">
+      <div className="px-5 py-2 text-[11px] font-bold text-[var(--md-sys-color-outline)] uppercase tracking-wider">
+        {title}
+      </div>
+      <div className="space-y-1 px-3">
+        {items.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            onClick={onClose}
+            className={({ isActive }) =>
+              `group relative flex items-center justify-between h-12 px-4 rounded-full text-sm font-medium tracking-tight transition-all duration-200 select-none m3-state-layer ${
+                isActive
+                  ? 'bg-[var(--md-sys-color-secondary-container)] text-[var(--md-sys-color-on-secondary-container)] font-semibold shadow-xs'
+                  : 'text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-container-high)] hover:text-[var(--md-sys-color-on-surface)]'
+              }`
+            }
+          >
+            <div className="flex items-center gap-3.5 min-w-0">
+              <span className="transition-transform group-hover:scale-110 duration-200">
+                {item.icon}
+              </span>
+              <span className="truncate">{item.title}</span>
+            </div>
+            {item.badge && (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--md-sys-color-surface-container-highest)] text-[var(--md-sys-color-on-surface-variant)] border border-[var(--md-sys-color-outline-variant)]/40 shrink-0">
+                {item.badge}
+              </span>
+            )}
+          </NavLink>
+        ))}
+      </div>
+    </div>
+  );
+
   const sidebarContent = (
-    <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen select-none shadow-xs">
-      {/* Brand / Logo */}
-      <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-gradient-to-b from-emerald-50/50 to-transparent">
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2">
+    <aside className="w-72 bg-[var(--md-sys-color-surface-container-low)] text-[var(--md-sys-color-on-surface)] border-r border-[var(--md-sys-color-outline-variant)]/40 flex flex-col h-screen select-none shadow-[var(--md-sys-elevation-0)]">
+      {/* Brand Header */}
+      <div className="p-5 pb-4 border-b border-[var(--md-sys-color-outline-variant)]/30 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-[var(--md-sys-color-primary-container)] flex items-center justify-center p-1.5 shadow-xs shrink-0">
             <img
-              src="/daos_logo.png"
-              alt="DAOS"
-              className="h-8.5 w-auto object-contain"
+              src={theme === 'dark' ? '/daos_emblem_white.png' : '/daos_emblem.png'}
+              alt="DAOS Emblem"
+              className="w-full h-full object-contain"
             />
           </div>
-          <div className="mt-1 pl-0.5">
-            <div className="text-[10px] text-emerald-800 font-bold tracking-tight uppercase">
-              Digital Agro Optimization System
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="font-extrabold text-base tracking-tight text-[var(--md-sys-color-on-surface)] font-['Plus_Jakarta_Sans']">
+                DAOS
+              </span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-[var(--md-sys-color-primary)] text-[var(--md-sys-color-on-primary)] leading-none">
+                M3
+              </span>
             </div>
-            <div className="text-[9px] text-slate-400 font-medium leading-tight">
-              Цифровая система агрооптимизации
+            <div className="text-[10px] text-[var(--md-sys-color-on-surface-variant)] font-medium truncate">
+              Digital Agro Optimization
             </div>
           </div>
         </div>
 
-        {/* Close button for mobile */}
         {onClose && (
-          <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-slate-600 p-1">
+          <button
+            onClick={onClose}
+            className="lg:hidden p-2 rounded-full text-[var(--md-sys-color-on-surface-variant)] hover:bg-[var(--md-sys-color-surface-container-high)]"
+            aria-label="Закрыть меню"
+          >
             <X className="w-5 h-5" />
           </button>
         )}
       </div>
 
-      {/* Navigation Sections */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
-        <div>
-          <div className="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Обзор</div>
-          <div className="space-y-0.5">
-            {mainNav.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={onClose}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    isActive
-                      ? 'bg-emerald-50 text-emerald-800 font-semibold border-r-2 border-emerald-600'
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                  }`
-                }
-              >
-                {item.icon}
-                {item.title}
-              </NavLink>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <div className="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-            Параметры модели
-          </div>
-          <div className="space-y-0.5">
-            {paramsNav.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={onClose}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    isActive
-                      ? 'bg-emerald-50 text-emerald-800 font-semibold border-r-2 border-emerald-600'
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                  }`
-                }
-              >
-                {item.icon}
-                {item.title}
-              </NavLink>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <div className="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-            Оптимизация & Анализ
-          </div>
-          <div className="space-y-0.5">
-            {analyticsNav.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={onClose}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    isActive
-                      ? 'bg-emerald-50 text-emerald-800 font-semibold border-r-2 border-emerald-600'
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                  }`
-                }
-              >
-                {item.icon}
-                {item.title}
-              </NavLink>
-            ))}
-          </div>
-        </div>
+      {/* Navigation Links Scrollable */}
+      <div className="flex-1 overflow-y-auto py-3">
+        {renderNavGroup('Обзор', mainNav)}
+        {renderNavGroup('Параметры агромодели', paramsNav)}
+        {renderNavGroup('Оптимизация & Аналитика', analyticsNav)}
       </div>
 
       {/* Footer Info Box */}
-      <div className="p-3.5 border-t border-slate-100 bg-slate-50/80">
-        <div className="flex items-center gap-2 mb-1.5">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-xs font-semibold text-slate-700">Активный сценарий:</span>
-        </div>
-        <div className="text-xs font-semibold text-emerald-800 truncate" title={activeScenario?.name}>
-          {activeScenario?.name || 'Загрузка...'}
-        </div>
-        <div className="text-[11px] text-slate-500 mt-1.5 flex justify-between pt-1 border-t border-slate-200/60">
-          <span>Платформа DAOS</span>
-          <span className="text-emerald-800 font-semibold">Pyomo + GLPK</span>
+      <div className="p-4 border-t border-[var(--md-sys-color-outline-variant)]/30 bg-[var(--md-sys-color-surface-container)]">
+        <div className="p-3 rounded-[16px] bg-[var(--md-sys-color-surface-container-high)] border border-[var(--md-sys-color-outline-variant)]/30 shadow-xs">
+          <div className="flex items-center justify-between gap-2 mb-1.5">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[11px] font-bold text-[var(--md-sys-color-on-surface)]">
+                Активный сценарий
+              </span>
+            </div>
+            <Sparkles className="w-3.5 h-3.5 text-[var(--md-sys-color-primary)]" />
+          </div>
+          <div
+            className="text-xs font-semibold text-[var(--md-sys-color-primary)] truncate"
+            title={activeScenario?.name}
+          >
+            {activeScenario?.name || 'Загрузка...'}
+          </div>
+          <div className="text-[10px] text-[var(--md-sys-color-on-surface-variant)] mt-1.5 flex justify-between items-center pt-1.5 border-t border-[var(--md-sys-color-outline-variant)]/20">
+            <span>Математическое ядро</span>
+            <span className="font-bold text-[var(--md-sys-color-on-surface)]">Pyomo • GLPK</span>
+          </div>
         </div>
       </div>
     </aside>
@@ -173,16 +172,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
 
   return (
     <>
-      {/* Desktop Fixed Sidebar */}
+      {/* Desktop Fixed Drawer */}
       <div className="hidden lg:block fixed left-0 top-0 z-30">{sidebarContent}</div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer Modal */}
       {isOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
-          {/* Backdrop */}
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs" onClick={onClose} />
-          {/* Drawer content */}
-          <div className="relative z-10 shadow-2xl">{sidebarContent}</div>
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-200"
+            onClick={onClose}
+          />
+          <div className="relative z-10 animate-in slide-in-from-left duration-200 shadow-[var(--md-sys-elevation-4)]">
+            {sidebarContent}
+          </div>
         </div>
       )}
     </>

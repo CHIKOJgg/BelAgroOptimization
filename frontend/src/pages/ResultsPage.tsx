@@ -1,24 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { BarChart3, Download, Printer, RefreshCw, Image as ImageIcon, ZoomIn, X, FileSpreadsheet } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import {
+  BarChart3,
+  Download,
+  Printer,
+  RefreshCw,
+  Image as ImageIcon,
+  ZoomIn,
+  FileSpreadsheet,
+  Layers,
+  Sprout,
+  Beef,
+  DollarSign,
+  Cpu,
+} from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { WaterfallMarginChart } from '../components/charts/WaterfallMarginChart';
 import { CropCalendarGantt } from '../components/charts/CropCalendarGantt';
 import { FeedBalanceChart } from '../components/charts/FeedBalanceChart';
-import { Card } from '../components/common/Card';
-import { Badge } from '../components/common/Badge';
+import { M3Card } from '../components/m3/M3Card';
+import { M3Badge } from '../components/m3/M3Badge';
+import { M3Button } from '../components/m3/M3Button';
+import { M3Tabs, type M3TabItem } from '../components/m3/M3Tabs';
+import { M3Dialog } from '../components/m3/M3Dialog';
 import { CadastralMap } from '../components/map/CadastralMap';
 import { useScenario } from '../context/ScenarioContext';
 import { useToast } from '../context/ToastContext';
 import { api } from '../api/client';
 import type { OptimizationResult, FieldData } from '../types';
 
+type ResultsTab = 'rotation' | 'feed' | 'livestock' | 'finance' | 'plots';
+
 export const ResultsPage: React.FC = () => {
   const { activeScenario } = useScenario();
   const { success, error } = useToast();
+  const navigate = useNavigate();
   const [results, setResults] = useState<OptimizationResult | null>(null);
   const [fields, setFields] = useState<FieldData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'rotation' | 'feed' | 'livestock' | 'finance' | 'plots'>('rotation');
+  const [activeTab, setActiveTab] = useState<ResultsTab>('rotation');
   const [selectedPlot, setSelectedPlot] = useState<{ src: string; title: string } | null>(null);
 
   useEffect(() => {
@@ -42,15 +62,15 @@ export const ResultsPage: React.FC = () => {
   }, [activeScenario]);
 
   const cropColors: Record<string, { bg: string; text: string; border: string; name: string }> = {
-    winter_wheat: { bg: 'bg-emerald-50/90', text: 'text-emerald-900', border: 'border-emerald-200', name: 'Озимая пшеница' },
-    spring_wheat: { bg: 'bg-teal-50/90', text: 'text-teal-900', border: 'border-teal-200', name: 'Яровая пшеница' },
-    barley: { bg: 'bg-amber-50/90', text: 'text-amber-950', border: 'border-amber-200', name: 'Ячмень' },
-    rapeseed: { bg: 'bg-yellow-50/90', text: 'text-yellow-950', border: 'border-yellow-200', name: 'Рапс' },
-    potato: { bg: 'bg-orange-50/90', text: 'text-orange-950', border: 'border-orange-200', name: 'Картофель' },
-    sugar_beet: { bg: 'bg-pink-50/90', text: 'text-pink-950', border: 'border-pink-200', name: 'Сахарная свёкла' },
-    corn_silage: { bg: 'bg-lime-50/90', text: 'text-lime-950', border: 'border-lime-200', name: 'Кукуруза на силос' },
-    grass: { bg: 'bg-green-50/90', text: 'text-green-950', border: 'border-green-200', name: 'Многолетние травы' },
-    fallow: { bg: 'bg-slate-50', text: 'text-slate-800', border: 'border-slate-200', name: 'Чистый пар' },
+    winter_wheat: { bg: 'bg-[var(--md-sys-color-primary-container)]/40', text: 'text-[var(--md-sys-color-primary)]', border: 'border-[var(--md-sys-color-primary)]/20', name: 'Озимая пшеница' },
+    spring_wheat: { bg: 'bg-[var(--md-sys-color-tertiary-container)]/40', text: 'text-[var(--md-sys-color-tertiary)]', border: 'border-[var(--md-sys-color-tertiary)]/20', name: 'Яровая пшеница' },
+    barley: { bg: 'bg-amber-500/15', text: 'text-amber-800 dark:text-amber-300', border: 'border-amber-500/30', name: 'Ячмень' },
+    rapeseed: { bg: 'bg-yellow-500/15', text: 'text-yellow-800 dark:text-yellow-300', border: 'border-yellow-500/30', name: 'Рапс' },
+    potato: { bg: 'bg-orange-500/15', text: 'text-orange-800 dark:text-orange-300', border: 'border-orange-500/30', name: 'Картофель' },
+    sugar_beet: { bg: 'bg-pink-500/15', text: 'text-pink-800 dark:text-pink-300', border: 'border-pink-500/30', name: 'Сахарная свёкла' },
+    corn_silage: { bg: 'bg-lime-500/15', text: 'text-lime-800 dark:text-lime-300', border: 'border-lime-500/30', name: 'Кукуруза на силос' },
+    grass: { bg: 'bg-emerald-500/15', text: 'text-emerald-800 dark:text-emerald-300', border: 'border-emerald-500/30', name: 'Многолетние травы' },
+    fallow: { bg: 'bg-[var(--md-sys-color-surface-container-high)]', text: 'text-[var(--md-sys-color-on-surface-variant)]', border: 'border-[var(--md-sys-color-outline-variant)]', name: 'Чистый пар' },
   };
 
   const handleExportXlsx = () => {
@@ -62,7 +82,6 @@ export const ResultsPage: React.FC = () => {
     try {
       const wb = XLSX.utils.book_new();
 
-      // Sheet 1: Севооборот
       const rotationRows = results.crop_allocations.map((a) => ({
         'Поле': a.field_code.toUpperCase(),
         'Год': a.year,
@@ -74,7 +93,6 @@ export const ResultsPage: React.FC = () => {
       const wsRotation = XLSX.utils.json_to_sheet(rotationRows);
       XLSX.utils.book_append_sheet(wb, wsRotation, 'DAOS_Севооборот');
 
-      // Sheet 2: Баланс кормов
       const feedRows = results.feed_allocations.map((f) => ({
         'Год': f.year,
         'Вид корма': f.feed_type,
@@ -85,7 +103,6 @@ export const ResultsPage: React.FC = () => {
       const wsFeed = XLSX.utils.json_to_sheet(feedRows);
       XLSX.utils.book_append_sheet(wb, wsFeed, 'DAOS_Баланс_кормов');
 
-      // Sheet 3: Животноводство
       const livestockRows = results.livestock_allocations.map((l) => ({
         'Год': l.year,
         'Вид животных': l.animal_type,
@@ -96,7 +113,6 @@ export const ResultsPage: React.FC = () => {
       const wsLivestock = XLSX.utils.json_to_sheet(livestockRows);
       XLSX.utils.book_append_sheet(wb, wsLivestock, 'DAOS_Животноводство');
 
-      // Sheet 4: Финансовый план
       const financeRows: any[] = results.years.map((y) => ({
         'Год': `${y.year} год`,
         'Выручка растениеводства (BYN)': y.crop_profit,
@@ -128,7 +144,7 @@ export const ResultsPage: React.FC = () => {
     }
 
     try {
-      let csv = '\uFEFF'; // UTF-8 BOM for Excel Cyrillic
+      let csv = '\uFEFF';
       csv += '--- DAOS: МАТРИЦА СЕВООБОРОТА (ПОЛЕ × ГОД) ---\r\n';
       csv += 'Поле;Год;Культура;Площадь (га);Валовый сбор (ц);Внесение NPK (кг/га)\r\n';
       results.crop_allocations.forEach((a) => {
@@ -178,7 +194,6 @@ export const ResultsPage: React.FC = () => {
     window.print();
   };
 
-  // Matrix: Rows = Fields, Columns = Years
   const fieldsList = ['field1', 'field2', 'field3', 'field4', 'field5'];
   const yearsList = [2024, 2025, 2026];
 
@@ -187,15 +202,54 @@ export const ResultsPage: React.FC = () => {
     return results.crop_allocations.find((a) => a.field_code === fieldCode && a.year === year);
   };
 
+  const renderEmptyState = () => (
+    <M3Card variant="outlined" className="p-10 text-center flex flex-col items-center justify-center">
+      <div
+        className="p-4 rounded-full mb-3 flex items-center justify-center"
+        style={{
+          backgroundColor: 'var(--md-sys-color-primary-container)',
+          color: 'var(--md-sys-color-on-primary-container)',
+        }}
+      >
+        <Cpu className="w-8 h-8" />
+      </div>
+      <h3 className="m3-title-medium font-bold mb-1" style={{ color: 'var(--md-sys-color-on-surface)' }}>
+        Результаты расчета еще не сформированы
+      </h3>
+      <p className="m3-body-small max-w-md mb-4" style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>
+        Для сценария «{activeScenario?.name || 'Текущий'}» еще не проводился расчет математической модели севооборота и баланса кормов.
+      </p>
+      <M3Button
+        variant="filled"
+        icon={<Cpu className="w-4 h-4" />}
+        onClick={() => navigate('/optimization')}
+      >
+        Запустить расчет DAOS (GLPK)
+      </M3Button>
+    </M3Card>
+  );
+
+  const tabItems: M3TabItem<ResultsTab>[] = [
+    { id: 'rotation', label: 'Матрица севооборота', icon: <Layers className="w-4 h-4" /> },
+    { id: 'feed', label: 'Баланс кормов', icon: <Sprout className="w-4 h-4" /> },
+    { id: 'livestock', label: 'Животноводство', icon: <Beef className="w-4 h-4" /> },
+    { id: 'finance', label: 'Финансовая сводка', icon: <DollarSign className="w-4 h-4" /> },
+    { id: 'plots', label: 'Графики модели', icon: <ImageIcon className="w-4 h-4" /> },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Print-only DAOS Official Report Header */}
-      <div className="hidden print:flex items-center justify-between border-b border-slate-300 pb-4 mb-4">
+      <div className="hidden print:flex items-center justify-between border-b border-[var(--md-sys-color-outline-variant)] pb-4 mb-4">
         <div className="flex items-center gap-3">
           <img src="/daos_logo.png" alt="DAOS" className="h-10 w-auto object-contain" />
-          <div className="border-l border-slate-300 pl-3">
-            <div className="text-xs font-bold text-slate-800 uppercase tracking-wider">Digital Agro Optimization System</div>
-            <div className="text-[10px] text-slate-500">Цифровая система оптимизации сельскохозяйственного производства</div>
+          <div className="border-l border-[var(--md-sys-color-outline-variant)] pl-3">
+            <div className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+              Digital Agro Optimization System
+            </div>
+            <div className="text-[10px] text-slate-500">
+              Цифровая система оптимизации сельскохозяйственного производства (M3 Edition)
+            </div>
           </div>
         </div>
         <div className="text-right text-xs text-slate-600">
@@ -207,421 +261,381 @@ export const ResultsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-            <BarChart3 className="w-6 h-6 text-emerald-700" />
+          <h1 className="text-2xl font-bold text-[var(--md-sys-color-on-surface)] flex items-center gap-2.5">
+            <BarChart3 className="w-6 h-6 text-[var(--md-sys-color-primary)]" />
             <span>Производственная программа DAOS</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Результаты оптимизации DAOS (Digital Agro Optimization System): оптимальная матрица севооборота, баланс кормов и финансы
+          <p className="text-xs sm:text-sm text-[var(--md-sys-color-on-surface-variant)] mt-1">
+            Результаты оптимизации DAOS: оптимальная матрица севооборота, баланс кормов и финансы
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <button
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <M3Button
+            variant="filled"
+            size="sm"
             onClick={handleExportXlsx}
-            className="flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-sm transition-colors"
+            icon={<FileSpreadsheet className="w-4 h-4" />}
           >
-            <FileSpreadsheet className="w-4 h-4" />
-            <span>Excel (.xlsx)</span>
-          </button>
-          <button
+            Excel (.xlsx)
+          </M3Button>
+          <M3Button
+            variant="tonal"
+            size="sm"
             onClick={handleExportCsv}
-            className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-200 transition-colors"
+            icon={<Download className="w-3.5 h-3.5" />}
           >
-            <Download className="w-3.5 h-3.5" />
-            <span>CSV</span>
-          </button>
-          <button
+            CSV
+          </M3Button>
+          <M3Button
+            variant="outlined"
+            size="sm"
             onClick={handlePrint}
-            className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-200 transition-colors"
+            icon={<Printer className="w-3.5 h-3.5" />}
           >
-            <Printer className="w-3.5 h-3.5" />
-            <span>Печать / PDF</span>
-          </button>
+            Печать
+          </M3Button>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 text-sm font-semibold">
-        <button
-          onClick={() => setActiveTab('rotation')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'rotation'
-              ? 'bg-emerald-600 text-white shadow-sm'
-              : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
-          }`}
-        >
-          Матрица севооборота
-        </button>
-        <button
-          onClick={() => setActiveTab('feed')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'feed'
-              ? 'bg-emerald-600 text-white shadow-sm'
-              : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
-          }`}
-        >
-          Баланс кормов
-        </button>
-        <button
-          onClick={() => setActiveTab('livestock')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'livestock'
-              ? 'bg-emerald-600 text-white shadow-sm'
-              : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
-          }`}
-        >
-          Животноводство
-        </button>
-        <button
-          onClick={() => setActiveTab('finance')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'finance'
-              ? 'bg-emerald-600 text-white shadow-sm'
-              : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
-          }`}
-        >
-          Финансовая сводка
-        </button>
-        <button
-          onClick={() => setActiveTab('plots')}
-          className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 ${
-            activeTab === 'plots'
-              ? 'bg-emerald-600 text-white shadow-sm'
-              : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
-          }`}
-        >
-          <ImageIcon className="w-4 h-4" />
-          <span>Графики модели</span>
-        </button>
-      </div>
+      {/* M3 Tabs Navigation */}
+      <M3Tabs
+        tabs={tabItems}
+        activeTab={activeTab}
+        onChange={(tab) => setActiveTab(tab)}
+      />
 
       {/* TABS CONTENT */}
       {loading ? (
-        <div className="flex items-center justify-center p-16 text-slate-500 gap-2">
-          <RefreshCw className="w-5 h-5 animate-spin text-emerald-700" />
-          <span>Загрузка аналитических данных...</span>
+        <div className="flex items-center justify-center p-16 text-[var(--md-sys-color-on-surface-variant)] gap-3">
+          <RefreshCw className="w-5 h-5 animate-spin text-[var(--md-sys-color-primary)]" />
+          <span className="text-sm">Загрузка аналитических данных...</span>
         </div>
       ) : (
         <>
           {/* TAB 1: CROP ROTATION MATRIX */}
           {activeTab === 'rotation' && (
             <div className="space-y-6">
-              {/* Spatial Vector Map of Rotations */}
               <CadastralMap
                 fields={fields}
                 allocations={results?.crop_allocations}
                 initialLayer="crops"
               />
 
-              <Card
+              <M3Card
                 title="Матрица севооборота (Поле × Год)"
                 subtitle="Оптимальное распределение культур, валовый сбор и норма внесения NPK"
               >
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-200 text-xs uppercase text-slate-500">
-                    <th className="py-3 px-4 w-36">Поле</th>
-                    {yearsList.map((y) => (
-                      <th key={y} className="py-3 px-4 text-center">
-                        {y} Год
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200 text-sm">
-                  {fieldsList.map((fieldCode) => (
-                    <tr key={fieldCode} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-4 px-4 font-bold text-slate-800 bg-slate-50/50">
-                        {fieldCode.toUpperCase()}
-                      </td>
-                      {yearsList.map((year) => {
-                        const alloc = getAllocation(fieldCode, year);
-                        if (!alloc) return <td key={year} className="py-4 px-4 text-center text-slate-400 font-mono">—</td>;
-
-                        const style = cropColors[alloc.crop_code] || {
-                          bg: 'bg-slate-50',
-                          text: 'text-slate-800',
-                          border: 'border-slate-200',
-                          name: alloc.crop_code,
-                        };
-
-                        return (
-                          <td key={year} className="py-3 px-3">
-                            <div className={`p-3 rounded-xl border ${style.bg} ${style.border} space-y-1.5 shadow-2xs`}>
-                              <div className={`font-bold text-xs ${style.text} flex items-center justify-between`}>
-                                <span>{style.name}</span>
-                              </div>
-                              <div className="text-[11px] text-slate-600 flex justify-between">
-                                <span>Площадь:</span>
-                                <span className="font-bold text-slate-900">{alloc.area_ha} га</span>
-                              </div>
-                              <div className="text-[11px] text-slate-600 flex justify-between">
-                                <span>Сбор:</span>
-                                <span className="font-semibold text-slate-800">{alloc.yield_ts ? `${alloc.yield_ts.toLocaleString()} ц` : '—'}</span>
-                              </div>
-                              <div className="text-[11px] text-slate-600 flex justify-between">
-                                <span>Удобрения (NPK):</span>
-                                <span className="font-bold text-emerald-800">{alloc.fert_kg} кг/га</span>
-                              </div>
-                            </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-[var(--md-sys-color-outline-variant)]/40 text-xs uppercase text-[var(--md-sys-color-on-surface-variant)]">
+                        <th className="py-3 px-4 w-36">Поле</th>
+                        {yearsList.map((y) => (
+                          <th key={y} className="py-3 px-4 text-center">
+                            {y} Год
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--md-sys-color-outline-variant)]/20 text-sm">
+                      {fieldsList.map((fieldCode) => (
+                        <tr key={fieldCode} className="hover:bg-[var(--md-sys-color-surface-container)]/50 transition-colors">
+                          <td className="py-4 px-4 font-bold text-[var(--md-sys-color-on-surface)] bg-[var(--md-sys-color-surface-container)]/30">
+                            {fieldCode.toUpperCase()}
                           </td>
+                          {yearsList.map((year) => {
+                            const alloc = getAllocation(fieldCode, year);
+                            if (!alloc)
+                              return (
+                                <td key={year} className="py-4 px-4 text-center text-[var(--md-sys-color-outline)] font-mono">
+                                  —
+                                </td>
+                              );
+
+                            const style = cropColors[alloc.crop_code] || {
+                              bg: 'bg-[var(--md-sys-color-surface-container)]',
+                              text: 'text-[var(--md-sys-color-on-surface)]',
+                              border: 'border-[var(--md-sys-color-outline-variant)]',
+                              name: alloc.crop_code,
+                            };
+
+                            return (
+                              <td key={year} className="py-3 px-3">
+                                <div className={`p-3.5 rounded-[14px] border ${style.bg} ${style.border} space-y-1.5 shadow-2xs`}>
+                                  <div className={`font-bold text-xs ${style.text} flex items-center justify-between`}>
+                                    <span>{style.name}</span>
+                                  </div>
+                                  <div className="text-[11px] text-[var(--md-sys-color-on-surface-variant)] flex justify-between">
+                                    <span>Площадь:</span>
+                                    <span className="font-bold text-[var(--md-sys-color-on-surface)]">{alloc.area_ha} га</span>
+                                  </div>
+                                  <div className="text-[11px] text-[var(--md-sys-color-on-surface-variant)] flex justify-between">
+                                    <span>Сбор:</span>
+                                    <span className="font-semibold text-[var(--md-sys-color-on-surface)]">
+                                      {alloc.yield_ts ? `${alloc.yield_ts.toLocaleString()} ц` : '—'}
+                                    </span>
+                                  </div>
+                                  <div className="text-[11px] text-[var(--md-sys-color-on-surface-variant)] flex justify-between">
+                                    <span>Удобрения (NPK):</span>
+                                    <span className="font-bold text-[var(--md-sys-color-primary)]">{alloc.fert_kg} кг/га</span>
+                                  </div>
+                                </div>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </M3Card>
+
+              <CropCalendarGantt />
+            </div>
+          )}
+
+          {/* TAB 2: FEED BALANCE */}
+          {activeTab === 'feed' && (results ? (
+            <div className="space-y-6">
+              <FeedBalanceChart results={results} />
+              <M3Card
+                title="Баланс производства и потребления кормов"
+                subtitle="Показатели по видам кормов в центнерах (произведено vs потреблено vs дефицит)"
+              >
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead className="border-b border-[var(--md-sys-color-outline-variant)]/40 text-xs font-semibold uppercase text-[var(--md-sys-color-on-surface-variant)]">
+                      <tr>
+                        <th className="py-3 px-4">Год</th>
+                        <th className="py-3 px-4">Вид корма</th>
+                        <th className="py-3 px-4 text-right">Произведено (ц)</th>
+                        <th className="py-3 px-4 text-right">Потреблено (ц)</th>
+                        <th className="py-3 px-4 text-right">Сальдо / Баланс (ц)</th>
+                        <th className="py-3 px-4 text-center">Статус</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--md-sys-color-outline-variant)]/20">
+                      {results.feed_allocations.map((fa, i) => {
+                        const isSurplus = fa.surplus >= 0;
+                        return (
+                          <tr key={i} className="hover:bg-[var(--md-sys-color-surface-container)]/40 transition-colors">
+                            <td className="py-3 px-4 font-bold text-[var(--md-sys-color-on-surface)]">{fa.year}</td>
+                            <td className="py-3 px-4 font-medium text-[var(--md-sys-color-on-surface)] capitalize">{fa.feed_type}</td>
+                            <td className="py-3 px-4 text-right font-semibold text-[var(--md-sys-color-primary)] font-mono">
+                              {fa.produced.toLocaleString()}
+                            </td>
+                            <td className="py-3 px-4 text-right text-[var(--md-sys-color-on-surface-variant)] font-mono">
+                              {fa.consumed.toLocaleString()}
+                            </td>
+                            <td className="py-3 px-4 text-right font-bold font-mono">
+                              <span className={isSurplus ? 'text-[var(--md-sys-color-primary)]' : 'text-[var(--md-sys-color-error)]'}>
+                                {isSurplus ? `+${fa.surplus.toLocaleString()}` : fa.surplus.toLocaleString()}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 text-center">
+                              {isSurplus ? (
+                                <M3Badge tone="primary" size="sm">Профицит (излишек)</M3Badge>
+                              ) : (
+                                <M3Badge tone="error" size="sm">Рыночная закупка</M3Badge>
+                              )}
+                            </td>
+                          </tr>
                         );
                       })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                    </tbody>
+                  </table>
+                </div>
+              </M3Card>
             </div>
-          </Card>
+          ) : renderEmptyState())}
 
-          {/* Operational Gantt Calendar */}
-          <CropCalendarGantt />
-        </div>
-      )}
+          {/* TAB 3: LIVESTOCK ALLOCATION */}
+          {activeTab === 'livestock' && (results ? (
+            <div className="space-y-6">
+              <M3Card
+                title="Численность стада и продуктивность скота по годам"
+                subtitle="Результаты оптимизации поголовья"
+              >
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead className="border-b border-[var(--md-sys-color-outline-variant)]/40 text-xs font-semibold uppercase text-[var(--md-sys-color-on-surface-variant)]">
+                      <tr>
+                        <th className="py-3 px-4">Год</th>
+                        <th className="py-3 px-4">Отрасль животноводства</th>
+                        <th className="py-3 px-4 text-right">Поголовье (голов)</th>
+                        <th className="py-3 px-4 text-right">Надой лето (кг)</th>
+                        <th className="py-3 px-4 text-right">Надой зима (кг)</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--md-sys-color-outline-variant)]/20">
+                      {results.livestock_allocations.map((la, i) => (
+                        <tr key={i} className="hover:bg-[var(--md-sys-color-surface-container)]/40 transition-colors">
+                          <td className="py-3.5 px-4 font-bold text-[var(--md-sys-color-on-surface)]">{la.year}</td>
+                          <td className="py-3.5 px-4 font-semibold text-[var(--md-sys-color-on-surface)] capitalize">
+                            {la.animal_type === 'cow'
+                              ? 'Дойное стадо (Коровы)'
+                              : la.animal_type === 'cattle'
+                              ? 'КРС (Мясной откорм)'
+                              : 'Свинопоголовье'}
+                          </td>
+                          <td className="py-3.5 px-4 text-right font-bold text-[var(--md-sys-color-primary)] font-mono">
+                            {Math.round(la.heads)}
+                          </td>
+                          <td className="py-3.5 px-4 text-right text-[var(--md-sys-color-on-surface-variant)] font-mono">
+                            {la.milk_yield_summer_kg ? `${la.milk_yield_summer_kg} кг` : '—'}
+                          </td>
+                          <td className="py-3.5 px-4 text-right text-[var(--md-sys-color-on-surface-variant)] font-mono">
+                            {la.milk_yield_winter_kg ? `${la.milk_yield_winter_kg} кг` : '—'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </M3Card>
+            </div>
+          ) : renderEmptyState())}
 
-      {/* TAB 2: FEED BALANCE */}
-      {activeTab === 'feed' && results && (
-        <div className="space-y-6">
-          <FeedBalanceChart results={results} />
-          <Card
-            title="Баланс производства и потребления кормов"
-            subtitle="Показатели по видам кормов в центнерах (произведено vs потреблено vs дефицит)"
-          >
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="border-b border-slate-200 text-xs font-semibold uppercase text-slate-500">
-                  <tr>
-                    <th className="py-3 px-4">Год</th>
-                    <th className="py-3 px-4">Вид корма</th>
-                    <th className="py-3 px-4 text-right">Произведено (ц)</th>
-                    <th className="py-3 px-4 text-right">Потреблено (ц)</th>
-                    <th className="py-3 px-4 text-right">Сальдо / Баланс (ц)</th>
-                    <th className="py-3 px-4 text-center">Статус</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {results.feed_allocations.map((fa, i) => {
-                    const isSurplus = fa.surplus >= 0;
-                    return (
-                      <tr key={i} className="hover:bg-slate-100/40 transition-colors">
-                        <td className="py-3 px-4 font-bold text-slate-800">{fa.year}</td>
-                        <td className="py-3 px-4 font-medium text-slate-700 capitalize">{fa.feed_type}</td>
-                        <td className="py-3 px-4 text-right font-semibold text-emerald-700">
-                          {fa.produced.toLocaleString()}
+          {/* TAB 4: FINANCIAL SUMMARY */}
+          {activeTab === 'finance' && (results ? (
+            <div className="space-y-6">
+              <WaterfallMarginChart results={results} />
+              <M3Card
+                title="Сводная ведомость финансовых результатов (BYN)"
+                subtitle="Показатели выручки и прибыли"
+              >
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead className="border-b border-[var(--md-sys-color-outline-variant)]/40 text-xs font-semibold uppercase text-[var(--md-sys-color-on-surface-variant)]">
+                      <tr>
+                        <th className="py-3 px-4">Год</th>
+                        <th className="py-3 px-4 text-right">Прибыль: Растениеводство</th>
+                        <th className="py-3 px-4 text-right">Прибыль: Животноводство</th>
+                        <th className="py-3 px-4 text-right">Итоговая чистая прибыль</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--md-sys-color-outline-variant)]/20">
+                      {results.years.map((y) => (
+                        <tr key={y.year} className="hover:bg-[var(--md-sys-color-surface-container)]/40 transition-colors">
+                          <td className="py-3.5 px-4 font-bold text-[var(--md-sys-color-on-surface)]">{y.year} год</td>
+                          <td className="py-3.5 px-4 text-right font-semibold text-[var(--md-sys-color-primary)] font-mono">
+                            {y.crop_profit.toLocaleString()} BYN
+                          </td>
+                          <td className="py-3.5 px-4 text-right font-semibold text-[var(--md-sys-color-tertiary)] font-mono">
+                            {y.livestock_profit.toLocaleString()} BYN
+                          </td>
+                          <td className="py-3.5 px-4 text-right font-bold text-amber-600 dark:text-amber-400 font-mono text-base">
+                            {y.total_profit.toLocaleString()} BYN
+                          </td>
+                        </tr>
+                      ))}
+                      <tr className="bg-[var(--md-sys-color-surface-container)] font-bold border-t-2 border-[var(--md-sys-color-outline-variant)]">
+                        <td className="py-4 px-4 text-[var(--md-sys-color-on-surface)]">ИТОГО ЗА 3 ГОДА</td>
+                        <td className="py-4 px-4 text-right text-[var(--md-sys-color-primary)] font-mono">
+                          {results.years.reduce((a, y) => a + y.crop_profit, 0).toLocaleString()} BYN
                         </td>
-                        <td className="py-3 px-4 text-right text-slate-700">
-                          {fa.consumed.toLocaleString()}
+                        <td className="py-4 px-4 text-right text-[var(--md-sys-color-tertiary)] font-mono">
+                          {results.years.reduce((a, y) => a + y.livestock_profit, 0).toLocaleString()} BYN
                         </td>
-                        <td className="py-3 px-4 text-right font-bold">
-                          <span className={isSurplus ? 'text-emerald-700' : 'text-rose-700'}>
-                            {isSurplus ? `+${fa.surplus.toLocaleString()}` : fa.surplus.toLocaleString()}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          {isSurplus ? (
-                            <Badge variant="emerald">Профицит (излишек)</Badge>
-                          ) : (
-                            <Badge variant="rose">Рыночная закупка</Badge>
-                          )}
+                        <td className="py-4 px-4 text-right text-[var(--md-sys-color-primary)] font-mono text-lg font-extrabold">
+                          {results.total_profit_byn.toLocaleString()} BYN
                         </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-        </div>
-      )}
-
-      {/* TAB 3: LIVESTOCK ALLOCATION */}
-      {activeTab === 'livestock' && results && (
-        <div className="space-y-6">
-          <Card title="Численность стада и продуктивность скота по годам" subtitle="Результаты оптимизации поголовья">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="border-b border-slate-200 text-xs font-semibold uppercase text-slate-500">
-                  <tr>
-                    <th className="py-3 px-4">Год</th>
-                    <th className="py-3 px-4">Отрасль животноводства</th>
-                    <th className="py-3 px-4 text-right">Поголовье (голов)</th>
-                    <th className="py-3 px-4 text-right">Надой лето (кг)</th>
-                    <th className="py-3 px-4 text-right">Надой зима (кг)</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {results.livestock_allocations.map((la, i) => (
-                    <tr key={i} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-3.5 px-4 font-bold text-slate-800">{la.year}</td>
-                      <td className="py-3.5 px-4 font-semibold text-slate-900 capitalize">
-                        {la.animal_type === 'cow' ? 'Дойное стадо (Коровы)' : la.animal_type === 'cattle' ? 'КРС (Мясной откорм)' : 'Свинопоголовье'}
-                      </td>
-                      <td className="py-3.5 px-4 text-right font-bold text-emerald-700">
-                        {Math.round(la.heads)}
-                      </td>
-                      <td className="py-3.5 px-4 text-right text-slate-700">
-                        {la.milk_yield_summer_kg ? `${la.milk_yield_summer_kg} кг` : '—'}
-                      </td>
-                      <td className="py-3.5 px-4 text-right text-slate-700">
-                        {la.milk_yield_winter_kg ? `${la.milk_yield_winter_kg} кг` : '—'}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-        </div>
-      )}
-
-      {/* TAB 4: FINANCIAL SUMMARY */}
-      {activeTab === 'finance' && results && (
-        <div className="space-y-6">
-          <WaterfallMarginChart results={results} />
-          <Card title="Сводная ведомость финансовых результатов (BYN)" subtitle="Показатели выручки и прибыли">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="border-b border-slate-200 text-xs font-semibold uppercase text-slate-500">
-                  <tr>
-                    <th className="py-3 px-4">Год</th>
-                    <th className="py-3 px-4 text-right">Прибыль: Растениеводство</th>
-                    <th className="py-3 px-4 text-right">Прибыль: Животноводство</th>
-                    <th className="py-3 px-4 text-right">Итоговая чистая прибыль</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {results.years.map((y) => (
-                    <tr key={y.year} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-3.5 px-4 font-bold text-slate-800">{y.year} год</td>
-                      <td className="py-3.5 px-4 text-right font-semibold text-emerald-700">
-                        {y.crop_profit.toLocaleString()} BYN
-                      </td>
-                      <td className="py-3.5 px-4 text-right font-semibold text-sky-700">
-                        {y.livestock_profit.toLocaleString()} BYN
-                      </td>
-                      <td className="py-3.5 px-4 text-right font-bold text-amber-700 text-base">
-                        {y.total_profit.toLocaleString()} BYN
-                      </td>
-                    </tr>
-                  ))}
-                  <tr className="bg-slate-50 font-bold border-t-2 border-slate-300">
-                    <td className="py-4 px-4 text-slate-900">ИТОГО ЗА 3 ГОДА</td>
-                    <td className="py-4 px-4 text-right text-emerald-700">
-                      {results.years.reduce((a, y) => a + y.crop_profit, 0).toLocaleString()} BYN
-                    </td>
-                    <td className="py-4 px-4 text-right text-sky-700">
-                      {results.years.reduce((a, y) => a + y.livestock_profit, 0).toLocaleString()} BYN
-                    </td>
-                    <td className="py-4 px-4 text-right text-amber-800 text-lg">
-                      {results.total_profit_byn.toLocaleString()} BYN
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </Card>
-        </div>
-      )}
-
-      {/* TAB 5: MODEL PLOTS */}
-      {activeTab === 'plots' && results && (
-        <div className="space-y-6">
-          <Card
-            title="Графические отчеты и диаграммы модели"
-            subtitle="Визуализация результатов расчета модели, сгенерированная аналитическим модулем"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                {
-                  src: '/plots/profit_by_year.png',
-                  title: 'Динамика чистой прибыли (2024–2026)',
-                  desc: 'Сравнение доходов растениеводства, животноводства и суммарного финансового результата с учетом погодных рисков.',
-                },
-                {
-                  src: '/plots/crop_distribution.png',
-                  title: 'Структура посевных площадей',
-                  desc: 'Распределение культур по 5 полям (900 га) с соблюдением требований предшественников и картофельного лимита.',
-                },
-                {
-                  src: '/plots/crop_profit_breakdown.png',
-                  title: 'Рентабельность и выручка по культурам',
-                  desc: 'Анализ доходности товарных культур с учетом цен реализации и норм внесения минеральных удобрений.',
-                },
-                {
-                  src: '/plots/livestock_profit_breakdown.png',
-                  title: 'Экономика животноводства',
-                  desc: 'Вклад молочного скотоводства, откорма КРС и свиноводства в операционную прибыль хозяйства.',
-                },
-                {
-                  src: '/plots/profit_summary_table.png',
-                  title: 'Сводная ведомость ключевых метрик',
-                  desc: 'Официальная отчетная таблица оптимизатора со сводными балансами и маржинальностью.',
-                },
-              ].map((plot, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-slate-300 transition-all group flex flex-col justify-between shadow-2xs"
-                >
-                  <div
-                    className="relative overflow-hidden cursor-pointer bg-slate-50/80 flex items-center justify-center p-2"
-                    onClick={() => setSelectedPlot({ src: plot.src, title: plot.title })}
-                  >
-                    <img
-                      src={plot.src}
-                      alt={plot.title}
-                      className="w-full h-56 object-contain rounded-lg transition-transform duration-300 group-hover:scale-102"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 pointer-events-none">
-                      <span className="bg-white text-slate-900 text-xs font-bold px-3.5 py-2 rounded-lg flex items-center gap-1.5 shadow-xl border border-slate-200">
-                        <ZoomIn className="w-4 h-4 text-emerald-700" />
-                        Увеличить график
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-4 border-t border-slate-200">
-                    <h3 className="font-semibold text-slate-800 text-sm">{plot.title}</h3>
-                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">{plot.desc}</p>
-                  </div>
+                    </tbody>
+                  </table>
                 </div>
-              ))}
+              </M3Card>
             </div>
-          </Card>
-        </div>
-      )}
-      </>
+          ) : renderEmptyState())}
+
+          {/* TAB 5: MODEL PLOTS */}
+          {activeTab === 'plots' && (results ? (
+            <div className="space-y-6">
+              <M3Card
+                title="Графические отчеты и диаграммы модели"
+                subtitle="Визуализация результатов расчета модели, сгенерированная аналитическим модулем"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {[
+                    {
+                      src: '/plots/profit_by_year.png',
+                      title: 'Динамика чистой прибыли (2024–2026)',
+                      desc: 'Сравнение доходов растениеводства, животноводства и суммарного финансового результата с учетом погодных рисков.',
+                    },
+                    {
+                      src: '/plots/crop_distribution.png',
+                      title: 'Структура посевных площадей',
+                      desc: 'Распределение культур по 5 полям (900 га) с соблюдением требований предшественников и картофельного лимита.',
+                    },
+                    {
+                      src: '/plots/crop_profit_breakdown.png',
+                      title: 'Рентабельность и выручка по культурам',
+                      desc: 'Анализ доходности товарных культур с учетом цен реализации и норм внесения минеральных удобрений.',
+                    },
+                    {
+                      src: '/plots/livestock_profit_breakdown.png',
+                      title: 'Экономика животноводства',
+                      desc: 'Вклад молочного скотоводства, откорма КРС и свиноводства в операционную прибыль хозяйства.',
+                    },
+                    {
+                      src: '/plots/profit_summary_table.png',
+                      title: 'Сводная ведомость ключевых метрик',
+                      desc: 'Официальная отчетная таблица оптимизатора со сводными балансами и маржинальностью.',
+                    },
+                  ].map((plot, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)]/40 rounded-[20px] overflow-hidden hover:border-[var(--md-sys-color-outline)] transition-all group flex flex-col justify-between shadow-xs"
+                    >
+                      <div
+                        className="relative overflow-hidden cursor-pointer bg-[var(--md-sys-color-surface-container-low)] flex items-center justify-center p-3"
+                        onClick={() => setSelectedPlot({ src: plot.src, title: plot.title })}
+                      >
+                        <img
+                          src={plot.src}
+                          alt={plot.title}
+                          className="w-full h-56 object-contain rounded-[12px] transition-transform duration-300 group-hover:scale-102"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 pointer-events-none">
+                          <span className="bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-on-surface)] text-xs font-bold px-4 py-2 rounded-full flex items-center gap-2 shadow-lg border border-[var(--md-sys-color-outline-variant)]">
+                            <ZoomIn className="w-4 h-4 text-[var(--md-sys-color-primary)]" />
+                            Увеличить график
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-4 border-t border-[var(--md-sys-color-outline-variant)]/30">
+                        <h3 className="font-bold text-[var(--md-sys-color-on-surface)] text-sm">{plot.title}</h3>
+                        <p className="text-xs text-[var(--md-sys-color-on-surface-variant)] mt-1 leading-relaxed">
+                          {plot.desc}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </M3Card>
+            </div>
+          ) : renderEmptyState())}
+        </>
       )}
 
-      {/* Lightbox Image Modal */}
+      {/* Lightbox Image Dialog */}
       {selectedPlot && (
-        <div
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in"
-          onClick={() => setSelectedPlot(null)}
+        <M3Dialog
+          isOpen={!!selectedPlot}
+          onClose={() => setSelectedPlot(null)}
+          title={selectedPlot.title}
+          maxWidth="4xl"
         >
-          <div
-            className="bg-white border border-slate-200 rounded-2xl max-w-4xl w-full p-4 relative shadow-2xl flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
-              <h3 className="text-base font-bold text-slate-900">{selectedPlot.title}</h3>
-              <button
-                onClick={() => setSelectedPlot(null)}
-                className="p-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="bg-white rounded-xl p-2 flex items-center justify-center overflow-auto max-h-[80vh]">
-              <img
-                src={selectedPlot.src}
-                alt={selectedPlot.title}
-                className="w-full h-auto object-contain max-h-[75vh]"
-              />
-            </div>
+          <div className="flex items-center justify-center p-2">
+            <img
+              src={selectedPlot.src}
+              alt={selectedPlot.title}
+              className="w-full h-auto object-contain max-h-[70vh] rounded-[16px]"
+            />
           </div>
-        </div>
+        </M3Dialog>
       )}
     </div>
   );

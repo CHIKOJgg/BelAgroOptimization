@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { Scenario } from '../types';
 import { api } from '../api/client';
 
-interface ScenarioContextType {
+export interface ScenarioContextType {
   scenarios: Scenario[];
   activeScenario: Scenario | null;
   selectedScenarioId: string | null;
@@ -18,9 +18,8 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const refreshScenarios = async () => {
+  const refreshScenarios = useCallback(async () => {
     try {
-      setIsLoading(true);
       const data = await api.getScenarios();
       setScenarios(data);
       if (data.length > 0 && !selectedScenarioId) {
@@ -32,10 +31,28 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedScenarioId]);
 
   useEffect(() => {
-    refreshScenarios();
+    let isMounted = true;
+    (async () => {
+      try {
+        const data = await api.getScenarios();
+        if (!isMounted) return;
+        setScenarios(data);
+        if (data.length > 0) {
+          const active = data.find((s) => s.is_active) || data[0];
+          setSelectedScenarioId(active.scenario_id);
+        }
+      } catch (e) {
+        console.error('Ошибка загрузки сценариев:', e);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const activeScenario = scenarios.find((s) => s.scenario_id === selectedScenarioId) || scenarios[0] || null;

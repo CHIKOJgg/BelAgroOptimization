@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import * as XLSX from 'xlsx';
 import {
   UploadCloud,
@@ -7,13 +6,16 @@ import {
   CheckCircle2,
   AlertTriangle,
   Check,
-  X,
   FileText,
   Building2,
   Database,
 } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import { useScenario } from '../../context/ScenarioContext';
+import { M3Dialog } from '../m3/M3Dialog';
+import { M3Button } from '../m3/M3Button';
+import { M3Badge } from '../m3/M3Badge';
+import { M3SegmentedButton } from '../m3/M3SegmentedButton';
 import type { FieldData } from '../../types';
 
 interface DatasetManagerModalProps {
@@ -118,8 +120,6 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  if (!isOpen) return null;
-
   // Process File (Excel or CSV)
   const handleFileProcess = async (file: File) => {
     setIsProcessing(true);
@@ -133,11 +133,10 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
       const json: any[] = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
 
       if (!json || json.length === 0) {
-        throw new Error('Файл пуст или содержит нераспознанную структуру табличных данных');
+        throw new Error('Файл пуст или содержит нераспознанную структуру данных');
       }
 
       const rows: ParsedFieldRow[] = json.map((row: any, idx: number) => {
-        // Auto-match columns
         const code = String(
           row['code'] ||
             row['Код поля'] ||
@@ -171,7 +170,6 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
           row['Плодородие'] ||
           '1.0';
         let soil_fertility = parseFloat(String(rawFert).replace(',', '.')) || 1.0;
-        // Normalize if given in bonitet scale (e.g. 38 -> 1.15)
         if (soil_fertility > 10) {
           soil_fertility = Number((soil_fertility / 35.0).toFixed(2));
         }
@@ -197,7 +195,7 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
       if (validCount === rows.length) {
         success(`Успешно обработано ${rows.length} полей из файла «${file.name}»`);
       } else {
-        info(`Файл прочитан: ${validCount} из ${rows.length} полей валидны. Исправьте ошибки перед применением.`);
+        info(`Файл прочитан: ${validCount} из ${rows.length} валидны. Проверьте статус.`);
       }
     } catch (err: any) {
       error(`Ошибка разбора файла: ${err.message || err}`);
@@ -226,7 +224,6 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
     }
   };
 
-  // Download Sample XLSX Template
   const handleDownloadXlsxTemplate = () => {
     const templateData = [
       {
@@ -262,7 +259,6 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
     success('Шаблон полей DAOS (.XLSX) загружен');
   };
 
-  // Download Sample CSV Template
   const handleDownloadCsvTemplate = () => {
     const csvContent = [
       '\uFEFFКод поля;Площадь (га);Тип почвы;Балл плодородия',
@@ -284,7 +280,6 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
     success('Шаблон полей DAOS (.CSV) загружен');
   };
 
-  // Apply parsed rows
   const handleApplyDataset = () => {
     const validRows = parsedRows.filter((r) => r.isValid);
     if (validRows.length === 0) {
@@ -295,11 +290,10 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
     if (onDatasetApplied) {
       onDatasetApplied(validRows);
     }
-    success(`Датасет (${validRows.length} полей) успешно применён к текущей сессии!`);
+    success(`Датасет (${validRows.length} полей) успешно применён!`);
     onClose();
   };
 
-  // Apply Preset Farm
   const handleApplyPreset = (preset: FarmPreset) => {
     if (onDatasetApplied) {
       onDatasetApplied(preset.fields);
@@ -311,255 +305,238 @@ export const DatasetManagerModal: React.FC<DatasetManagerModalProps> = ({
   const totalAreaParsed = parsedRows.reduce((acc, r) => acc + (r.isValid ? r.area_ha : 0), 0);
   const validCount = parsedRows.filter((r) => r.isValid).length;
 
-  return createPortal(
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/40 backdrop-blur-xs flex justify-center items-center p-4 sm:p-6">
-      <div className="relative w-full max-w-3xl bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
-        {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 shadow-xs">
-              <Database className="w-5 h-5 text-emerald-600" />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold text-slate-900">Менеджер агрономических датасетов DAOS</h2>
-              <p className="text-xs text-slate-500">
-                Загрузка собственных контуров полей (Excel / CSV) или выбор эталонных хозяйств в систему DAOS
+  return (
+    <M3Dialog
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Агрономические датасеты DAOS"
+      icon={<Database className="w-5 h-5 text-[var(--md-sys-color-primary)]" />}
+      maxWidth="2xl"
+      actions={
+        <>
+          <div className="mr-auto text-xs text-[var(--md-sys-color-on-surface-variant)] hidden sm:block">
+            {activeScenario && (
+              <span>
+                Сценарий: <b>{activeScenario.name}</b>
+              </span>
+            )}
+          </div>
+          <M3Button variant="text" size="sm" onClick={onClose}>
+            Отмена
+          </M3Button>
+          {activeTab === 'upload' && parsedRows.length > 0 && (
+            <M3Button
+              variant="filled"
+              size="sm"
+              onClick={handleApplyDataset}
+              disabled={validCount === 0}
+              icon={<Check className="w-4 h-4" />}
+            >
+              Применить ({validCount} полей)
+            </M3Button>
+          )}
+        </>
+      }
+    >
+      {/* Segmented Control */}
+      <div className="flex justify-center mb-4">
+        <M3SegmentedButton
+          options={[
+            {
+              value: 'upload',
+              label: 'Загрузка файла (.xlsx/.csv)',
+              icon: <UploadCloud className="w-4 h-4" />,
+            },
+            {
+              value: 'presets',
+              label: 'Эталонные хозяйства РБ',
+              icon: <Building2 className="w-4 h-4" />,
+            },
+          ]}
+          value={activeTab}
+          onChange={(val) => setActiveTab(val as 'upload' | 'presets')}
+        />
+      </div>
+
+      {activeTab === 'upload' ? (
+        <div className="space-y-4">
+          {/* Drag & Drop Surface */}
+          <div
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+            className={`border-2 border-dashed rounded-[16px] p-8 text-center cursor-pointer transition-all duration-200 ${
+              dragActive
+                ? 'border-[var(--md-sys-color-primary)] bg-[var(--md-sys-color-primary-container)]/30'
+                : 'border-[var(--md-sys-color-outline-variant)] bg-[var(--md-sys-color-surface-container-low)] hover:border-[var(--md-sys-color-primary)] hover:bg-[var(--md-sys-color-surface-container)]'
+            }`}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".xlsx,.xls,.csv"
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  handleFileProcess(e.target.files[0]);
+                }
+              }}
+              className="hidden"
+            />
+
+            <div className="flex flex-col items-center justify-center gap-2">
+              <div className="w-12 h-12 rounded-full bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] flex items-center justify-center shadow-xs">
+                <UploadCloud className="w-6 h-6" />
+              </div>
+              <div className="text-sm font-semibold text-[var(--md-sys-color-on-surface)]">
+                {isProcessing ? 'Обработка файла...' : 'Перетащите файл .XLSX или .CSV сюда'}
+              </div>
+              <p className="text-xs text-[var(--md-sys-color-on-surface-variant)] max-w-sm">
+                Поддерживаются файлы Excel Microsoft 365, LibreOffice Calc и CSV с разделителями «;» или «,»
               </p>
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Tab Navigation */}
-        <div className="flex border-b border-slate-200 bg-slate-50 px-6 pt-2">
-          <button
-            onClick={() => setActiveTab('upload')}
-            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors ${
-              activeTab === 'upload'
-                ? 'border-emerald-600 text-emerald-700 font-semibold'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <UploadCloud className="w-4 h-4" />
-            <span>Загрузка файла (Excel / CSV)</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('presets')}
-            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors ${
-              activeTab === 'presets'
-                ? 'border-emerald-600 text-emerald-700 font-semibold'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <Building2 className="w-4 h-4" />
-            <span>Готовые датасеты хозяйств DAOS</span>
-          </button>
-        </div>
-
-        {/* Modal Body */}
-        <div className="p-6 overflow-y-auto space-y-6 flex-1">
-          {activeTab === 'upload' ? (
-            <>
-              {/* Drag and drop area */}
-              <div
-                onDragEnter={handleDrag}
-                onDragLeave={handleDrag}
-                onDragOver={handleDrag}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-                className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
-                  dragActive
-                    ? 'border-emerald-500 bg-emerald-50/50'
-                    : 'border-slate-200 hover:border-emerald-500 bg-slate-50/50 hover:bg-emerald-50/20'
-                }`}
+          {/* Template Download actions */}
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-[var(--md-sys-color-surface-container-low)] border border-[var(--md-sys-color-outline-variant)]/40 rounded-[12px] text-xs">
+            <span className="text-[var(--md-sys-color-on-surface-variant)] font-medium">
+              Нужен готовый образец структуры колонок?
+            </span>
+            <div className="flex items-center gap-2">
+              <M3Button
+                variant="tonal"
+                size="sm"
+                onClick={handleDownloadXlsxTemplate}
+                icon={<FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />}
               >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".xlsx,.xls,.csv"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      handleFileProcess(e.target.files[0]);
-                    }
-                  }}
-                  className="hidden"
-                />
+                Шаблон Excel
+              </M3Button>
+              <M3Button
+                variant="tonal"
+                size="sm"
+                onClick={handleDownloadCsvTemplate}
+                icon={<FileText className="w-3.5 h-3.5 text-sky-600" />}
+              >
+                Шаблон CSV
+              </M3Button>
+            </div>
+          </div>
 
-                <div className="flex flex-col items-center justify-center gap-2">
-                  <div className="p-3 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700">
-                    <UploadCloud className="w-6 h-6" />
-                  </div>
-                  <div className="text-sm font-semibold text-slate-800">
-                    {isProcessing ? 'Обработка файла...' : 'Перетащите файл .XLSX или .CSV сюда'}
-                  </div>
-                  <p className="text-xs text-slate-500 max-w-sm">
-                    Поддерживаются файлы Excel Microsoft 365, LibreOffice Calc и CSV с разделителями «;» или «,»
-                  </p>
-                </div>
-              </div>
-
-              {/* Template Download Chips */}
-              <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs">
-                <span className="text-slate-500">Нужен пример структуры колонок?</span>
+          {/* Parsed Preview Table */}
+          {parsedRows.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={handleDownloadXlsxTemplate}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-md transition-colors font-medium text-xs"
-                  >
-                    <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-700" />
-                    <span>Шаблон Excel (.xlsx)</span>
-                  </button>
-                  <button
-                    onClick={handleDownloadCsvTemplate}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-md transition-colors font-medium text-xs"
-                  >
-                    <FileText className="w-3.5 h-3.5 text-sky-700" />
-                    <span>Шаблон CSV</span>
-                  </button>
+                  <span className="text-xs font-bold text-[var(--md-sys-color-on-surface)]">
+                    Предпросмотр: {fileName}
+                  </span>
+                  <M3Badge tone="primary" size="sm">
+                    {validCount} из {parsedRows.length} валидны
+                  </M3Badge>
+                  <M3Badge tone="neutral" size="sm">
+                    {totalAreaParsed.toFixed(1)} га
+                  </M3Badge>
                 </div>
               </div>
 
-              {/* Table Preview */}
-              {parsedRows.length > 0 && (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-slate-800">
-                        Предпросмотр данных ({fileName}):
-                      </span>
-                      <span className="px-2 py-0.5 rounded text-[11px] bg-emerald-100 text-emerald-800 border border-emerald-200 font-medium">
-                        {validCount} валидных из {parsedRows.length}
-                      </span>
-                      <span className="px-2 py-0.5 rounded text-[11px] bg-slate-100 text-slate-700 font-mono">
-                        {totalAreaParsed.toFixed(1)} га суммарно
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="border border-slate-200 rounded-lg overflow-hidden max-h-56 overflow-y-auto">
-                    <table className="w-full text-left text-xs border-collapse">
-                      <thead className="bg-slate-100 text-slate-700 font-semibold sticky top-0 border-b border-slate-200">
-                        <tr>
-                          <th className="py-2.5 px-3">Код поля</th>
-                          <th className="py-2.5 px-3 text-right">Площадь (га)</th>
-                          <th className="py-2.5 px-3">Тип почвы</th>
-                          <th className="py-2.5 px-3 text-right">Плодородие</th>
-                          <th className="py-2.5 px-3 text-center">Статус</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-200 bg-white">
-                        {parsedRows.map((r, i) => (
-                          <tr key={i} className="hover:bg-slate-50 transition-colors">
-                            <td className="py-2 px-3 font-mono font-medium text-slate-800">
-                              {r.code}
-                            </td>
-                            <td className="py-2 px-3 text-right font-mono text-slate-700">
-                              {r.area_ha.toFixed(1)}
-                            </td>
-                            <td className="py-2 px-3 text-slate-700 capitalize">{r.soil_type}</td>
-                            <td className="py-2 px-3 text-right font-mono text-slate-700">
-                              {r.soil_fertility.toFixed(2)}
-                            </td>
-                            <td className="py-2 px-3 text-center">
-                              {r.isValid ? (
-                                <CheckCircle2 className="w-4 h-4 text-emerald-700 inline" />
-                              ) : (
-                                <span
-                                  title={r.validationErrors.join(', ')}
-                                  className="inline-flex items-center gap-1 text-rose-400 cursor-help"
-                                >
-                                  <AlertTriangle className="w-4 h-4" />
-                                </span>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-            </>
-          ) : (
-            /* Presets Tab */
-            <div className="space-y-4">
-              <p className="text-xs text-slate-500">
-                Выберите агропромышленный комплекс с предварительно откалиброванными контурами пашни по стандартам системы DAOS:
-              </p>
-
-              <div className="grid grid-cols-1 gap-3.5">
-                {FARM_PRESETS.map((farm) => (
-                  <div
-                    key={farm.id}
-                    className="p-4 rounded-xl border border-slate-200 bg-slate-50 hover:border-emerald-500 hover:bg-emerald-50/20 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-                  >
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-slate-900 text-sm">{farm.name}</span>
-                        <span className="text-[11px] px-2 py-0.5 rounded-md font-mono bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
-                          {farm.areaHa} га • {farm.fieldsCount} полей
-                        </span>
-                      </div>
-                      <div className="text-xs text-slate-500 flex items-center gap-1.5">
-                        <span>{farm.region}</span>
-                        <span>•</span>
-                        <span className="text-slate-700">{farm.soilType}</span>
-                      </div>
-                      <p className="text-[11px] text-slate-500 max-w-lg">{farm.description}</p>
-                    </div>
-
-                    <button
-                      onClick={() => handleApplyPreset(farm)}
-                      className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-semibold transition-colors shrink-0 flex items-center gap-1.5 shadow-sm"
-                    >
-                      <Check className="w-3.5 h-3.5" />
-                      <span>Загрузить хозяйство</span>
-                    </button>
-                  </div>
-                ))}
+              <div className="border border-[var(--md-sys-color-outline-variant)]/40 rounded-[12px] overflow-hidden max-h-56 overflow-y-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead className="bg-[var(--md-sys-color-surface-container-high)] text-[var(--md-sys-color-on-surface)] font-bold sticky top-0 border-b border-[var(--md-sys-color-outline-variant)]/40">
+                    <tr>
+                      <th className="py-2.5 px-3">Код поля</th>
+                      <th className="py-2.5 px-3 text-right">Площадь (га)</th>
+                      <th className="py-2.5 px-3">Тип почвы</th>
+                      <th className="py-2.5 px-3 text-right">Плодородие</th>
+                      <th className="py-2.5 px-3 text-center">Статус</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--md-sys-color-outline-variant)]/20 bg-[var(--md-sys-color-surface-container-lowest)]">
+                    {parsedRows.map((r, i) => (
+                      <tr
+                        key={i}
+                        className="hover:bg-[var(--md-sys-color-surface-container-high)]/50 transition-colors"
+                      >
+                        <td className="py-2 px-3 font-mono font-medium text-[var(--md-sys-color-on-surface)]">
+                          {r.code}
+                        </td>
+                        <td className="py-2 px-3 text-right font-mono text-[var(--md-sys-color-on-surface)]">
+                          {r.area_ha.toFixed(1)}
+                        </td>
+                        <td className="py-2 px-3 text-[var(--md-sys-color-on-surface-variant)] capitalize">
+                          {r.soil_type}
+                        </td>
+                        <td className="py-2 px-3 text-right font-mono text-[var(--md-sys-color-on-surface)]">
+                          {r.soil_fertility.toFixed(2)}
+                        </td>
+                        <td className="py-2 px-3 text-center">
+                          {r.isValid ? (
+                            <CheckCircle2 className="w-4 h-4 text-[var(--md-sys-color-primary)] inline" />
+                          ) : (
+                            <span
+                              title={r.validationErrors.join(', ')}
+                              className="inline-flex items-center gap-1 text-[var(--md-sys-color-error)] cursor-help"
+                            >
+                              <AlertTriangle className="w-4 h-4" />
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}
         </div>
+      ) : (
+        /* Presets Tab */
+        <div className="space-y-3">
+          <p className="text-xs text-[var(--md-sys-color-on-surface-variant)] mb-2">
+            Выберите агропромышленный комплекс с предварительно откалиброванными контурами пашни по стандартам системы DAOS:
+          </p>
 
-        {/* Modal Footer */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100 bg-slate-50">
-          <div className="text-xs text-slate-500">
-            {activeScenario && (
-              <span>
-                Активный сценарий: <b className="text-slate-800">{activeScenario.name}</b>
-              </span>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition-colors"
-            >
-              Отмена
-            </button>
-            {activeTab === 'upload' && parsedRows.length > 0 && (
-              <button
-                onClick={handleApplyDataset}
-                disabled={validCount === 0}
-                className="px-4 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg transition-colors flex items-center gap-1.5 shadow-sm"
+          <div className="grid grid-cols-1 gap-3">
+            {FARM_PRESETS.map((farm) => (
+              <div
+                key={farm.id}
+                className="p-4 rounded-[16px] border border-[var(--md-sys-color-outline-variant)]/40 bg-[var(--md-sys-color-surface-container-low)] hover:border-[var(--md-sys-color-primary)] hover:bg-[var(--md-sys-color-surface-container)] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs"
               >
-                <Check className="w-4 h-4" />
-                <span>Применить ({validCount} полей)</span>
-              </button>
-            )}
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-[var(--md-sys-color-on-surface)] text-sm">
+                      {farm.name}
+                    </span>
+                    <M3Badge tone="primary" size="sm">
+                      {farm.areaHa} га • {farm.fieldsCount} полей
+                    </M3Badge>
+                  </div>
+                  <div className="text-xs text-[var(--md-sys-color-on-surface-variant)] flex items-center gap-1.5">
+                    <span>{farm.region}</span>
+                    <span>•</span>
+                    <span className="font-medium text-[var(--md-sys-color-on-surface)]">
+                      {farm.soilType}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[var(--md-sys-color-on-surface-variant)] max-w-lg">
+                    {farm.description}
+                  </p>
+                </div>
+
+                <M3Button
+                  variant="filled"
+                  size="sm"
+                  onClick={() => handleApplyPreset(farm)}
+                  icon={<Check className="w-3.5 h-3.5" />}
+                  className="shrink-0"
+                >
+                  Загрузить
+                </M3Button>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
-    </div>,
-    document.body
+      )}
+    </M3Dialog>
   );
 };

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Beef, Milk, ThermometerSnowflake, Edit2, Check, X, RefreshCw } from 'lucide-react';
+import { M3Card } from '../components/m3/M3Card';
+import { M3IconButton } from '../components/m3/M3Button';
 import { useScenario } from '../context/ScenarioContext';
 import { useToast } from '../context/ToastContext';
 import { api } from '../api/client';
@@ -38,13 +40,29 @@ export const LivestockPage: React.FC = () => {
   const getAnimalTitle = (type: string) => {
     switch (type) {
       case 'cow':
-        return { name: 'Дойное стадо (Коровы)', icon: <Milk className="w-5 h-5 text-sky-700" />, prodUnit: 'кг молока/гол' };
+        return {
+          name: 'Дойное стадо (Коровы)',
+          icon: <Milk className="w-5 h-5 text-[var(--md-sys-color-tertiary)]" />,
+          prodUnit: 'кг молока/гол',
+        };
       case 'cattle':
-        return { name: 'КРС на откорме (Мясное скотоводство)', icon: <Beef className="w-5 h-5 text-emerald-700" />, prodUnit: 'кг мяса/гол' };
+        return {
+          name: 'КРС на откорме (Мясное скотоводство)',
+          icon: <Beef className="w-5 h-5 text-[var(--md-sys-color-primary)]" />,
+          prodUnit: 'кг мяса/гол',
+        };
       case 'pig':
-        return { name: 'Свиноводство', icon: <Beef className="w-5 h-5 text-rose-700" />, prodUnit: 'кг мяса/гол' };
+        return {
+          name: 'Свиноводство',
+          icon: <Beef className="w-5 h-5 text-[var(--md-sys-color-error)]" />,
+          prodUnit: 'кг мяса/гол',
+        };
       default:
-        return { name: type, icon: <Beef className="w-5 h-5 text-slate-500" />, prodUnit: 'кг/гол' };
+        return {
+          name: type,
+          icon: <Beef className="w-5 h-5 text-[var(--md-sys-color-outline)]" />,
+          prodUnit: 'кг/гол',
+        };
     }
   };
 
@@ -85,181 +103,195 @@ export const LivestockPage: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-          <Beef className="w-6 h-6 text-emerald-700" />
+        <h1 className="text-2xl font-bold text-[var(--md-sys-color-on-surface)] flex items-center gap-2.5">
+          <Beef className="w-6 h-6 text-[var(--md-sys-color-primary)]" />
           <span>Животноводство и конверсия кормов DAOS</span>
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          Моделирование продуктивности стада в системе DAOS: параметры поголовья, базовой и предельной продуктивности, цен реализации и сезонных затрат на содержание
+        <p className="text-xs sm:text-sm text-[var(--md-sys-color-on-surface-variant)] mt-1">
+          Моделирование продуктивности стада в системе DAOS: параметры поголовья, базовой и предельной продуктивности, цен реализации и сезонных затрат
         </p>
       </div>
 
       {/* Cards per animal type */}
       {loading ? (
-        <div className="flex items-center justify-center p-12 text-slate-500 gap-2">
-          <RefreshCw className="w-5 h-5 animate-spin text-emerald-700" />
+        <div className="flex items-center justify-center p-12 text-[var(--md-sys-color-on-surface-variant)] gap-3">
+          <RefreshCw className="w-5 h-5 animate-spin text-[var(--md-sys-color-primary)]" />
           <span>Загрузка данных животноводства...</span>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {livestock.map((item) => {
-          const info = getAnimalTitle(item.animal_type);
-          const isEditing = editingType === item.animal_type;
+            const info = getAnimalTitle(item.animal_type);
+            const isEditing = editingType === item.animal_type;
 
-          return (
-            <div
-              key={item.livestock_data_id}
-              className="bg-white border border-slate-200/80 rounded-xl p-6 shadow-xs flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                      {info.icon}
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-base text-slate-900">{info.name}</h3>
-                      <span className="text-[11px] text-slate-500 font-mono">{item.animal_type}</span>
-                    </div>
-                  </div>
-
-                  {!isEditing ? (
-                    <button
-                      onClick={() => startEdit(item)}
-                      title="Редактировать параметры"
-                      className="p-1.5 rounded-lg hover:bg-emerald-50 text-slate-500 hover:text-emerald-700 transition-colors border border-transparent hover:border-emerald-200"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                  ) : (
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        onClick={() => saveEdit(item)}
-                        title="Сохранить"
-                        className="p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-2xs"
-                      >
-                        <Check className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={cancelEdit}
-                        title="Отмена"
-                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors border border-slate-200 shadow-2xs"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* Form / Specs */}
-                <div className="mt-5 space-y-3.5 text-xs">
-                  {/* Herd Limits */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-600">Лимит стада (мин / макс):</span>
-                    {isEditing ? (
-                      <div className="flex items-center gap-1.5">
-                        <input
-                          type="number"
-                          value={editMin}
-                          onChange={(e) => setEditMin(Number(e.target.value))}
-                          className="w-16 bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-900 font-medium text-center shadow-2xs outline-none focus:border-emerald-600"
-                        />
-                        <span className="text-slate-400">-</span>
-                        <input
-                          type="number"
-                          value={editMax}
-                          onChange={(e) => setEditMax(Number(e.target.value))}
-                          className="w-16 bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-900 font-medium text-center shadow-2xs outline-none focus:border-emerald-600"
-                        />
+            return (
+              <M3Card
+                key={item.livestock_data_id}
+                variant="elevated"
+                className="flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between pb-4 border-b border-[var(--md-sys-color-outline-variant)]/30">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-[var(--md-sys-color-surface-container-high)] flex items-center justify-center">
+                        {info.icon}
                       </div>
+                      <div>
+                        <h3 className="font-bold text-base text-[var(--md-sys-color-on-surface)]">{info.name}</h3>
+                        <span className="text-[11px] text-[var(--md-sys-color-on-surface-variant)] font-mono">
+                          {item.animal_type}
+                        </span>
+                      </div>
+                    </div>
+
+                    {!isEditing ? (
+                      <M3IconButton
+                        variant="standard"
+                        size="sm"
+                        onClick={() => startEdit(item)}
+                        title="Редактировать параметры"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </M3IconButton>
                     ) : (
-                      <span className="font-bold text-slate-900">
-                        {item.min_heads} – {item.max_heads} голов
+                      <div className="flex items-center gap-1.5">
+                        <M3IconButton
+                          variant="filled"
+                          size="sm"
+                          onClick={() => saveEdit(item)}
+                          title="Сохранить"
+                        >
+                          <Check className="w-4 h-4" />
+                        </M3IconButton>
+                        <M3IconButton
+                          variant="outlined"
+                          size="sm"
+                          onClick={cancelEdit}
+                          title="Отмена"
+                        >
+                          <X className="w-4 h-4" />
+                        </M3IconButton>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Form / Specs */}
+                  <div className="mt-5 space-y-3.5 text-xs">
+                    {/* Herd Limits */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-[var(--md-sys-color-on-surface-variant)]">Лимит стада (мин / макс):</span>
+                      {isEditing ? (
+                        <div className="flex items-center gap-1.5 font-mono">
+                          <input
+                            type="number"
+                            value={editMin}
+                            onChange={(e) => setEditMin(Number(e.target.value))}
+                            className="w-16 bg-[var(--md-sys-color-surface-container-highest)] border border-[var(--md-sys-color-outline)] rounded-lg px-2 py-1 text-[var(--md-sys-color-on-surface)] font-medium text-center outline-none focus:border-[var(--md-sys-color-primary)]"
+                          />
+                          <span className="text-[var(--md-sys-color-outline)]">-</span>
+                          <input
+                            type="number"
+                            value={editMax}
+                            onChange={(e) => setEditMax(Number(e.target.value))}
+                            className="w-16 bg-[var(--md-sys-color-surface-container-highest)] border border-[var(--md-sys-color-outline)] rounded-lg px-2 py-1 text-[var(--md-sys-color-on-surface)] font-medium text-center outline-none focus:border-[var(--md-sys-color-primary)]"
+                          />
+                        </div>
+                      ) : (
+                        <span className="font-bold text-[var(--md-sys-color-on-surface)] font-mono">
+                          {item.min_heads} – {item.max_heads} голов
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Productivity */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-[var(--md-sys-color-on-surface-variant)]">Продуктивность (базовая):</span>
+                      {isEditing ? (
+                        <input
+                          type="number"
+                          value={editYield}
+                          onChange={(e) => setEditYield(Number(e.target.value))}
+                          className="w-24 bg-[var(--md-sys-color-surface-container-highest)] border border-[var(--md-sys-color-outline)] rounded-lg px-2 py-1 text-[var(--md-sys-color-on-surface)] font-mono font-medium text-right outline-none focus:border-[var(--md-sys-color-primary)]"
+                        />
+                      ) : (
+                        <span className="font-bold text-[var(--md-sys-color-primary)] font-mono">
+                          {item.base_yield_kg} {info.prodUnit}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Price */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-[var(--md-sys-color-on-surface-variant)]">Цена реализации продукции:</span>
+                      {isEditing ? (
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={editPrice}
+                          onChange={(e) => setEditPrice(Number(e.target.value))}
+                          className="w-24 bg-[var(--md-sys-color-surface-container-highest)] border border-[var(--md-sys-color-outline)] rounded-lg px-2 py-1 text-[var(--md-sys-color-on-surface)] font-mono font-medium text-right outline-none focus:border-[var(--md-sys-color-primary)]"
+                        />
+                      ) : (
+                        <span className="font-semibold text-[var(--md-sys-color-on-surface)] font-mono">
+                          {item.price_byn_per_kg} BYN/кг
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Summer Cost */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-[var(--md-sys-color-on-surface-variant)]">Летние затраты на голову:</span>
+                      {isEditing ? (
+                        <input
+                          type="number"
+                          value={editCostSummer}
+                          onChange={(e) => setEditCostSummer(Number(e.target.value))}
+                          className="w-24 bg-[var(--md-sys-color-surface-container-highest)] border border-[var(--md-sys-color-outline)] rounded-lg px-2 py-1 text-[var(--md-sys-color-on-surface)] font-mono font-medium text-right outline-none focus:border-[var(--md-sys-color-primary)]"
+                        />
+                      ) : (
+                        <span className="text-[var(--md-sys-color-on-surface)] font-mono font-medium">
+                          {item.cost_summer_byn} BYN
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Winter Cost */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-[var(--md-sys-color-on-surface-variant)]">Зимние затраты на голову:</span>
+                      {isEditing ? (
+                        <input
+                          type="number"
+                          value={editCostWinter}
+                          onChange={(e) => setEditCostWinter(Number(e.target.value))}
+                          className="w-24 bg-[var(--md-sys-color-surface-container-highest)] border border-[var(--md-sys-color-outline)] rounded-lg px-2 py-1 text-[var(--md-sys-color-on-surface)] font-mono font-medium text-right outline-none focus:border-[var(--md-sys-color-primary)]"
+                        />
+                      ) : (
+                        <span className="text-[var(--md-sys-color-on-surface)] font-mono font-medium">
+                          {item.cost_winter_byn} BYN
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Energy Winter Cost */}
+                    <div className="flex items-center justify-between text-[var(--md-sys-color-on-surface-variant)]">
+                      <span className="flex items-center gap-1.5">
+                        <ThermometerSnowflake className="w-3.5 h-3.5 text-sky-500" />
+                        <span>Отопление/вентиляция зимой:</span>
                       </span>
-                    )}
-                  </div>
-
-                  {/* Productivity */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-600">Продуктивность (базовая):</span>
-                    {isEditing ? (
-                      <input
-                        type="number"
-                        value={editYield}
-                        onChange={(e) => setEditYield(Number(e.target.value))}
-                        className="w-24 bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-900 font-medium text-right shadow-2xs outline-none focus:border-emerald-600"
-                      />
-                    ) : (
-                      <span className="font-bold text-emerald-700">
-                        {item.base_yield_kg} {info.prodUnit}
+                      <span className="text-[var(--md-sys-color-tertiary)] font-bold font-mono">
+                        {item.energy_cost_winter_byn} BYN/гол
                       </span>
-                    )}
-                  </div>
-
-                  {/* Price */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-600">Цена реализации продукции:</span>
-                    {isEditing ? (
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={editPrice}
-                        onChange={(e) => setEditPrice(Number(e.target.value))}
-                        className="w-24 bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-900 font-medium text-right shadow-2xs outline-none focus:border-emerald-600"
-                      />
-                    ) : (
-                      <span className="font-semibold text-slate-800">{item.price_byn_per_kg} BYN/кг</span>
-                    )}
-                  </div>
-
-                  {/* Summer Cost */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-600">Летние затраты на голову:</span>
-                    {isEditing ? (
-                      <input
-                        type="number"
-                        value={editCostSummer}
-                        onChange={(e) => setEditCostSummer(Number(e.target.value))}
-                        className="w-24 bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-900 font-medium text-right shadow-2xs outline-none focus:border-emerald-600"
-                      />
-                    ) : (
-                      <span className="text-slate-700 font-medium">{item.cost_summer_byn} BYN</span>
-                    )}
-                  </div>
-
-                  {/* Winter Cost */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-600">Зимние затраты на голову:</span>
-                    {isEditing ? (
-                      <input
-                        type="number"
-                        value={editCostWinter}
-                        onChange={(e) => setEditCostWinter(Number(e.target.value))}
-                        className="w-24 bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-900 font-medium text-right shadow-2xs outline-none focus:border-emerald-600"
-                      />
-                    ) : (
-                      <span className="text-slate-700 font-medium">{item.cost_winter_byn} BYN</span>
-                    )}
-                  </div>
-
-                  {/* Energy Winter Cost */}
-                  <div className="flex items-center justify-between text-slate-600">
-                    <span className="flex items-center gap-1">
-                      <ThermometerSnowflake className="w-3.5 h-3.5 text-sky-600" />
-                      <span>Отопление/вентиляция зимой:</span>
-                    </span>
-                    <span className="text-sky-700 font-semibold">{item.energy_cost_winter_byn} BYN/гол</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Note */}
-              <div className="mt-5 pt-3 border-t border-slate-200 text-[11px] text-slate-500">
-                Модель автоматически масштабирует затраты в зависимости от зимних морозов и снижает продуктивность при летнем тепловом стрессе (&gt;18°C).
-              </div>
-            </div>
-          );
-        })}
+                {/* Note */}
+                <div className="mt-5 pt-3.5 border-t border-[var(--md-sys-color-outline-variant)]/30 text-[11px] text-[var(--md-sys-color-on-surface-variant)]">
+                  Модель автоматически масштабирует затраты в зависимости от зимних морозов и снижает продуктивность при летнем тепловом стрессе (&gt;18°C).
+                </div>
+              </M3Card>
+            );
+          })}
         </div>
       )}
     </div>

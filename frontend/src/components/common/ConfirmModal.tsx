@@ -1,5 +1,7 @@
 import React from 'react';
-import { AlertTriangle, X } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
+import { M3Dialog } from '../m3/M3Dialog';
+import { M3Button } from '../m3/M3Button';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -22,44 +24,44 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   onCancel,
   isDestructive = true,
 }) => {
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-sm p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-          <div className="flex items-center gap-2.5">
-            <div className={`p-2 rounded-lg ${isDestructive ? 'bg-rose-50 text-rose-600 border border-rose-200' : 'bg-amber-50 text-amber-600 border border-amber-200'}`}>
-              <AlertTriangle className="w-5 h-5" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-sm">{title}</h3>
-          </div>
-          <button onClick={onCancel} className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-
-        <p className="py-4 text-xs text-slate-600 leading-relaxed">{message}</p>
-
-        <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
-          <button
-            onClick={onCancel}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors"
-          >
+    <M3Dialog
+      isOpen={isOpen}
+      onClose={onCancel}
+      title={title}
+      icon={
+        <AlertTriangle
+          className={`w-5 h-5 ${
+            isDestructive
+              ? 'text-[var(--md-sys-color-error)]'
+              : 'text-amber-500'
+          }`}
+        />
+      }
+      maxWidth="sm"
+      actions={
+        <>
+          <M3Button variant="text" size="sm" onClick={onCancel}>
             {cancelLabel}
-          </button>
-          <button
+          </M3Button>
+          <M3Button
+            variant="filled"
+            size="sm"
             onClick={onConfirm}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold text-white shadow-xs transition-all hover:scale-102 ${
+            className={
               isDestructive
-                ? 'bg-rose-600 hover:bg-rose-700 shadow-rose-950/20'
-                : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-950/20'
-            }`}
+                ? '!bg-[var(--md-sys-color-error)] !text-[var(--md-sys-color-on-error)]'
+                : ''
+            }
           >
             {confirmLabel}
-          </button>
-        </div>
-      </div>
-    </div>
+          </M3Button>
+        </>
+      }
+    >
+      <p className="text-sm leading-relaxed text-[var(--md-sys-color-on-surface-variant)]">
+        {message}
+      </p>
+    </M3Dialog>
   );
 };

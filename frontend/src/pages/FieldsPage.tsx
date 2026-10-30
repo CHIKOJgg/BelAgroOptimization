@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { MapPin, Edit2, Check, X, PieChart, ShieldCheck, RefreshCw, Database } from 'lucide-react';
-import { Card } from '../components/common/Card';
 import { MetricCard } from '../components/common/MetricCard';
-import { Badge } from '../components/common/Badge';
+import { M3Card } from '../components/m3/M3Card';
+import { M3Button, M3IconButton } from '../components/m3/M3Button';
+import { M3Badge } from '../components/m3/M3Badge';
 import { CadastralMap } from '../components/map/CadastralMap';
 import { DatasetManagerModal } from '../components/datasets/DatasetManagerModal';
 import { useScenario } from '../context/ScenarioContext';
@@ -91,52 +92,58 @@ export const FieldsPage: React.FC = () => {
   };
 
   const totalArea = fields.reduce((acc, f) => acc + f.area_ha, 0);
-  const avgFertility = fields.length ? (fields.reduce((acc, f) => acc + f.soil_fertility, 0) / fields.length).toFixed(2) : '1.0';
+  const avgFertility = fields.length
+    ? (fields.reduce((acc, f) => acc + f.soil_fertility, 0) / fields.length).toFixed(2)
+    : '1.0';
 
   const getSoilBadge = (soil: string | null) => {
     switch (soil) {
       case 'чернозём':
-        return <Badge variant="emerald">Чернозём (высокое)</Badge>;
+        return <M3Badge tone="primary">Чернозём (высокое)</M3Badge>;
       case 'суглинок':
-        return <Badge variant="blue">Суглинок (среднее)</Badge>;
+        return <M3Badge tone="tertiary">Суглинок (среднее)</M3Badge>;
       case 'супесь':
-        return <Badge variant="amber">Супесь (легкое)</Badge>;
+        return <M3Badge tone="secondary">Супесь (легкое)</M3Badge>;
       default:
-        return <Badge variant="slate">{soil || 'Не указан'}</Badge>;
+        return <M3Badge tone="surface">{soil || 'Не указан'}</M3Badge>;
     }
   };
 
-  const selectedField = fields.find((f) => f.code.toLowerCase() === selectedFieldCode.toLowerCase()) || fields[0];
-  const selectedAllocs = allocations.filter((a) => a.field_code.toLowerCase() === selectedFieldCode.toLowerCase());
+  const selectedField =
+    fields.find((f) => f.code.toLowerCase() === selectedFieldCode.toLowerCase()) || fields[0];
+  const selectedAllocs = allocations.filter(
+    (a) => a.field_code.toLowerCase() === selectedFieldCode.toLowerCase()
+  );
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-            <MapPin className="w-6 h-6 text-emerald-700" />
+          <h1 className="text-2xl font-bold text-[var(--md-sys-color-on-surface)] flex items-center gap-2.5">
+            <MapPin className="w-6 h-6 text-[var(--md-sys-color-primary)]" />
             <span>Земельный фонд и контуры полей DAOS</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Цифровой кадастровый реестр полей DAOS: интерактивная карта контуров, бонитет плодородия и параметры почвы для сценария «{activeScenario?.name}»
+          <p className="text-xs sm:text-sm text-[var(--md-sys-color-on-surface-variant)] mt-1">
+            Цифровой кадастровый реестр полей DAOS: карта контуров, бонитет плодородия и параметры почвы
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {loading && (
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <RefreshCw className="w-4 h-4 animate-spin text-emerald-700" />
+            <div className="flex items-center gap-2 text-xs text-[var(--md-sys-color-on-surface-variant)]">
+              <RefreshCw className="w-4 h-4 animate-spin text-[var(--md-sys-color-primary)]" />
               <span>Обновление...</span>
             </div>
           )}
-          <button
+          <M3Button
+            variant="filled"
+            size="sm"
             onClick={() => setIsDatasetModalOpen(true)}
-            className="flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-2 rounded-lg text-xs font-semibold shadow-sm transition-all"
+            icon={<Database className="w-3.5 h-3.5" />}
           >
-            <Database className="w-3.5 h-3.5" />
-            <span>Импорт датасета DAOS (Excel / CSV)</span>
-          </button>
+            Импорт датасета (Excel / CSV)
+          </M3Button>
         </div>
       </div>
 
@@ -183,52 +190,59 @@ export const FieldsPage: React.FC = () => {
         {/* Right: Parcel Inspector & Quick Editor (5 cols) */}
         <div className="lg:col-span-5">
           {selectedField ? (
-            <Card
+            <M3Card
               title={`Инспектор: ${selectedField.code.toUpperCase()}`}
               subtitle="Параметры и агротехника выбранного участка"
               action={
-                <button
+                <M3Button
+                  variant="tonal"
+                  size="sm"
                   onClick={() => startEdit(selectedField)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold transition-colors cursor-pointer"
+                  icon={<Edit2 className="w-3.5 h-3.5" />}
                 >
-                  <Edit2 className="w-3.5 h-3.5" />
-                  <span>Редактировать</span>
-                </button>
+                  Редактировать
+                </M3Button>
               }
             >
               <div className="space-y-4">
                 {/* Highlights grid */}
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3">
-                    <span className="text-[10px] text-slate-500 uppercase font-semibold">Площадь</span>
-                    <div className="text-xl font-bold font-mono text-slate-900 mt-0.5">
+                  <div className="bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)]/30 rounded-[14px] p-3.5">
+                    <span className="text-[10px] text-[var(--md-sys-color-on-surface-variant)] uppercase font-semibold">
+                      Площадь
+                    </span>
+                    <div className="text-xl font-bold font-mono text-[var(--md-sys-color-on-surface)] mt-0.5">
                       {selectedField.area_ha} га
                     </div>
-                    <span className="text-[10px] text-emerald-700 font-medium">
+                    <span className="text-[10px] text-[var(--md-sys-color-primary)] font-medium">
                       {totalArea ? `${((selectedField.area_ha / totalArea) * 100).toFixed(1)}% от пашни` : ''}
                     </span>
                   </div>
 
-                  <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3">
-                    <span className="text-[10px] text-slate-500 uppercase font-semibold">Бонитет</span>
-                    <div className="text-xl font-bold font-mono text-emerald-800 mt-0.5">
+                  <div className="bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)]/30 rounded-[14px] p-3.5">
+                    <span className="text-[10px] text-[var(--md-sys-color-on-surface-variant)] uppercase font-semibold">
+                      Бонитет
+                    </span>
+                    <div className="text-xl font-bold font-mono text-[var(--md-sys-color-primary)] mt-0.5">
                       ×{selectedField.soil_fertility}
                     </div>
-                    <span className="text-[10px] text-slate-500">
+                    <span className="text-[10px] text-[var(--md-sys-color-on-surface-variant)]">
                       Отдача NPK удобрений
                     </span>
                   </div>
                 </div>
 
                 {/* Soil type banner */}
-                <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl flex items-center justify-between text-xs">
-                  <span className="text-slate-600 font-medium">Тип почвы:</span>
+                <div className="p-3.5 bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)]/30 rounded-[14px] flex items-center justify-between text-xs">
+                  <span className="text-[var(--md-sys-color-on-surface-variant)] font-medium">
+                    Тип почвы:
+                  </span>
                   <div>{getSoilBadge(selectedField.soil_type)}</div>
                 </div>
 
                 {/* Crop history for this field */}
                 <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--md-sys-color-on-surface-variant)] mb-2">
                     Севооборот по годам:
                   </h4>
                   {selectedAllocs.length > 0 ? (
@@ -236,29 +250,29 @@ export const FieldsPage: React.FC = () => {
                       {selectedAllocs.map((a) => (
                         <div
                           key={a.year}
-                          className="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs"
+                          className="flex items-center justify-between p-2.5 bg-[var(--md-sys-color-surface-container)] border border-[var(--md-sys-color-outline-variant)]/30 rounded-[12px] text-xs"
                         >
                           <div className="flex items-center gap-2">
-                            <span className="font-mono font-bold text-slate-700">{a.year} г:</span>
-                            <span className="font-semibold text-slate-900">{a.crop_code}</span>
+                            <span className="font-mono font-bold text-[var(--md-sys-color-on-surface)]">{a.year} г:</span>
+                            <span className="font-semibold text-[var(--md-sys-color-primary)]">{a.crop_code}</span>
                           </div>
-                          <div className="flex items-center gap-3 font-mono text-[11px] text-slate-600">
+                          <div className="flex items-center gap-3 font-mono text-[11px] text-[var(--md-sys-color-on-surface-variant)]">
                             <span>{a.yield_ts ? `${a.yield_ts} ц` : '—'}</span>
-                            <span className="text-emerald-700 font-semibold">{a.fert_kg} кг NPK</span>
+                            <span className="text-[var(--md-sys-color-primary)] font-semibold">{a.fert_kg} кг NPK</span>
                           </div>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-slate-500 italic">
+                    <p className="text-xs text-[var(--md-sys-color-on-surface-variant)] italic">
                       Запустите оптимизацию в Центре расчета для формирования севооборота
                     </p>
                   )}
                 </div>
               </div>
-            </Card>
+            </M3Card>
           ) : (
-            <div className="flex items-center justify-center p-8 text-slate-500 text-xs">
+            <div className="flex items-center justify-center p-8 text-[var(--md-sys-color-on-surface-variant)] text-xs">
               Выберите участок на карте
             </div>
           )}
@@ -266,13 +280,13 @@ export const FieldsPage: React.FC = () => {
       </div>
 
       {/* Cadastral Registry Table */}
-      <Card
+      <M3Card
         title="Кадастровый реестр участков"
         subtitle="Редактируемые параметры земельных контуров"
       >
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-xs font-semibold uppercase text-slate-500">
+            <thead className="border-b border-[var(--md-sys-color-outline-variant)]/40 text-xs font-semibold uppercase text-[var(--md-sys-color-on-surface-variant)]">
               <tr>
                 <th className="py-3 px-4">Код поля</th>
                 <th className="py-3 px-4">Площадь (га)</th>
@@ -282,7 +296,7 @@ export const FieldsPage: React.FC = () => {
                 <th className="py-3 px-4 text-right">Действия</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200">
+            <tbody className="divide-y divide-[var(--md-sys-color-outline-variant)]/20">
               {fields.map((field) => {
                 const isEditing = editingId === field.field_data_id;
                 const isSelected = selectedFieldCode.toLowerCase() === field.code.toLowerCase();
@@ -293,11 +307,11 @@ export const FieldsPage: React.FC = () => {
                     onClick={() => setSelectedFieldCode(field.code)}
                     className={`transition-colors cursor-pointer ${
                       isSelected
-                        ? 'bg-emerald-50/90 border-l-4 border-emerald-600'
-                        : 'hover:bg-slate-50'
+                        ? 'bg-[var(--md-sys-color-secondary-container)]/30 border-l-4 border-[var(--md-sys-color-primary)]'
+                        : 'hover:bg-[var(--md-sys-color-surface-container)]/40'
                     }`}
                   >
-                    <td className="py-3.5 px-4 font-bold text-slate-800 font-mono">
+                    <td className="py-3.5 px-4 font-bold text-[var(--md-sys-color-on-surface)] font-mono">
                       {field.code}
                     </td>
 
@@ -307,10 +321,10 @@ export const FieldsPage: React.FC = () => {
                           type="number"
                           value={editArea}
                           onChange={(e) => setEditArea(Number(e.target.value))}
-                          className="w-24 bg-white border border-slate-300 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500 font-mono"
+                          className="w-24 bg-[var(--md-sys-color-surface-container-highest)] border border-[var(--md-sys-color-outline)] rounded px-2 py-1 text-sm text-[var(--md-sys-color-on-surface)] outline-none focus:border-[var(--md-sys-color-primary)] font-mono"
                         />
                       ) : (
-                        <span className="font-mono text-slate-800">{field.area_ha} га</span>
+                        <span className="font-mono text-[var(--md-sys-color-on-surface)]">{field.area_ha} га</span>
                       )}
                     </td>
 
@@ -319,7 +333,7 @@ export const FieldsPage: React.FC = () => {
                         <select
                           value={editSoil}
                           onChange={(e) => setEditSoil(e.target.value)}
-                          className="bg-white border border-slate-300 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500"
+                          className="bg-[var(--md-sys-color-surface-container-highest)] border border-[var(--md-sys-color-outline)] rounded px-2 py-1 text-sm text-[var(--md-sys-color-on-surface)] outline-none focus:border-[var(--md-sys-color-primary)]"
                         >
                           <option value="чернозём">чернозём</option>
                           <option value="суглинок">суглинок</option>
@@ -337,46 +351,49 @@ export const FieldsPage: React.FC = () => {
                           step="0.05"
                           value={editFertility}
                           onChange={(e) => setEditFertility(Number(e.target.value))}
-                          className="w-20 bg-white border border-slate-300 rounded px-2 py-1 text-sm text-slate-900 outline-none focus:border-emerald-500 font-mono"
+                          className="w-20 bg-[var(--md-sys-color-surface-container-highest)] border border-[var(--md-sys-color-outline)] rounded px-2 py-1 text-sm text-[var(--md-sys-color-on-surface)] outline-none focus:border-[var(--md-sys-color-primary)] font-mono"
                         />
                       ) : (
-                        <span className="font-mono text-slate-700">×{field.soil_fertility}</span>
+                        <span className="font-mono text-[var(--md-sys-color-on-surface-variant)]">×{field.soil_fertility}</span>
                       )}
                     </td>
 
-                    <td className="py-3.5 px-4 text-slate-500 font-mono text-xs">
+                    <td className="py-3.5 px-4 text-[var(--md-sys-color-on-surface-variant)] font-mono text-xs">
                       {totalArea > 0 ? `${((field.area_ha / totalArea) * 100).toFixed(1)}%` : '0%'}
                     </td>
 
                     <td className="py-3.5 px-4 text-right">
                       {isEditing ? (
                         <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
-                          <button
+                          <M3IconButton
+                            variant="filled"
+                            size="sm"
                             title="Сохранить"
                             onClick={() => saveEdit(field)}
-                            className="p-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg shadow-xs transition-colors cursor-pointer"
                           >
                             <Check className="w-4 h-4" />
-                          </button>
-                          <button
+                          </M3IconButton>
+                          <M3IconButton
+                            variant="outlined"
+                            size="sm"
                             title="Отмена"
                             onClick={cancelEdit}
-                            className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors cursor-pointer border border-slate-200"
                           >
                             <X className="w-4 h-4" />
-                          </button>
+                          </M3IconButton>
                         </div>
                       ) : (
-                        <button
+                        <M3IconButton
+                          variant="standard"
+                          size="sm"
                           title="Редактировать поле"
                           onClick={(e) => {
                             e.stopPropagation();
                             startEdit(field);
                           }}
-                          className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
                         >
                           <Edit2 className="w-4 h-4" />
-                        </button>
+                        </M3IconButton>
                       )}
                     </td>
                   </tr>
@@ -385,7 +402,7 @@ export const FieldsPage: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </Card>
+      </M3Card>
 
       {/* Dataset Manager Modal */}
       <DatasetManagerModal

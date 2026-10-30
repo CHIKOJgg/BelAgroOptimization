@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, AlertCircle, Info, X } from 'lucide-react';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
@@ -9,11 +9,12 @@ interface Toast {
   message: string;
 }
 
-interface ToastContextType {
+export interface ToastContextType {
   toast: (message: string, type?: ToastType) => void;
   success: (message: string) => void;
   error: (message: string) => void;
   info: (message: string) => void;
+  warning: (message: string) => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -31,44 +32,40 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     setTimeout(() => {
       removeToast(id);
-    }, 4000);
+    }, 4500);
   }, [removeToast]);
 
   const success = useCallback((msg: string) => addToast(msg, 'success'), [addToast]);
   const error = useCallback((msg: string) => addToast(msg, 'error'), [addToast]);
   const info = useCallback((msg: string) => addToast(msg, 'info'), [addToast]);
+  const warning = useCallback((msg: string) => addToast(msg, 'warning'), [addToast]);
 
-  const icons = {
+  const iconMap = {
     success: <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />,
     error: <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />,
-    warning: <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />,
-    info: <Info className="w-5 h-5 text-blue-400 shrink-0" />,
-  };
-
-  const borders = {
-    success: 'border-emerald-500/40 bg-slate-900/95 shadow-emerald-950/30',
-    error: 'border-rose-500/40 bg-slate-900/95 shadow-rose-950/30',
-    warning: 'border-amber-500/40 bg-slate-900/95 shadow-amber-950/30',
-    info: 'border-blue-500/40 bg-slate-900/95 shadow-blue-950/30',
+    warning: <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />,
+    info: <Info className="w-5 h-5 text-sky-400 shrink-0" />,
   };
 
   return (
-    <ToastContext.Provider value={{ toast: addToast, success, error, info }}>
+    <ToastContext.Provider value={{ toast: addToast, success, error, info, warning }}>
       {children}
-      {/* Toast container */}
-      <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none">
+      {/* Material Design 3 Floating Snackbar Container */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-md w-full pointer-events-none">
         {toasts.map((t) => (
           <div
             key={t.id}
-            className={`pointer-events-auto flex items-center justify-between gap-3 p-4 rounded-xl border backdrop-blur-md shadow-xl text-xs font-medium text-slate-100 transition-all transform animate-in slide-in-from-bottom-3 duration-200 ${borders[t.type]}`}
+            role="status"
+            className="pointer-events-auto flex items-center justify-between gap-3 px-4 py-3.5 rounded-[12px] bg-[var(--md-sys-color-inverse-surface)] text-[var(--md-sys-color-inverse-on-surface)] shadow-[var(--md-sys-elevation-3)] border border-[var(--md-sys-color-outline-variant)]/20 text-xs sm:text-sm font-medium tracking-tight animate-in fade-in slide-in-from-bottom-4 duration-200"
           >
-            <div className="flex items-center gap-3">
-              {icons[t.type]}
-              <span>{t.message}</span>
+            <div className="flex items-center gap-3 min-w-0">
+              {iconMap[t.type]}
+              <span className="truncate">{t.message}</span>
             </div>
             <button
               onClick={() => removeToast(t.id)}
-              className="text-slate-400 hover:text-slate-200 p-1 rounded-lg transition-colors"
+              className="p-1 rounded-full text-[var(--md-sys-color-inverse-on-surface)]/70 hover:text-[var(--md-sys-color-inverse-on-surface)] hover:bg-white/10 transition-colors shrink-0"
+              aria-label="Закрыть уведомление"
             >
               <X className="w-4 h-4" />
             </button>
